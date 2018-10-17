@@ -1,0 +1,14 @@
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetProcessor.deps.json
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetProcessor.runtimeconfig.json
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetProcessor.runtimeconfig.dev.json
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetProcessor.dll
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetProcessor.pdb
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetPrimitives.dll
+C:\Ontwik\Floorsweep\AssetProcessor\bin\Debug\netcoreapp2.0\AssetPrimitives.pdb
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.csprojAssemblyReference.cache
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.csproj.CoreCompileInputs.cache
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.AssemblyInfoInputs.cache
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.AssemblyInfo.cs
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.csproj.CopyComplete
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.dll
+C:\Ontwik\Floorsweep\AssetProcessor\obj\Debug\netcoreapp2.0\AssetProcessor.pdb

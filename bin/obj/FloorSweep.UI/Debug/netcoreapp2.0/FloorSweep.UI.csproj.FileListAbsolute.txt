@@ -1,0 +1,4 @@
+C:\Ontwik\Floorsweep\bin\obj\FloorSweep.UI\Debug\netcoreapp2.0\FloorSweep.UI.csprojAssemblyReference.cache
+C:\Ontwik\Floorsweep\bin\obj\FloorSweep.UI\Debug\netcoreapp2.0\FloorSweep.UI.csproj.CoreCompileInputs.cache
+C:\Ontwik\Floorsweep\bin\obj\FloorSweep.UI\Debug\netcoreapp2.0\FloorSweep.UI.AssemblyInfoInputs.cache
+C:\Ontwik\Floorsweep\bin\obj\FloorSweep.UI\Debug\netcoreapp2.0\FloorSweep.UI.AssemblyInfo.cs

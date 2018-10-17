@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Floorsweep.Resources\Floorsweep.Resources.csproj" />
+    <ProjectReference Include="..\Floorsweep.UI.Rendering\Floorsweep.UI.Rendering.csproj" />
+  </ItemGroup>
+
+</Project>

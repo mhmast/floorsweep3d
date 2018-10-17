@@ -1,0 +1,10 @@
+ApplicationWindow.cs
+Camera.cs
+FloorsweepApp.cs
+InputTracker.cs
+KtxFile.cs
+obj\Debug\netstandard2.0\Floorsweep.UI.Rendering.AssemblyInfo.cs
+SampleApplication.cs
+SamplePlatformType.cs
+Shaders\Cube.cs
+VeldridStartupWindow.cs

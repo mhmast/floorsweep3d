@@ -1,0 +1,12 @@
+C:\Ontwik\Floorsweep\Floorsweep.Resources\bin\Debug\netstandard2.0\Floorsweep.Resources.deps.json
+C:\Ontwik\Floorsweep\Floorsweep.Resources\bin\Debug\netstandard2.0\Floorsweep.Resources.dll
+C:\Ontwik\Floorsweep\Floorsweep.Resources\bin\Debug\netstandard2.0\Floorsweep.Resources.pdb
+C:\Ontwik\Floorsweep\Floorsweep.Resources\bin\Debug\netstandard2.0\System.Numerics.Vectors.dll
+C:\Ontwik\Floorsweep\Floorsweep.Resources\bin\Debug\netstandard2.0\System.Numerics.Vectors.xml
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.csproj.CoreCompileInputs.cache
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.AssemblyInfoInputs.cache
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.AssemblyInfo.cs
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.csproj.CopyComplete
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.dll
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.pdb
+C:\Ontwik\Floorsweep\Floorsweep.Resources\obj\Debug\netstandard2.0\Floorsweep.Resources.csprojAssemblyReference.cache

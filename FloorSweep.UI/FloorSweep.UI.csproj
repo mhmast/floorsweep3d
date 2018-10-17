@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+   
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Objects\robot.3mf" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Objects\robot.3mf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Veldrid" Version="4.4.0" />
+    <PackageReference Include="Veldrid.StartupUtilities" Version="4.4.0" />
+    <PackageReference Include="Veldrid.Utilities" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AssetPrimitives\AssetPrimitives.csproj" />
+    <ProjectReference Include="..\Floorsweep.Engine\FloorSweep.Engine.csproj" />
+    <ProjectReference Include="..\Floorsweep.UI.Rendering\Floorsweep.UI.Rendering.csproj" />
+  </ItemGroup>
+
+</Project>
