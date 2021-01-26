@@ -1,9 +1,0 @@
-C:\Ontwik\Floorsweep\AssetPrimitives\bin\Debug\netstandard2.0\AssetPrimitives.deps.json
-C:\Ontwik\Floorsweep\AssetPrimitives\bin\Debug\netstandard2.0\AssetPrimitives.dll
-C:\Ontwik\Floorsweep\AssetPrimitives\bin\Debug\netstandard2.0\AssetPrimitives.pdb
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.csproj.CoreCompileInputs.cache
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.AssemblyInfoInputs.cache
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.AssemblyInfo.cs
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.dll
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.pdb
-C:\Ontwik\Floorsweep\AssetPrimitives\obj\Debug\netstandard2.0\AssetPrimitives.csprojAssemblyReference.cache
