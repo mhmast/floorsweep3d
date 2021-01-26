@@ -1,0 +1,5 @@
+C:\Ontwik\Floorsweep\FloorSweep.PathFinding\bin\Debug\netstandard2.0\FloorSweep.PathFinding.deps.json
+C:\Ontwik\Floorsweep\FloorSweep.PathFinding\bin\Debug\netstandard2.0\FloorSweep.PathFinding.dll
+C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.0\FloorSweep.PathFinding.csprojAssemblyReference.cache
+C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.0\FloorSweep.PathFinding.AssemblyInfoInputs.cache
+C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.0\FloorSweep.PathFinding.AssemblyInfo.cs
