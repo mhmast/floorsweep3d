@@ -9,24 +9,14 @@
     ".NETStandard,Version=v2.1/": {
       "FloorSweep.PathFinding/1.0.0": {
         "dependencies": {
-          "MathNet.Numerics": "4.15.0",
-          "OpenCV": "2.4.11",
           "OpenCvSharp4": "4.5.1.20210123",
+          "OpenCvSharp4.runtime.win": "4.5.1.20210123",
           "System.Drawing.Common": "5.0.0"
         },
         "runtime": {
           "FloorSweep.PathFinding.dll": {}
         }
       },
-      "MathNet.Numerics/4.15.0": {
-        "runtime": {
-          "lib/netstandard2.0/MathNet.Numerics.dll": {
-            "assemblyVersion": "4.15.0.0",
-            "fileVersion": "4.15.0.0"
-          }
-        }
-      },
-      "OpenCV/2.4.11": {},
       "OpenCvSharp4/4.5.1.20210123": {
         "dependencies": {
           "System.Drawing.Common": "5.0.0",
@@ -48,6 +38,7 @@
           }
         }
       },
+      "OpenCvSharp4.runtime.win/4.5.1.20210123": {},
       "System.Buffers/4.5.1": {
         "runtime": {
           "lib/netstandard2.0/System.Buffers.dll": {
@@ -101,26 +92,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "MathNet.Numerics/4.15.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-cP4QgPPiU7boMyL8npvuQyVGVYUd/JQY1AWa+Wl2f//fuJN40qwt9ABRazunZIcDLHg3SSlgD/e+3Lnp69jNTg==",
-      "path": "mathnet.numerics/4.15.0",
-      "hashPath": "mathnet.numerics.4.15.0.nupkg.sha512"
-    },
-    "OpenCV/2.4.11": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-1W5nlWqWx82FI6q6ISqLUj3paH5DpbfXqnNrFi9eOCeChr59I0d0xklDtMMNsGt8JLlZTMu6IW2Pyp7IMnGVAA==",
-      "path": "opencv/2.4.11",
-      "hashPath": "opencv.2.4.11.nupkg.sha512"
-    },
     "OpenCvSharp4/4.5.1.20210123": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-35y42SgvqF4BOKKrTSlwTVYxOgg/8qaZn+FwPgkrbp5VSQcpN22K6kICKMnOxpMRGE+ZIbePwj5Qh6BJonR5Pg==",
       "path": "opencvsharp4/4.5.1.20210123",
       "hashPath": "opencvsharp4.4.5.1.20210123.nupkg.sha512"
+    },
+    "OpenCvSharp4.runtime.win/4.5.1.20210123": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RV0qzR3wD3F4PO3EWvyU4ZYXI0engUqypHz3ZbzCJH33ONSEGxm51wHiqPsIaB5gv0Cc/BaK+78MquASrEKccw==",
+      "path": "opencvsharp4.runtime.win/4.5.1.20210123",
+      "hashPath": "opencvsharp4.runtime.win.4.5.1.20210123.nupkg.sha512"
     },
     "System.Buffers/4.5.1": {
       "type": "package",

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloorSweep.PathFinding", "FloorSweep.PathFinding\FloorSweep.PathFinding.csproj", "{EECF8405-F3D5-48ED-8B2D-84CF7BDA1185}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FloorSweep.PathFinding", "FloorSweep.PathFinding\FloorSweep.PathFinding.csproj", "{EECF8405-F3D5-48ED-8B2D-84CF7BDA1185}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloorSweep.PathFinding.TestApp", "FloorSweep.PathFinding.TestApp\FloorSweep.PathFinding.TestApp.csproj", "{1C54DE48-74DD-4BF4-93C5-0D2EDEB64A27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloorSweep.Pathfinding.TestApp", "FloorSweep.Pathfinding.TestApp\FloorSweep.Pathfinding.TestApp.csproj", "{719BFED4-3683-4462-89A4-578911FD9952}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{EECF8405-F3D5-48ED-8B2D-84CF7BDA1185}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EECF8405-F3D5-48ED-8B2D-84CF7BDA1185}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EECF8405-F3D5-48ED-8B2D-84CF7BDA1185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C54DE48-74DD-4BF4-93C5-0D2EDEB64A27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C54DE48-74DD-4BF4-93C5-0D2EDEB64A27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C54DE48-74DD-4BF4-93C5-0D2EDEB64A27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C54DE48-74DD-4BF4-93C5-0D2EDEB64A27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{719BFED4-3683-4462-89A4-578911FD9952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{719BFED4-3683-4462-89A4-578911FD9952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{719BFED4-3683-4462-89A4-578911FD9952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{719BFED4-3683-4462-89A4-578911FD9952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

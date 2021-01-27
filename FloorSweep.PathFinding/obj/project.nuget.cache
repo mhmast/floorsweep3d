@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "cLyvnXPrs7MFNMhI2cUO91AiE86Wr/sV+cda7RFlHSHuRfhUdOeNyIWmXsXpeVSZSYnIQycnlzGQWsnhSwsKLw==",
+  "success": true,
+  "projectFilePath": "C:\\Ontwik\\Floorsweep\\FloorSweep.PathFinding\\FloorSweep.PathFinding.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mhmas\\.nuget\\packages\\opencvsharp4\\4.5.1.20210123\\opencvsharp4.4.5.1.20210123.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\opencvsharp4.runtime.win\\4.5.1.20210123\\opencvsharp4.runtime.win.4.5.1.20210123.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\mhmas\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

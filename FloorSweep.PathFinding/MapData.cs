@@ -1,9 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using OpenCvSharp;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using OpenCvSharp;
 
 namespace FloorSweep.PathFinding
 {
