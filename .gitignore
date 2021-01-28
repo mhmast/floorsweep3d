@@ -1,2 +1,4 @@
 /.vs/Floorsweep/DesignTimeBuild/.dtbcache.v2
 /.vs/Floorsweep/v16/.suo
+/**/obj/**/*
+/**/bin/**/*

@@ -1,9 +1,0 @@
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\bin\Debug\netstandard2.1\FloorSweep.PathFinding.deps.json
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\bin\Debug\netstandard2.1\FloorSweep.PathFinding.dll
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.csprojAssemblyReference.cache
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.AssemblyInfoInputs.cache
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.AssemblyInfo.cs
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\bin\Debug\netstandard2.1\FloorSweep.PathFinding.pdb
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.dll
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.pdb
-C:\Ontwik\Floorsweep\FloorSweep.PathFinding\obj\Debug\netstandard2.1\FloorSweep.PathFinding.csproj.CoreCompileInputs.cache

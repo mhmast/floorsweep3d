@@ -1,7 +1,0 @@
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.csprojAssemblyReference.cache
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.PathFinding.TestApp.Form1.resources
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.csproj.GenerateResource.cache
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.GeneratedMSBuildEditorConfig.editorconfig
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.AssemblyInfoInputs.cache
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.AssemblyInfo.cs
-C:\Ontwik\Floorsweep\FloorSweep.Pathfinding.TestApp\obj\Debug\net5.0-windows\FloorSweep.Pathfinding.TestApp.csproj.CoreCompileInputs.cache
