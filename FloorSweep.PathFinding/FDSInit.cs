@@ -7,9 +7,12 @@ namespace FloorSweep.PathFinding
 {
     public class FDSInit
     {
-        public static void DoFDSInit(Mat startPos, Mat endPos, Mat map, int scalling)
+        public static State DoFDSInit(MapData data, int scaling)
         {
-            var radius = 10 / scalling;
+            var map = data.Map;
+            var startPos = data.Start;
+            var endPos = data.Target;
+            var radius = 10 / scaling;
             var mat = Mat.Zeros(radius * 2, radius * 2).ToMat();
             double dista(double a, double b) => Math.Sqrt(a * a + b * b);
 
@@ -45,48 +48,31 @@ namespace FloorSweep.PathFinding
             @out.EndPos = endPos.Col(1).RowRange(0, 1).Inv().ToMat();
             @out.EndPos.Add(Mat.Zeros(rows: 2, endPos.Cols, endPos.Type()));
             startPos = @out.StartPos;
-    
-    @out.Scaling = scalling;
-    @out.Pattern = shapePattern.ComplexConjugate();
-    @out.Ucc = neighbours;
-    @out.Height = @out.Map.Rows;
-    @out.Width = @out.Map.Cols;
-    out.graph = zeros(out.height, out.width, 7);
-    out.graph(:,:, 1:2) = inf;
-    out.graph(:,:, 3) = -1;
-    out.graph(:,:, 5) = -1;
-    out.graph(:,:, 6) = 0;
-    out.graph(:,:, 7) = 0;
-    out.kM = 0;
-            SQRT2 = sqrt(2) - 1;
-    out.comparator = DStarcmp;
-    out.stack = java.util.PriorityQueue(180247, out.comparator);
 
-            setk(out.endPos, 0);
-            seth(out.endPos, 0);
-            setQ(out.endPos);
-    out.endPos(3:4) = [heur(out.endPos); 0];
-            add(out.stack, out.endPos);
-
-
-
-    % -----------------------------------------------------------
-    function setQ(s)
-         out.graph(s(1), s(2), 3) = 1;
-            end
-            function seth(s, val)
-        out.graph(s(1), s(2), 1) = val;
-            end
-            function setk(s, val)
-        out.graph(s(1), s(2), 2) = val;
-            end
-            function out = heur(s)
-        k = abs(startPos - s);
-        out = SQRT2 * min(k(1:2)) + max(k(1:2));
-            end
-
-
-
-        end
+            @out.Scaling = scaling;
+            @out.Pattern = shapePattern.ComplexConjugate();
+            @out.Ucc = neighbours;
+            @out.Height = @out.Map.Rows;
+            @out.Width = @out.Map.Cols;
+            @out.Graph = new Mat[7];
+            Array.Fill(@out.Graph, Mat.Zeros(rows:@out.Height, @out.Width, MatType.CV_64F).ToMat());
+            @out.Graph[0].SetAll(double.PositiveInfinity);
+            @out.Graph[1].SetAll(double.PositiveInfinity);
+            @out.Graph[2].SetAll(-1.0);
+            @out.Graph[4].SetAll(-1.0);
+            @out.KM = 0.0;
+            var SQRT2 = Math.Sqrt(2) - 1;
+            @out.Stack = new SortedSet<Mat>(new DStarComparator());
+            @out.Graph[1].Set(@out.EndPos.At<int>(0,0), @out.EndPos.At<int>(1, 0), 0);
+            @out.Graph[0].Set(@out.EndPos.At<int>(0,0), @out.EndPos.At<int>(1, 0), 0);
+            @out.Graph[2].Set(@out.EndPos.At<int>(0,0), @out.EndPos.At<int>(1, 0), 1);
+            var k = (startPos - @out.EndPos).Abs().ToMat();
+            var m11m21 = k.RowRange(0, 1).Col(0);
+            var heur = SQRT2 * m11m21.Min() + m11m21.Max();
+            @out.EndPos.Set(2,0,heur);
+            @out.EndPos.Set(3,0,0);
+            @out.Stack.Add(@out.EndPos);
+            return @out;
+        }
     }
-    }
+}

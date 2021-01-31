@@ -1,4 +1,5 @@
 ﻿using OpenCvSharp;
+using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
 {
@@ -12,5 +13,8 @@ namespace FloorSweep.PathFinding
         public Mat Ucc { get; internal set; }
         public int Height { get; internal set; }
         public int Width { get; internal set; }
+        public Mat[] Graph { get; internal set; }
+        public double KM { get; internal set; }
+        public SortedSet<Mat> Stack { get; internal set; }
     }
 }

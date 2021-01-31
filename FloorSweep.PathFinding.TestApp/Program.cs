@@ -20,10 +20,10 @@ namespace FloorSweep.PathFinding.TestApp
 
             var mapsNames = new[] { "a", "e", "b", "c", "map01" };
             var maps = new List<MapData>();
-            var scalling = 4;
+            var scaling = 4;
             for (int i = 0; i < mapsNames.Length; i++)
             {
-                var tmp = LoadMap.DoLoadMap(mapsNames[i] + ".png", scalling);
+                var tmp = LoadMap.DoLoadMap(mapsNames[i] + ".png", scaling);
                 var start = tmp.Start.ComplexConjugate();
                 var goal = tmp.Target.ComplexConjugate();
                 maps.Add(new MapData { Map = tmp.Map, Start = start, Target = goal });
@@ -31,7 +31,7 @@ namespace FloorSweep.PathFinding.TestApp
 
 
             var @bool = false;
-            var state = FDSInit(start, goal, maps{ 1}, scalling);
+            var state = FDSInit.DoFDSInit(maps[0], scaling);
             state = FDSComputePath(state);
             @bool = true;
             //            toc
