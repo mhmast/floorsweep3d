@@ -5,14 +5,15 @@ using System.Text;
 
 namespace FloorSweep.PathFinding
 {
+    public enum OutcomeState
+    {
+        NEW = -1,
+        OPEN = 1,
+        CLOSED = 0
+    }
     public class FDSComputePath
     {
-        enum OutcomeState
-        {
-            NEW = -1,
-            OPEN = 1,
-            CLOSED = 0
-        }
+        
         public static State DoFdsComputePath(State state, double limit = double.PositiveInfinity)
         {
             var startPos = state.StartPos;
