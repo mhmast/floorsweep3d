@@ -175,7 +175,7 @@ namespace FloorSweep.PathFinding
             graph[1].Set(sAcc.Get<int>(0), sAcc.Get<int>(1), val);
         }
 
-        private static double h(Mat s, Mat[] graph)
+        public static double h(Mat s, Mat[] graph)
         {
             var sAcc = s.T().ToMat();
             return graph[0].Get<double>(sAcc.Get<int>(0), sAcc.Get<int>(1));
@@ -278,7 +278,7 @@ namespace FloorSweep.PathFinding
             });
         }
 
-        private static void insert(Mat s, double h_new, Mat[] graph, double mindist, SortedSet<Mat> stack, double kM, Mat startPos)
+        public static void insert(Mat s, double h_new, Mat[] graph, double mindist, SortedSet<Mat> stack, double kM, Mat startPos)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
