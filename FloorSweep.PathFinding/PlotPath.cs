@@ -28,7 +28,7 @@ namespace FloorSweep.PathFinding
             if (scalling != 1) {
                 path.Col(0).SetAll(d => d - 2.5); ;
                 path.Col(1).SetAll(d => d - 2.5);
-                pathInterpolated = BSpline(path * scalling);
+                pathInterpolated = BSpline.DoBSpline(path * scalling);
             }
             else {
 

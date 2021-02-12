@@ -8,7 +8,30 @@ namespace FloorSweep.PathFinding
 {
     public static class MatExtensions
     {
+        public static ref T At<T>(this Mat m, Point p) where T : unmanaged
+        {
+            return ref m.At<T>(p.X, p.Y);
+        }
+        
+        
+        public static double Sum(this Scalar m)
+        {
+            return m.Val0 + m.Val1+m.Val2+m.Val3;
+        }
+        public static double Sum2(this Mat m)
+        {
+            return m.Sum().Sum();
+        }
 
+        public static Mat FromRange(double start,double end, double step)
+        {
+            var arr = new List<double>();
+            for(var i=start;i<= end;i+=step)
+            {
+                arr.Add(i);
+            }
+            return Mat.FromArray(arr.ToArray());
+        }
         public static Mat FromRows(params double[][] rows)
         {
             var len = rows[0].Length;
@@ -30,11 +53,33 @@ namespace FloorSweep.PathFinding
             Cv2.MulSpectrums(ones, m, ret, DftFlags.None, true);
             return ret;
         }
+        
+        public static Mat RemoveRows(this Mat m,params int[] rows)
+        {
+            Mat ret = new Mat();
+            for(int i=0;i<m.Rows;i++)
+            {
+                if(!rows.Contains(i))
+                {
+                    ret.Add(m.Row(i));
+                }
+            }
+            return ret;
+        }
         public static Mat Floor(this Mat m)
         {
             unsafe
             {
                 m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Floor(*val)));
+            }
+            return m;
+        }
+        
+        public static Mat Pow(this Mat m,double pow)
+        {
+            unsafe
+            {
+                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Pow(*val,pow)));
             }
             return m;
         }
@@ -145,6 +190,15 @@ namespace FloorSweep.PathFinding
             unsafe
             {
                 m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Ceiling(*val)));
+            }
+            return m;
+        }
+        
+        public static Mat Round(this Mat m)
+        {
+            unsafe
+            {
+                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Round(*val)));
             }
             return m;
         }
