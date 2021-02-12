@@ -18,5 +18,6 @@ namespace FloorSweep.PathFinding
         public SortedSet<Mat> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
+        public Mat Path { get; set; }
     }
 }

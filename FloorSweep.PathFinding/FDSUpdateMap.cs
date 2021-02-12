@@ -18,8 +18,8 @@ namespace FloorSweep.PathFinding
             var SQRT2 = Math.Sqrt(2) - 1;
             var stack = state.Stack;
 
-            var stack2 = new SortedList<Mat, Mat>(new DStarComparator());
-            var stack3 = new SortedList<Mat, Mat>(new DStarComparator());
+            var stack2 = new SortedSet<Mat>(new DStarComparator());
+            var stack3 = new SortedSet<Mat>(new DStarComparator());
             var map = newMap;
             var difference = (map - state.Map).ToMat();
             state.Map = map;
@@ -75,7 +75,7 @@ namespace FloorSweep.PathFinding
                 foreach (var n in ucc.AsMathlabColEnumerable())
                 {
                     var s = u + n;
-                    insert(s, h(s, graph), graph, double.PositiveInfinity, stack, kM, startPos);
+                    insert(s, h(s, graph), graph, kM, startPos, stack);
                 }
             }
             foreach (var u in added.AsMathlabColEnumerable())
@@ -85,11 +85,11 @@ namespace FloorSweep.PathFinding
                     var s = (u + n).ToMat();
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
-                        seth(s, double.PositiveInfinity);
-                        s.Set(2, 0, -k(s,graph) + kM);
-                        s.Set(3, 0, k(s,graph) + g(s));
+                        seth(s, double.PositiveInfinity, graph);
+                        s.Set(2, 0, -k(s, graph) + kM);
+                        s.Set(3, 0, k(s, graph) + g(s, graph, startPos));
                         stack.Add(s);
-                        sett(s, OutcomeState.OPEN);
+                        sett(s, (double)OutcomeState.OPEN, graph);
                     }
                 }
             }
@@ -118,86 +118,62 @@ namespace FloorSweep.PathFinding
             return graph[1].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
         }
 
-        private static double g(Mat s, Mat[] graph, Mat startPos) 
+        private static double g(Mat s, Mat[] graph, Mat startPos)
         {
             var ss = (startPos - s).Abs().T().ToMat();
             return Math.Sqrt(Math.Pow(ss.Get<double>(0), 2) + Math.Pow(ss.Get<double>(1), 2));
         }
 
+        private static void sett(Mat s, double val, Mat[] graph)
+        {
+            var s1 = s.T().ToMat();
+            graph[2].Set(s1.Get<int>(0), s.Get<int>(1), val);
+        }
 
-        function out = inQ(s)
-    out = graph(s(1), s(2), 3);
-            end
+        private static void seth(Mat s, double val, Mat[] graph)
+        {
+            var s1 = s.T().ToMat();
+            graph[0].Set(s1.Get<int>(0), s1.Get<int>(1), val);
+        }
 
-            function sett(s, val)
-    graph(s(1), s(2), 3) = val;
-            end
-            function setQ(s)
-     graph(s(1), s(2), 3) = 1;
-            end
-            function rsetQ(s)
-     graph(s(1), s(2), 3) = 0;
-            end
-            function incr(s)
-    graph(s(1), s(2), 4) = graph(s(1), s(2), 4) + 1;
-            end
-            % -----------------------------------------------------------
-
-            function seth(s, val)
-    graph(s(1), s(2), 1) = val;
-            end
-            % -----------------------------------------------------------
-            
-            function setk(s, val)
-    graph(s(1), s(2), 2) = val;
-            end
-            % -----------------------------------------------------------
-            function out = calculateKey(x)
-    out =  [
-        h(x) + g(x) + kM;
-% min(h(x), k(x) + g(x));
-            min(h(x), k(x))
-        ];
-            end
-            function out = testNode(s)
-    out = true;
-            if template(s(1), s(2)) == 1
-        out = false;
-            return
-        end
-    for n = pattern
-        pos = s + n;
-        if map(pos(1), pos(2)) == 0
-            out = false;
-            template(s(1), s(2)) = 1;
-% graph(s(1), s(1), 5) = 0;
-% setg(s, -1)
-            return
-        end
-    end
-end
-function out = cmp(s1, s2)
-    out = s1(1) < s2(1) || (s1(1) == s2(1) && s1(2) < s2(2));
-            end
-            function insert(s, h_new)
-        t = inQ(s);
-            if t == NEW
-                setk(s, h_new);
-        seth(s, h_new);
-        else
-            if t == OPEN
-                setk(s, min(k(s), h_new));
+        private static void insert(Mat s, double h_new, Mat[] graph, double kM, Mat startPos, SortedSet<Mat> stack)
+        {
+            var t = inQ(s, graph);
+            if (t == (double)OutcomeState.NEW)
+            {
+                setk(s, h_new, graph);
+                seth(s, h_new, graph);
+            }
             else
-                setk(s, min(h(s), h_new));
-            seth(s, h_new);
-        end
-    s(3:4) = [k(s) + kM + g(s); k(s) + g(s)];
-            add(stack, s);
-        sett(s, OPEN);
-        end
+            {
+                if (t == (double)OutcomeState.OPEN)
+                {
+                    setk(s, Math.Min(k(s, graph), h_new), graph);
+                }
+                else
+                {
+                    setk(s, Math.Min(h(s, graph), h_new), graph);
+                    seth(s, h_new, graph);
+                }
+                s.Col(0).Set(2, k(s, graph) + kM + g(s, graph, startPos));
+                s.Col(0).Set(3, k(s, graph) + g(s, graph, startPos));
+                stack.Add(s);
+                sett(s, (double)OutcomeState.OPEN, graph);
+            }
+        }
 
-end
+        private static double inQ(Mat s, Mat[] graph)
+        {
+            var s1 = s.T().ToMat();
+            return graph[2].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
+        }
 
-end
+        private static void setk(Mat s, double val, Mat[] graph)
+        {
+            var s1 = s.T().ToMat();
+            graph[1].Set(s1.Get<int>(0), s1.Get<int>(1), val);
+        }
+
+
     }
 }

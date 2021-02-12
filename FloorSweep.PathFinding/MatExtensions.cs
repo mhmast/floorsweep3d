@@ -12,12 +12,12 @@ namespace FloorSweep.PathFinding
         public static Mat FromRows(params double[][] rows)
         {
             var len = rows[0].Length;
-            if(rows.All(r=>r.Length !=len ))
+            if (rows.All(r => r.Length != len))
             {
                 throw new ArgumentException();
             }
             var arr = new double[rows.Length, len];
-            for(int r = 0;r< rows.Length;r++)
+            for (int r = 0; r < rows.Length; r++)
             {
                 arr.SetValue(rows[r], r);
             }
@@ -57,19 +57,19 @@ namespace FloorSweep.PathFinding
                 }
             }
             retVals.Sort(CompareDoubles);
-            return FromRows(retVals.Select(r=>r.ToArray()).ToArray());
+            return FromRows(retVals.Select(r => r.ToArray()).ToArray());
         }
 
         private static int CompareDoubles(List<double> x, List<double> y)
         {
-            if(x.Count != y.Count)
+            if (x.Count != y.Count)
             {
                 throw new ArgumentException();
             }
-            for(int i=0;i<x.Count;i++)
+            for (int i = 0; i < x.Count; i++)
             {
                 var cmp = x[i].CompareTo(y[i]);
-                if(cmp != 0)
+                if (cmp != 0)
                 {
                     return cmp;
                 }
@@ -100,10 +100,10 @@ namespace FloorSweep.PathFinding
             m.T().ToMat().GetArray(out double[] data);
             return data;
         }
-        
+
         public static IEnumerable<Mat> AsMathlabColEnumerable(this Mat m)
         {
-            for(int i=0;i<m.Cols;i++)
+            for (int i = 0; i < m.Cols; i++)
             {
                 yield return m.ColRange(i, i);
             }
@@ -130,10 +130,12 @@ namespace FloorSweep.PathFinding
         }
 
         public static Mat SetAll(this Mat m, double d)
+        => m.SetAll(_ => d);
+        public static Mat SetAll(this Mat m, Func<double, double> df)
         {
             unsafe
             {
-                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = d));
+                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = df(*val)));
             }
             return m;
         }
