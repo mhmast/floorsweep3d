@@ -1,7 +1,9 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,7 +25,7 @@ namespace FloorSweep.PathFinding.TestApp
             var scaling = 4;
             for (int i = 0; i < mapsNames.Length; i++)
             {
-                var tmp = LoadMap.DoLoadMap(mapsNames[i] + ".png", scaling);
+                var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
                 var start = tmp.Start.ComplexConjugate();
                 var goal = tmp.Target.ComplexConjugate();
                 maps.Add(new MapData { Map = tmp.Map, Start = start, Target = goal });
@@ -50,7 +52,7 @@ namespace FloorSweep.PathFinding.TestApp
 
             //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
             state.Path = ResolvePath.DoResolvePath(state);
-            var resp = PlotPath(state, scalling, 'e');
+            var resp = PlotPath.DoPlotPath(state, "e", scaling );
 
             //%% show A - star graph
             //  a = state.graph(:,:,1);
@@ -85,7 +87,7 @@ namespace FloorSweep.PathFinding.TestApp
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Form1(resp));
         }
     }
 }

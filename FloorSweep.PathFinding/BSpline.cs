@@ -70,10 +70,10 @@ namespace FloorSweep.PathFinding
             {
 
                 var m1 = new Mat();
-                m1.Add(e.Row(i));
-                m1.Add(f.Row(i));
-                m1.Add(g.Row(i));
-                m1.Add(e.Row(i + 1));
+                m1.AddBottom(e.Row(i));
+                m1.AddBottom(f.Row(i));
+                m1.AddBottom(g.Row(i));
+                m1.AddBottom(e.Row(i + 1));
                 retVal[i] = m1;
             }
             var spline = new Mat();
@@ -81,7 +81,7 @@ namespace FloorSweep.PathFinding
 
             foreach (var i in retVal)
             {
-                spline.Add(bezier4(i, t, 3));
+                spline.AddBottom(bezier4(i, t, 3));
             }
 
             return Interpolate(spline.Round(), 1);
@@ -145,7 +145,7 @@ namespace FloorSweep.PathFinding
             Mat retVal = new Mat();
             for (int i = 0; i < X.Cols; i++)
             {
-                retVal.Add(interp1(X, Y, targetX.Get<int>(i)));
+                retVal.AddBottom(interp1(X, Y, targetX.Get<int>(i)));
             }
             return retVal.T().ToMat();
         }
@@ -199,7 +199,7 @@ namespace FloorSweep.PathFinding
                 var l = bez.Get<double>(1, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 1));
                 var m = bez.Get<double>(2, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 2));
                 var u = bez.Get<double>(3, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 3));
-                @out.Add((k * bez.Row(0) + l * bez.Row(1) + m * bez.Row(2) + u * bez.Row(3)) / (k + l + m + u));
+                @out.AddBottom((k * bez.Row(0) + l * bez.Row(1) + m * bez.Row(2) + u * bez.Row(3)) / (k + l + m + u));
             }
             return @out;
         }

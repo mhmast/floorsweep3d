@@ -12,21 +12,53 @@ namespace FloorSweep.PathFinding
         {
             return ref m.At<T>(p.X, p.Y);
         }
-        
-        
+
+        public static Mat Plus(this Mat m, Mat other)
+        {
+            if (other.Size() == m.Size())
+            {
+                return m + other;
+            }
+            if (other.Cols == m.Cols && other.Rows == 1)
+            {
+                Mat retVal = new Mat(0, m.Cols, m.Type());
+                for (int i = 0; i < m.Rows; i++)
+                {
+                    retVal.AddBottom(m.Row(i) + other);
+                }
+                return retVal;
+            }
+            throw new ArgumentException();
+        }
+
+        public static void AddBottom(this Mat m, Mat other)
+        {
+            other.GetArray(out double[] otherData);
+            m.GetArray(out double[] data);
+            m.Resize(m.Rows + other.Rows);
+            m.SetArray(data.Concat(otherData).ToArray());
+        }
+
+        public static void AddBottom(this Mat m, double other)
+        {
+            m.GetArray(out double[] data);
+            m.Resize(m.Rows + 1);
+            m.SetArray(data.Concat(new[] { other }).ToArray());
+        }
+
         public static double Sum(this Scalar m)
         {
-            return m.Val0 + m.Val1+m.Val2+m.Val3;
+            return m.Val0 + m.Val1 + m.Val2 + m.Val3;
         }
         public static double Sum2(this Mat m)
         {
             return m.Sum().Sum();
         }
 
-        public static Mat FromRange(double start,double end, double step)
+        public static Mat FromRange(double start, double end, double step)
         {
             var arr = new List<double>();
-            for(var i=start;i<= end;i+=step)
+            for (var i = start; i <= end; i += step)
             {
                 arr.Add(i);
             }
@@ -42,24 +74,28 @@ namespace FloorSweep.PathFinding
             var arr = new double[rows.Length, len];
             for (int r = 0; r < rows.Length; r++)
             {
-                arr.SetValue(rows[r], r);
+                var row = rows[r];
+                for (int j = 0; j < len; j++)
+                {
+                    arr[r, j] = row[j];
+                }
             }
             return Mat.FromArray(arr);
         }
         public static Mat ComplexConjugate(this Mat m)
         {
-            Mat ones = Mat.Ones(rows: m.Width, m.Height, m.Type()).ToMat();
-            Mat ret = Mat.Zeros(rows: m.Width, m.Height, m.Type()).ToMat();
+            Mat ones = Mat.Ones(m.Rows, m.Cols, m.Type()).ToMat();
+            Mat ret = Mat.Zeros(m.Rows, m.Cols, m.Type()).ToMat();
             Cv2.MulSpectrums(ones, m, ret, DftFlags.None, true);
             return ret;
         }
-        
-        public static Mat RemoveRows(this Mat m,params int[] rows)
+
+        public static Mat RemoveRows(this Mat m, params int[] rows)
         {
             Mat ret = new Mat();
-            for(int i=0;i<m.Rows;i++)
+            for (int i = 0; i < m.Rows; i++)
             {
-                if(!rows.Contains(i))
+                if (!rows.Contains(i))
                 {
                     ret.Add(m.Row(i));
                 }
@@ -74,12 +110,12 @@ namespace FloorSweep.PathFinding
             }
             return m;
         }
-        
-        public static Mat Pow(this Mat m,double pow)
+
+        public static Mat Pow(this Mat m, double pow)
         {
             unsafe
             {
-                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Pow(*val,pow)));
+                m.ForEachAsDouble(new MatForeachFunctionDouble((val, pos) => *val = Math.Pow(*val, pow)));
             }
             return m;
         }
@@ -193,7 +229,7 @@ namespace FloorSweep.PathFinding
             }
             return m;
         }
-        
+
         public static Mat Round(this Mat m)
         {
             unsafe

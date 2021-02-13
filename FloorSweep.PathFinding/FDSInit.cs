@@ -16,7 +16,7 @@ namespace FloorSweep.PathFinding
             var mat = Mat.Zeros(radius * 2, radius * 2).ToMat();
             double dista(double a, double b) => Math.Sqrt(a * a + b * b);
 
-            var shapePattern = Mat.Zeros(rows: 0, 4, map.Type()).ToMat();
+            var shapePattern = Mat.Zeros(rows: 0, 4,MatType.CV_64FC1).ToMat();
 
             for (int x = 0; x < 2 * radius; x++)
             {
@@ -25,7 +25,7 @@ namespace FloorSweep.PathFinding
                     if (dista(x - radius - 0.5, y - radius - 0.5) > radius - 1 && dista(x - radius - 0.5, y - radius - 0.5) < radius)
                     {
                         mat.Set(x, y, 1);
-                        shapePattern.Add(new Vec4i(x - radius, y - radius, 0, 0));
+                        shapePattern.AddBottom(MatExtensions.FromRows(new double[][]{ new double[]{ x - radius, y - radius, 0, 0} }));
                     }
                 }
             }
@@ -37,16 +37,16 @@ namespace FloorSweep.PathFinding
             { -1, - 1, 0, 0 },
             { 1, 0, 0, 0 },
             { 1, - 1, 0, 0 },
-            { -1, 1, 0, 0 }
+            { -1.0, 1, 0, 0 }
             }).ComplexConjugate();
 
             var @out = new State();
 
             @out.Map = map;
             @out.StartPos = startPos.Col(1).RowRange(0, 1).Inv().ToMat();
-            @out.StartPos.Add(Mat.Zeros(rows: 2, startPos.Cols, startPos.Type()));
-            @out.EndPos = endPos.Col(1).RowRange(0, 1).Inv().ToMat();
-            @out.EndPos.Add(Mat.Zeros(rows: 2, endPos.Cols, endPos.Type()));
+            @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols, @out.StartPos.Type()));
+            @out.EndPos = endPos.Col(1).RowRange(0, 1);
+            @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols, @out.EndPos.Type()));
             startPos = @out.StartPos;
 
             @out.Scaling = scaling;

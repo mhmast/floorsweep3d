@@ -12,9 +12,17 @@ namespace FloorSweep.PathFinding.TestApp
 {
     public partial class Form1 : Form
     {
+        private PlottedPath _resp;
+
         public Form1()
         {
             InitializeComponent();
+        }
+
+        public Form1(PlottedPath resp)
+        {
+            BackgroundImage = resp.Image;
+            BackgroundImageLayout = ImageLayout.Stretch;
         }
     }
 }

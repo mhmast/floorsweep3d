@@ -18,11 +18,16 @@ namespace FloorSweep.PathFinding
             var a = map.Rows;
             var b = map.Cols;
             var @out = new MapData();
-            @out.Map = Mat.Zeros(a + 10, b + 10);
-            @out.Map[5, a - 6, 5, b - 6] = map;
+            @out.Map = Mat.Zeros(5, map.Cols,map.Type());
+            @out.Map.Add(map);
+            @out.Map.Add(Mat.Zeros(6, map.Cols, map.Type()));
+            @out.Map = @out.Map.T();
+            @out.Map.Add(Mat.Zeros(5, @out.Map.Cols, map.Type()));
+            @out.Map.Add(Mat.Zeros(6, @out.Map.Cols, map.Type()));
+            @out.Map = @out.Map.T();
 
-            @out.Start = (robot_xy / scaling).ToMat().Floor()+ new Mat(1, 2, @out.Target.Type(), 5) ;
-            @out.Target = (target_xy / scaling).ToMat().Floor() + new Mat(1, 2, @out.Target.Type(), 5) ;
+            @out.Start = (robot_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, robot_xy.Type(), 5)) ;
+            @out.Target = (target_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, target_xy.Type(), 5)) ;
             return @out;
         }
     }

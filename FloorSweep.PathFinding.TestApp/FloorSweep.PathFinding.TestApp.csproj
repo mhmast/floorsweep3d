@@ -7,12 +7,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenCvSharp4" Version="4.5.1.20210123" />
-    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.1.20210123" />
+    <PackageReference Include="OpenCvSharp4" Version="4.5.1.20210210" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.1.20210210" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FloorSweep.PathFinding\FloorSweep.PathFinding.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="a.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="b.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="c.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="d.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="e.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="map01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

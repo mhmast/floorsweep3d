@@ -1,13 +1,15 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace FloorSweep.PathFinding
 {
     public class PlotPath
     {
-        public static object PlotPath(State state, string mapName, double scalling = 1)
+        public static PlottedPath DoPlotPath(State state, string mapName, double scalling = 1)
         {
             var path = state.Path.T().ToMat();
             path.Col(2).SetAll(1);
@@ -20,29 +22,33 @@ namespace FloorSweep.PathFinding
             }
             else
             {
-                var tmp = LoadMap.DoLoadMap($"{mapName}.png", 1);
+                var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName,$"{mapName}.png"), 1);
                 imag = tmp.Map;
             }
 
             Mat pathInterpolated;
-            if (scalling != 1) {
+            if (scalling != 1)
+            {
                 path.Col(0).SetAll(d => d - 2.5); ;
                 path.Col(1).SetAll(d => d - 2.5);
                 pathInterpolated = BSpline.DoBSpline(path * scalling);
             }
-            else {
+            else
+            {
 
                 pathInterpolated = path;
             }
-            %% 5
-    for it = pathInterpolated'
-        a = round(it);
-        imag(a(1), a(2)) = 0.6;
-    end
-    figure(100)
-    out.handle = imshow(imag);
-    out.path = pathInterpolated;
 
-            end
+            foreach (var it in pathInterpolated.T().ToMat().AsMathlabColEnumerable())
+            {
+                var a = it.Round().T().ToMat();
+                imag.Set(a.Get<int>(0), a.Get<int>(1), 0.6);
+            }
+            var name = Path.GetTempFileName();
+            imag.SaveImage(name);
+            var retVal = new PlottedPath { Image = System.Drawing.Image.FromFile(name), Path = pathInterpolated };
+            File.Delete(name);
+            return retVal;
+        }
     }
-    }
+}

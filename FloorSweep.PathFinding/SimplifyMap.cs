@@ -8,6 +8,7 @@ namespace FloorSweep.PathFinding
         {
 
             var mapB = map;
+            var mapT = mapB.T().ToMat();
             var a = mapB.Rows;
             var b = mapB.Cols;
             var @out = Mat.Zeros(a / scaling, b / scaling, map.Type()).ToMat();
@@ -22,9 +23,8 @@ namespace FloorSweep.PathFinding
             {
                 for (int y = 0; y < d - 1; y++)
                 {
-                    var scalar = mapB.RowRange(x * s - a, x * s + b).ColRange(y * s - a, y * s + b).Sum();
-                    var tmp = scalar.Val0 + scalar.Val1 + scalar.Val2 + scalar.Val3;
-
+                    var tmp = mapT.RowRange(x * s - a+1, x * s + b +1).ColRange(y * s - a+1, y * s + b+1).Sum2();
+                    
                     if (tmp < 12)
                     {
                         @out.Set(x, y, 0);
