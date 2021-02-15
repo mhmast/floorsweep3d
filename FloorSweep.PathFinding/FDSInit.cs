@@ -43,7 +43,7 @@ namespace FloorSweep.PathFinding
             var @out = new State();
 
             @out.Map = map;
-            @out.StartPos = startPos.Col(1).RowRange(0, 1).Inv().ToMat();
+            @out.StartPos = startPos.Col(1).RowRange(0, 1).T().ToMat();
             @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols, @out.StartPos.Type()));
             @out.EndPos = endPos.Col(1).RowRange(0, 1);
             @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols, @out.EndPos.Type()));

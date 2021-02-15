@@ -1,8 +1,10 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FloorSweep.PathFinding
 {
@@ -33,10 +35,15 @@ namespace FloorSweep.PathFinding
 
         public static void AddBottom(this Mat m, Mat other)
         {
-            other.GetArray(out double[] otherData);
-            m.GetArray(out double[] data);
+             var rows = m.Rows;
             m.Resize(m.Rows + other.Rows);
-            m.SetArray(data.Concat(otherData).ToArray());
+            for(int i=0;i<other.Rows;i++)
+            {
+                for(int c=0;c<m.Cols;c++)
+                {
+                    m.Set(i + rows, c, other.Get<double>(i, c));
+                }
+            }
         }
 
         public static void AddBottom(this Mat m, double other)
