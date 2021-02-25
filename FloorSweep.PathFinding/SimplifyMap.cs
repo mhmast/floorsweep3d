@@ -27,11 +27,11 @@ namespace FloorSweep.PathFinding
                     
                     if (tmp < 12)
                     {
-                        @out.Set(x, y, 0);
+                        @out._<double>(x,y) = 0;
                     }
                     else
                     {
-                        @out.Set(x, y, 1);
+                        @out._<double>(x, y) =  1;
                     }
                 }
             }

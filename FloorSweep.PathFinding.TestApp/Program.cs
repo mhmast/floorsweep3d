@@ -26,8 +26,8 @@ namespace FloorSweep.PathFinding.TestApp
             for (int i = 0; i < mapsNames.Length; i++)
             {
                 var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
-                var start = tmp.Start.ComplexConjugate();
-                var goal = tmp.Target.ComplexConjugate();
+                var start = tmp.Start.T();
+                var goal = tmp.Target.T();
                 maps.Add(new MapData { Map = tmp.Map, Start = start, Target = goal });
             }
 

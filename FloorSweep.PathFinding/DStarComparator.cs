@@ -7,8 +7,8 @@ namespace FloorSweep.PathFinding
     {
         public int Compare(Mat m, Mat m2)
         {
-            m.T().ToMat().GetArray(out double[] array);
-            m2.T().ToMat().GetArray(out double[] array2);
+            var array = m.DataLeftToRight<double>();
+            var array2 = m2.DataLeftToRight<double>();
             if (array[1] < array2[1] || (array[1] == array2[1] && array[2] < array2[2]))
             {
                 return -1;

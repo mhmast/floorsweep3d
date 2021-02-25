@@ -24,23 +24,23 @@ namespace FloorSweep.PathFinding
             var difference = (map - state.Map).ToMat();
             state.Map = map;
             var (x, y) = difference.Find(d => d == -1);
-            x.GetArray<double>(out var xdata);
-            x.GetArray<double>(out var ydata);
+            var xdata = x.DataLeftToRight<double>();
+            var ydata = y.DataLeftToRight<double>();
 
             var indices = MatExtensions.FromRows(xdata, ydata);
             for (int r = 0; r < indices.Rows; r++)
             {
-                indices.Set(r, 2, 0);
-                indices.Set(r, 3, 0);
+                indices._<double>(r, 2) = 0;
+                indices._<double>(r, 3) = 0;
             }
 
             var Ind = indices.T().ToMat();
 
-            foreach (var n in indices.T().ToMat().AsMathlabEnumerable())
+            foreach (var n in indices.T().ToMat().AsMathlabColEnumerable())
             {
-                foreach (var s in state.Pattern.AsMathlabEnumerable())
+                foreach (var s in state.Pattern.AsMathlabColEnumerable())
                 {
-                    Ind.Add(n + s);
+                    Ind.AddColumn(n.Plus(s));
                 }
             }
 
@@ -48,13 +48,14 @@ namespace FloorSweep.PathFinding
             var added = Ind.T().ToMat().UniqueRows().T().ToMat();
 
             (x, y) = difference.Find(d => d == 1);
-            x.GetArray(out xdata);
-            x.GetArray(out ydata);
+            xdata = x.DataLeftToRight<double>();
+            ydata = y.DataLeftToRight<double>();
+
             indices = MatExtensions.FromRows(xdata, ydata);
             for (int r = 0; r < indices.Rows; r++)
             {
-                indices.Set(r, 2, 0);
-                indices.Set(r, 3, 0);
+                indices._<double>(r, 2) = 0;
+                indices._<double>(r, 3) = 0;
             }
 
             Ind = indices.T().ToMat();
@@ -63,7 +64,7 @@ namespace FloorSweep.PathFinding
             {
                 foreach (var s in state.Pattern.AsMathlabColEnumerable())
                 {
-                    Ind.Add(n + s);
+                    Ind.AddColumn(n.Plus(s));
                 }
             }
 
@@ -74,7 +75,7 @@ namespace FloorSweep.PathFinding
             {
                 foreach (var n in ucc.AsMathlabColEnumerable())
                 {
-                    var s = u + n;
+                    var s = u.Plus(n);
                     insert(s, h(s, graph), graph, kM, startPos, stack);
                 }
             }
@@ -82,12 +83,12 @@ namespace FloorSweep.PathFinding
             {
                 foreach (var n in ucc.AsMathlabColEnumerable())
                 {
-                    var s = (u + n).ToMat();
+                    var s = u.Plus(n);
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        s.Set(2, 0, -k(s, graph) + kM);
-                        s.Set(3, 0, k(s, graph) + g(s, graph, startPos));
+                        s._<double>(2, 0) = -k(s, graph) + kM;
+                        s._<double>(3, 0) = k(s, graph) + g(s, startPos);
                         stack.Add(s);
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
@@ -103,37 +104,32 @@ namespace FloorSweep.PathFinding
 
         private static double t(Mat s, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            return graph[2].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
+            return graph[2]._<double>(s.__(0), s.__(1));
         }
         private static double h(Mat s, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            return graph[0].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
+            return graph[0]._<double>(s.__(0), s.__(1));
         }
 
         private static double k(Mat s, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            return graph[1].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
+            return graph[1]._<double>(s.__(0), s.__(1));
         }
 
-        private static double g(Mat s, Mat[] graph, Mat startPos)
+        private static double g(Mat s, Mat startPos)
         {
-            var ss = (startPos - s).Abs().T().ToMat();
-            return Math.Sqrt(Math.Pow(ss.Get<double>(0), 2) + Math.Pow(ss.Get<double>(1), 2));
+            var ss = (startPos - s).Abs().ToMat();
+            return Math.Sqrt(Math.Pow(ss._<double>(0), 2) + Math.Pow(ss._<double>(1), 2));
         }
 
         private static void sett(Mat s, double val, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            graph[2].Set(s1.Get<int>(0), s.Get<int>(1), val);
+            graph[2]._<double>(s.__(0), s.__(1)) = val;
         }
 
         private static void seth(Mat s, double val, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            graph[0].Set(s1.Get<int>(0), s1.Get<int>(1), val);
+            graph[0]._<double>(s.__(0), s.__(1)) = val;
         }
 
         private static void insert(Mat s, double h_new, Mat[] graph, double kM, Mat startPos, SortedSet<Mat> stack)
@@ -155,8 +151,8 @@ namespace FloorSweep.PathFinding
                     setk(s, Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
-                s.Col(0).Set(2, k(s, graph) + kM + g(s, graph, startPos));
-                s.Col(0).Set(3, k(s, graph) + g(s, graph, startPos));
+                s._<double>(2, 0) = k(s, graph) + kM + g(s, startPos);
+                s._<double>(3, 0) = k(s, graph) + g(s, startPos);
                 stack.Add(s);
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
@@ -164,14 +160,12 @@ namespace FloorSweep.PathFinding
 
         private static double inQ(Mat s, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            return graph[2].Get<double>(s1.Get<int>(0), s1.Get<int>(1));
+            return graph[2]._<double>(s.__(0), s.__(1));
         }
 
         private static void setk(Mat s, double val, Mat[] graph)
         {
-            var s1 = s.T().ToMat();
-            graph[1].Set(s1.Get<int>(0), s1.Get<int>(1), val);
+            graph[1]._<double>(s.__(0), s.__(1)) = val;
         }
 
 

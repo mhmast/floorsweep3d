@@ -19,49 +19,49 @@ namespace FloorSweep.PathFinding
 
             for (var i = 0; i < f.Cols; i++)
             {
-                f.Set(0, i, points.Get<double>(1, i));
+                f.Set(0, i, points._<double>(1, i));
             }
             for (var i = 0; i < g.Cols; i++)
             {
-                g.Set(0, i, points.Get<double>(1, i) + points.Get<double>(2, i) / 2);
+                g.Set(0, i, points._<double>(1, i) + points._<double>(2, i) / 2);
             }
 
             for (int i = 1; i < m - 2; i++)
             {
                 for (var j = 0; j < f.Cols; j++)
                 {
-                    f.Set(i, j, 2 * (points.Get<double>(i + 1, j) + points.Get<double>(i + 2, j)) / 3);
+                    f.Set(i, j, 2 * (points._<double>(i + 1, j) + points._<double>(i + 2, j)) / 3);
                 }
                 for (var j = 0; j < g.Cols; j++)
                 {
-                    g.Set(i, j, (points.Get<double>(i + 1, j) + 2 * points.Get<double>(i + 2, j)) / 3);
+                    g.Set(i, j, (points._<double>(i + 1, j) + 2 * points._<double>(i + 2, j)) / 3);
                 }
             }
 
             for (var j = 0; j < f.Cols; j++)
             {
-                f.Set(m, j, (points.Get<double>(m + 2, j) + points.Get<double>(m + 1, j)) / 2);
+                f._<double>(m, j)= (points._<double>(m + 2, j) + points._<double>(m + 1, j)) / 2;
             }
             for (var j = 0; j < g.Cols; j++)
             {
-                g.Set(m - 1, j, points.Get<double>(m + 1, j));
+                g._<double>(m - 1, j) = points._<double>(m + 1, j);
             }
             for (var j = 0; j < e.Cols; j++)
             {
-                e.Set(0, j, points.Get<double>(0, j));
+                e._<double>(0, j)= points._<double>(0, j);
             }
 
             for (int i = 1; i < m; i++)
             {
                 for (var j = 0; j < e.Cols; j++)
                 {
-                    e.Set(0, j, (g.Get<double>(i - 1, j) + f.Get<double>(i, j)) / 2);
+                    e._<double>(0, j)= (g._<double>(i - 1, j) + f._<double>(i, j)) / 2;
                 }
             }
 
             for (var j = 0; j < e.Cols; j++)
             {
-                e.Set(m, j, points.Get<double>(m + 2, j));
+                e._<double>(m, j) = points._<double>(m + 2, j);
             }
 
             Mat[] retVal = new Mat[m];
@@ -127,10 +127,10 @@ namespace FloorSweep.PathFinding
             for (int i = 1; i < len; i++)
             {
                 var delta = w_distance(points.Row(i), points.Row(i - 1));
-                distance.Set<double>(i, delta + distance.Get<double>(i - 1));
+                distance._<double>(i) = delta + distance._<double>(i - 1);
             }
 
-            var t = MatExtensions.FromRange(0, distance.Get<int>(distance.Cols - 1), sampling);
+            var t = MatExtensions.FromRange(0, distance.__(distance.Cols - 1), sampling);
             return interp1(distance, points, t);
         }
 
@@ -195,10 +195,10 @@ namespace FloorSweep.PathFinding
             var t1 = t.T().ToMat();
             for (int i = 0; i < len; i++)
             {
-                var k = bez.Get<double>(0, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 0));
-                var l = bez.Get<double>(1, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 1));
-                var m = bez.Get<double>(2, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 2));
-                var u = bez.Get<double>(3, bez.Cols - 1) * (w_b(t1.Get<double>(i), n, 3));
+                var k = bez._<double>(0, bez.Cols - 1) * (w_b(t1._<double>(i), n, 0));
+                var l = bez._<double>(1, bez.Cols - 1) * (w_b(t1._<double>(i), n, 1));
+                var m = bez._<double>(2, bez.Cols - 1) * (w_b(t1._<double>(i), n, 2));
+                var u = bez._<double>(3, bez.Cols - 1) * (w_b(t1._<double>(i), n, 3));
                 @out.AddBottom((k * bez.Row(0) + l * bez.Row(1) + m * bez.Row(2) + u * bez.Row(3)) / (k + l + m + u));
             }
             return @out;

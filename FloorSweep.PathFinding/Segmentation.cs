@@ -15,12 +15,13 @@ namespace FloorSweep.PathFinding
         public static MapData DoSegmentation(string path, double thr1, double thr2, double thr3)
         {
             var mapData = new MapData();
-            var img = OpenCvSharp.Cv2.ImRead(path).CvtColor(OpenCvSharp.ColorConversionCodes.RGB2GRAY);
+            var img = OpenCvSharp.Cv2.ImRead(path,ImreadModes.Grayscale);//.CvtColor(OpenCvSharp.ColorConversionCodes.RGB2GRAY);
+            
             var se = OpenCvSharp.Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new OpenCvSharp.Size(4, 4));
-            var im_robot = img.Threshold(thr2, 255, OpenCvSharp.ThresholdTypes.Binary);
-            var im_target = img.Threshold(thr1, 255, OpenCvSharp.ThresholdTypes.Binary);
+            var im_robot = img.Threshold(255*thr2, 255, OpenCvSharp.ThresholdTypes.Binary);
+            var im_target = img.Threshold(255*thr1, 255, OpenCvSharp.ThresholdTypes.Binary);
             im_target = im_target.Erode(se);
-            var im_obst = img.Threshold(thr3, 255, ThresholdTypes.Binary);
+            var im_obst = img.Threshold(255*thr3, 255, ThresholdTypes.Binary);
             im_obst.MorphologyEx(MorphTypes.Close, se);
 
 
@@ -41,6 +42,7 @@ namespace FloorSweep.PathFinding
                 Console.WriteLine("Nie wykryto robota na obrazie");
                 return mapData;
             }
+            centroids = new Mat();
             num = Cv2.ConnectedComponentsWithStats(im_target, label, stats, centroids, PixelConnectivity.Connectivity4);
 
             if (num > 0)
