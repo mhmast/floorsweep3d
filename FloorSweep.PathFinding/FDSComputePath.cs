@@ -72,7 +72,7 @@ namespace FloorSweep.PathFinding
                     continue;
                 }
 
-                var val = x.Col(0).RowRange(2, 3);
+                var val = x.Range(2,3,0,0);
                 var k_val = k(x, graph);
                 var h_val = h(x, graph);
                 rsetQ(x, graph);
@@ -81,7 +81,7 @@ namespace FloorSweep.PathFinding
                 {
                     if (h_val > k_val)
                     {
-                        foreach (var n in ucc.AsMathlabEnumerable())
+                        foreach (var n in ucc.AsMathlabColEnumerable())
                         {
                             var y = (x + n).ToMat();
                             if (t(y, graph) != OutcomeState.NEW && k(x, graph) == k(y, graph) + 1)
@@ -96,7 +96,7 @@ namespace FloorSweep.PathFinding
                     if (k_val == h(x, graph) && h(x, graph) < mindist)
                     {
                         c2 = c2 + 1;
-                        foreach (var n in ucc.AsMathlabEnumerable())
+                        foreach (var n in ucc.AsMathlabColEnumerable())
                         {
                             var y = x + n;
                             if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
@@ -105,8 +105,8 @@ namespace FloorSweep.PathFinding
                                 setb(y, x, graph);
                             }
                         }
-                        var xcol = x.Col(0).RowRange(0, 1);
-                        var startPosCol = startPos.Col(0).RowRange(0, 1);
+                        var xcol = x.Cols(0, 0).Rows(0, 1);
+                        var startPosCol = startPos.Cols(0, 0).Rows(0, 1);
                         if (xcol == startPosCol)
                         {
                             found = true;
@@ -116,14 +116,14 @@ namespace FloorSweep.PathFinding
                     }
                     else if (h_val < mindist || double.IsInfinity(h_val))
                     {
-                        foreach (var n in ucc.AsMathlabEnumerable())
+                        foreach (var n in ucc.AsMathlabColEnumerable())
                         {
-                            var y = x + n;
-                            var yAcc = y.T().ToMat();
-                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(yAcc.__(0), yAcc.__(1)) != 1)
+                            var y = x.Plus( n);
+           
+                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.__(0), y.__(1)) != 1)
                             {
                                 c3 = c3 + 1;
-                                vis.Set<double>(yAcc.__(0), yAcc.__(1), 1);
+                                vis._<double>(y.__(0), y.__(1))= 1;
                                 insert2(y, h_val + 1, graph, mindist, kM, stack);
                                 setb(y, x, graph);
                             }
@@ -195,9 +195,9 @@ namespace FloorSweep.PathFinding
             {
                 return false;
             }
-            foreach (var n in pattern.AsMathlabEnumerable())
+            foreach (var n in pattern.AsMathlabColEnumerable())
             {
-                var pos = (s + n).ToMat();
+                var pos = s.Plus(n);
                 if (map.__(pos.__(0), pos.__(1)) == 0)
                 {
                     template._<double>(s.__(0), s.__(1)) = 1;
@@ -225,7 +225,7 @@ namespace FloorSweep.PathFinding
 
         private static void setb(Mat x, Mat y, Mat[] graph)
         {
-            var val = (y.Col(0).RowRange(0, 1) - x.Col(0).RowRange(0, 1)).ToMat();
+            var val = (y.Cols(0, 0).Rows(0, 1) - x.Cols(0, 0).Rows(0, 1)).ToMat();
             graph[5]._<double>(x.__(0), x.__(1)) = val._<double>(0, 0);
             graph[6]._<double>(x.__(0), x.__(1)) = val._<double>(1, 0);
         }

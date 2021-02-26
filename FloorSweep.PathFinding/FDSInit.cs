@@ -12,23 +12,25 @@ namespace FloorSweep.PathFinding
             var map = data.Map;
             var startPos = data.Start;
             var endPos = data.Target;
-            var radius = 10 / scaling;
-            var mat = Mat.Zeros(radius * 2, radius * 2).ToMat();
+            var radius = 10.0 / scaling;
+            var mat = Mat.Zeros((int)(radius * 2), (int)(radius * 2),MatType.CV_64FC1).ToMat();
             double dista(double a, double b) => Math.Sqrt(a * a + b * b);
 
-            var shapePattern = Mat.Zeros(rows: 0, 4, MatType.CV_64FC1).ToMat();
+            var rows = new List<double[]>();
 
             for (int x = 0; x < 2 * radius; x++)
             {
                 for (int y = 0; y < 2 * radius; y++)
                 {
-                    if (dista(x - radius - 0.5, y - radius - 0.5) > radius - 1 && dista(x - radius - 0.5, y - radius - 0.5) < radius)
+                    if (dista(x+1 - radius - 0.5, y+1 - radius - 0.5) > radius - 1 && dista(x+1 - radius - 0.5, y+1 - radius - 0.5) < radius)
                     {
-                        mat._<double>(x, y) = 1;
-                        shapePattern.AddBottom(new double[] { x - radius, y - radius, 0, 0 });
+                        mat._<double>(x, y) = 1.0;
+                        rows.Add(new double[] { Math.Floor((double)x+1 - radius), Math.Floor((double)y+1 - radius), 0, 0 });
                     }
                 }
             }
+            var shapePattern = MatExtensions.FromRows(rows.ToArray());
+
             var neighbours = Mat.FromArray(new[,] {
                 { 0, 1, 0, 0, },
             { -1, 0, 0, 0 },
@@ -43,14 +45,14 @@ namespace FloorSweep.PathFinding
             var @out = new State();
 
             @out.Map = map;
-            @out.StartPos = startPos.Col(1).RowRange(0, 2);
+            @out.StartPos = startPos.Range(0,1,1,1);
             @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols, @out.StartPos.Type()));
-            @out.EndPos = endPos.Col(1).RowRange(0, 2);
+            @out.EndPos = endPos.Range(0,1,1,1);
             @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols, @out.EndPos.Type()));
             startPos = @out.StartPos;
 
             @out.Scaling = scaling;
-            @out.Pattern = shapePattern.ComplexConjugate();
+            @out.Pattern = shapePattern.T();
             @out.Ucc = neighbours;
             @out.Height = @out.Map.Rows;
             @out.Width = @out.Map.Cols;
@@ -67,7 +69,7 @@ namespace FloorSweep.PathFinding
             @out.Graph[0]._<double>(@out.EndPos.__(0, 0), @out.EndPos.__(1, 0)) = 0;
             @out.Graph[2]._<double>(@out.EndPos.__(0, 0), @out.EndPos.__(1, 0)) = 1;
             var k = (startPos - @out.EndPos).Abs().ToMat();
-            var m11m21 = k.RowRange(0, 1).Col(0);
+            var m11m21 = k.Rows(0, 1).Cols(0,0);
             var heur = SQRT2 * m11m21.Min() + m11m21.Max();
             @out.EndPos._<double>(2, 0) = heur;
             @out.EndPos._<double>(3, 0) = 0;

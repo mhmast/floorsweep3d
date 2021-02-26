@@ -17,35 +17,91 @@ namespace FloorSweep.PathFinding
 
         public static Mat Plus(this Mat m, Mat other)
         {
-            if(m.Empty())
+            if (m.Empty())
             {
                 return other.Copy();
             }
-            if(other.Empty())
+            if (other.Empty())
             {
                 return m.Copy();
             }
 
-            if (other.Size() != m.Size() && !(other.Rows == 1 || other.Cols ==1) && !(m.Rows == 1 || m.Cols == 1) )
+            if (other.Size() != m.Size() && !(other.Rows == 1 || other.Cols == 1) && !(m.Rows == 1 || m.Cols == 1))
             {
                 throw new ArgumentException();
             }
 
             Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
 
-            for (int i = 0; i < Math.Max(m.Rows,other.Rows); i++)
+            for (int i = 0; i < Math.Max(m.Rows, other.Rows); i++)
             {
-                for (int c = 0; c < Math.Max(m.Cols,other.Cols); c++)
+                for (int c = 0; c < Math.Max(m.Cols, other.Cols); c++)
                 {
-                    var valCol = m.Cols == 1 ? 1 : c;
-                    double val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
-                    double oval = other.Rows == 1 ? other._<double>(0, c) : other._<double>(i, c);
-                    retVal._<double>(i, c) = val + oval; 
+                    var valCol = m.Cols == 1 ? 0 : c;
+                    var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
+                    var ovalCol = other.Cols == 1 ? 0 : c;
+                    var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
+                    retVal._<double>(i, c) = val + oval;
                 }
             }
 
             return retVal;
         }
+        
+        public static Mat Minus(this Mat m, Mat other)
+        {
+            if (m.Empty())
+            {
+                return other.Copy();
+            }
+            if (other.Empty())
+            {
+                return m.Copy();
+            }
+
+            if (other.Size() != m.Size() && !(other.Rows == 1 || other.Cols == 1) && !(m.Rows == 1 || m.Cols == 1))
+            {
+                throw new ArgumentException();
+            }
+
+            Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
+
+            for (int i = 0; i < Math.Max(m.Rows, other.Rows); i++)
+            {
+                for (int c = 0; c < Math.Max(m.Cols, other.Cols); c++)
+                {
+                    var valCol = m.Cols == 1 ? 0 : c;
+                    var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
+                    var ovalCol = other.Cols == 1 ? 0 : c;
+                    var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
+                    retVal._<double>(i, c) = val - oval;
+                }
+            }
+
+            return retVal;
+        }
+
+        public static Mat Rows(this Mat m, int startRow, int endRow)
+        => m.Range(startRow, endRow, 0, m.Cols);
+
+        public static Mat Range(this Mat m, int startRow, int endRow, int startCol, int endCol)
+        {
+            Mat retVal = new Mat(endRow - startRow, endCol-startCol, m.Type());
+
+            for (int i = startRow; i <= endRow; i++)
+            {
+                for (int c = startCol; c <= endCol; c++)
+                {
+                    retVal._<double>(i - startRow, c - startCol) = m._<double>(i, c);
+                }
+            }
+            return retVal;
+        }
+
+
+
+        public static Mat Cols(this Mat m, int startCol, int endCol)
+        => m.Range(0, m.Rows, startCol, endCol);
 
         public static void AddBottom(this Mat m, params double[][] other)
         {
@@ -63,7 +119,7 @@ namespace FloorSweep.PathFinding
                 }
             }
         }
-        
+
         public static void AddColumn(this Mat m, params double[][] other)
         {
             AddColumn(m, FromRows(other));
@@ -86,9 +142,9 @@ namespace FloorSweep.PathFinding
             }
             throw new Exception();
         }
-        
-        
-        public static int __(this Mat m, int pos) 
+
+
+        public static int __(this Mat m, int pos)
         {
             for (int row = 0; row < m.Rows; row++)
             {
@@ -105,16 +161,16 @@ namespace FloorSweep.PathFinding
 
         public static int __(this Mat m, int x, int y)
         {
-            return (int)m.At<double>(x,y);
+            return (int)m.At<double>(x, y);
         }
 
         public static ref T _<T>(this Mat m, int row, int col) where T : unmanaged
         {
-            if (m.Rows <= row )
+            if (m.Rows <= row)
             {
                 m.Resize(row + 1);
             }
-            if (m.Cols <= col )
+            if (m.Cols <= col)
             {
                 Cv2.HConcat(m, Mat.Zeros(m.Type(), m.Rows, col + 1 - m.Cols), m);
             }
@@ -218,14 +274,14 @@ namespace FloorSweep.PathFinding
             }
             return m;
         }
-        
+
         public static Mat Copy(this Mat s)
         {
             return new Mat(s, new Rect(new Point(0, 0), s.Size()));
         }
         public static bool IsEqual(this Mat m, Mat other)
         {
-            if(m.Size() != other.Size())
+            if (m.Size() != other.Size())
             {
                 return false;
             }
@@ -234,8 +290,8 @@ namespace FloorSweep.PathFinding
                 for (int col = 0; col < m.Cols; col++)
                 {
                     var val = m._<double>(row, col);
-                    var o = other._<double>(row,col);
-                    if(val != o)
+                    var o = other._<double>(row, col);
+                    if (val != o)
                     {
                         return false;
                     }
@@ -310,13 +366,13 @@ namespace FloorSweep.PathFinding
         {
             for (int i = 0; i < m.Cols; i++)
             {
-                var mret = new Mat(m.Rows,1,m.Type());
-                for(int r =0;r<m.Rows;r++)
+                var mret = new Mat(m.Rows, 1, m.Type());
+                for (int r = 0; r < m.Rows; r++)
                 {
-                    mret._<double>(r, i) = m._<double>(r, i);
+                    mret._<double>(r, 0) = m._<double>(r, i);
                 }
                 yield return mret;
-                
+
             }
         }
 

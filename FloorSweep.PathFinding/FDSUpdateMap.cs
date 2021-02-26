@@ -21,7 +21,7 @@ namespace FloorSweep.PathFinding
             var stack2 = new SortedSet<Mat>(new DStarComparator());
             var stack3 = new SortedSet<Mat>(new DStarComparator());
             var map = newMap;
-            var difference = (map - state.Map).ToMat();
+            var difference = map.Minus(state.Map);
             state.Map = map;
             var (x, y) = difference.Find(d => d == -1);
             var xdata = x.DataLeftToRight<double>();
