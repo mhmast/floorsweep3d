@@ -19,7 +19,6 @@ namespace FloorSweep.PathFinding.TestApp
         [STAThread]
         static void Main()
         {
-
             var mapsNames = new[] { "a", "e", "b", "c", "map01" };
             var maps = new List<MapData>();
             var scaling = 4;
@@ -34,26 +33,29 @@ namespace FloorSweep.PathFinding.TestApp
 
             var @bool = false;
             var state = FDSInit.DoFDSInit(maps[0], scaling);
-            state = FDSComputePath.DoFdsComputePath(state);
-            @bool = true;
-            var gah = state;
-            state.KM = 50;
-
-            if (@bool)
+            var tsk = new Task(new Action(() =>
             {
-                @bool = false;
-                state = FDSUpdateMap.DoFDSUpdateMap(state, maps[0].Map);
-                state.KM = 50;
-            }
-            else
-            {
+               
                 state = FDSComputePath.DoFdsComputePath(state);
-            }
+                @bool = true;
+                var gah = state;
+                state.KM = 50;
 
-            //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
-            state.Path = ResolvePath.DoResolvePath(state);
-            var resp = PlotPath.DoPlotPath(state, "e", scaling );
+                if (@bool)
+                {
+                    @bool = false;
+                    state = FDSUpdateMap.DoFDSUpdateMap(state, maps[0].Map);
+                    state.KM = 50;
+                }
+                else
+                {
+                    state = FDSComputePath.DoFdsComputePath(state);
+                }
 
+                //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
+                state.Path = ResolvePath.DoResolvePath(state);
+                
+            }));
             //%% show A - star graph
             //  a = state.graph(:,:,1);
             //            a(a(:,:) == -1) = 0; % unvisited
@@ -78,16 +80,13 @@ namespace FloorSweep.PathFinding.TestApp
             //            b = b * 0.7;
             //            imshow(b + a, 'Border', 'tight')
 
+            Application.Run(new Form1(state,tsk));
 
 
 
 
 
 
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(resp));
         }
     }
 }

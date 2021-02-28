@@ -27,16 +27,12 @@ namespace FloorSweep.PathFinding
             var xdata = x.DataLeftToRight<double>();
             var ydata = y.DataLeftToRight<double>();
 
-            var indices = MatExtensions.FromRows(xdata, ydata);
-            for (int r = 0; r < indices.Rows; r++)
-            {
-                indices._<double>(r, 2) = 0;
-                indices._<double>(r, 3) = 0;
-            }
+            var indices = MatExtensions.FromCols(xdata, ydata);
+            indices.SetColRange(2, 3, 0);
+            
+            var Ind = indices._T();
 
-            var Ind = indices.T().ToMat();
-
-            foreach (var n in indices.T().ToMat().AsMathlabColEnumerable())
+            foreach (var n in indices._T().AsMathlabColEnumerable())
             {
                 foreach (var s in state.Pattern.AsMathlabColEnumerable())
                 {
@@ -45,22 +41,17 @@ namespace FloorSweep.PathFinding
             }
 
 
-            var added = Ind.T().ToMat().UniqueRows().T().ToMat();
+            var added = Ind._T().UniqueRows()._T();
 
             (x, y) = difference.Find(d => d == 1);
             xdata = x.DataLeftToRight<double>();
             ydata = y.DataLeftToRight<double>();
 
-            indices = MatExtensions.FromRows(xdata, ydata);
-            for (int r = 0; r < indices.Rows; r++)
-            {
-                indices._<double>(r, 2) = 0;
-                indices._<double>(r, 3) = 0;
-            }
+            indices = MatExtensions.FromCols(xdata, ydata);
+            indices.SetColRange(2, 3, 0);
+            Ind = indices._T();
 
-            Ind = indices.T().ToMat();
-
-            foreach (var n in indices.T().ToMat().AsMathlabColEnumerable())
+            foreach (var n in indices._T().AsMathlabColEnumerable())
             {
                 foreach (var s in state.Pattern.AsMathlabColEnumerable())
                 {
@@ -69,7 +60,7 @@ namespace FloorSweep.PathFinding
             }
 
 
-            var removed = Ind.T().ToMat().UniqueRows().T().ToMat();
+            var removed = Ind._T().UniqueRows()._T();
 
             foreach (var u in removed.AsMathlabColEnumerable())
             {
@@ -87,8 +78,8 @@ namespace FloorSweep.PathFinding
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        s._<double>(2, 0) = -k(s, graph) + kM;
-                        s._<double>(3, 0) = k(s, graph) + g(s, startPos);
+                        s._Set<double>(2, 0, -k(s, graph) + kM);
+                        s._Set<double>(3, 0, k(s, graph) + g(s, startPos));
                         stack.Add(s);
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
@@ -124,12 +115,12 @@ namespace FloorSweep.PathFinding
 
         private static void sett(Mat s, double val, Mat[] graph)
         {
-            graph[2]._<double>(s.__(0), s.__(1)) = val;
+            graph[2]._Set<double>(s.__(0), s.__(1), val);
         }
 
         private static void seth(Mat s, double val, Mat[] graph)
         {
-            graph[0]._<double>(s.__(0), s.__(1)) = val;
+            graph[0]._Set<double>(s.__(0), s.__(1), val);
         }
 
         private static void insert(Mat s, double h_new, Mat[] graph, double kM, Mat startPos, SortedSet<Mat> stack)
@@ -151,8 +142,8 @@ namespace FloorSweep.PathFinding
                     setk(s, Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
-                s._<double>(2, 0) = k(s, graph) + kM + g(s, startPos);
-                s._<double>(3, 0) = k(s, graph) + g(s, startPos);
+                s._Set<double>(2, 0, k(s, graph) + kM + g(s, startPos));
+                s._Set<double>(3, 0, k(s, graph) + g(s, startPos));
                 stack.Add(s);
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
@@ -165,7 +156,7 @@ namespace FloorSweep.PathFinding
 
         private static void setk(Mat s, double val, Mat[] graph)
         {
-            graph[1]._<double>(s.__(0), s.__(1)) = val;
+            graph[1]._Set<double>(s.__(0), s.__(1), val);
         }
 
 

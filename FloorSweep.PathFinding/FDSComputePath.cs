@@ -23,13 +23,12 @@ namespace FloorSweep.PathFinding
             var pattern = state.Pattern;
             var ucc = state.Ucc;
             var graph = state.Graph;
-            var template = Mat.Zeros(rows: state.Height, state.Width, MatType.CV_64F);
-            var outImg = Mat.Zeros(rows: state.Height, state.Width, MatType.CV_64F);
+            var template = state.Template;
             var kM = state.KM;
             var stack = state.Stack;
             var mindist = double.PositiveInfinity;
 
-            var vis = Mat.Zeros(map.Size(), map.Type());
+            var vis = state.Vis;
 
             //var last = [];
             var found = computeShortestPath(stack, graph, limit, template, ucc, mindist, startPos, pattern, map, kM, vis);
@@ -72,7 +71,7 @@ namespace FloorSweep.PathFinding
                     continue;
                 }
 
-                var val = x.Range(2,3,0,0);
+                var val = x.Range(2, 3, 0, 0);
                 var k_val = k(x, graph);
                 var h_val = h(x, graph);
                 rsetQ(x, graph);
@@ -118,12 +117,12 @@ namespace FloorSweep.PathFinding
                     {
                         foreach (var n in ucc.AsMathlabColEnumerable())
                         {
-                            var y = x.Plus( n);
-           
+                            var y = x.Plus(n);
+
                             if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.__(0), y.__(1)) != 1)
                             {
                                 c3 = c3 + 1;
-                                vis._<double>(y.__(0), y.__(1))= 1;
+                                vis._Set<double>(y.__(0), y.__(1), 1);
                                 insert2(y, h_val + 1, graph, mindist, kM, stack);
                                 setb(y, x, graph);
                             }
@@ -159,20 +158,17 @@ namespace FloorSweep.PathFinding
 
         private static OutcomeState t(Mat s, Mat[] graph)
         {
-            var sTrans = s.T().ToMat();
-            return (OutcomeState)graph[2].__(sTrans.__(0), sTrans.__(1));
+            return (OutcomeState)graph[2].__(s.__(0), s.__(1));
         }
 
         private static double k(Mat s, Mat[] graph)
         {
-            var sAcc = s.T().ToMat();
-            return graph[1]._<double>(sAcc.__(0), sAcc.__(1));
+            return graph[1]._<double>(s.__(0), s.__(1));
         }
 
         private static void setk(Mat s, double val, Mat[] graph)
         {
-            var sAcc = s.T().ToMat();
-            graph[1].Set(sAcc.__(0), sAcc.__(1), val);
+            graph[1]._Set(s.__(0), s.__(1), val);
         }
 
         public static double h(Mat s, Mat[] graph)
@@ -181,12 +177,12 @@ namespace FloorSweep.PathFinding
         }
         private static void seth(Mat s, double val, Mat[] graph)
         {
-            graph[0]._<double>(s.__(0), s.__(1)) = val;
+            graph[0]._Set<double>(s.__(0), s.__(1), val);
         }
 
         private static void rsetQ(Mat s, Mat[] graph)
         {
-            graph[2]._<double>(s.__(0), s.__(1)) = 0;
+            graph[2]._Set<double>(s.__(0), s.__(1), 0);
         }
 
         private static bool testNode(Mat s, Mat template, Mat pattern, Mat map)
@@ -200,7 +196,7 @@ namespace FloorSweep.PathFinding
                 var pos = s.Plus(n);
                 if (map.__(pos.__(0), pos.__(1)) == 0)
                 {
-                    template._<double>(s.__(0), s.__(1)) = 1;
+                    template._Set<double>(s.__(0), s.__(1), 1);
                     return false;
                 }
             }
@@ -225,9 +221,9 @@ namespace FloorSweep.PathFinding
 
         private static void setb(Mat x, Mat y, Mat[] graph)
         {
-            var val = (y.Cols(0, 0).Rows(0, 1) - x.Cols(0, 0).Rows(0, 1)).ToMat();
-            graph[5]._<double>(x.__(0), x.__(1)) = val._<double>(0, 0);
-            graph[6]._<double>(x.__(0), x.__(1)) = val._<double>(1, 0);
+            var val = y.Range(0, 1, 0, 0).Minus(x.Range(0, 1, 0, 0));
+            graph[5]._Set<double>(x.__(0), x.__(1), val._<double>(0, 0));
+            graph[6]._Set<double>(x.__(0), x.__(1), val._<double>(1, 0));
         }
 
         private static Mat calculateKey(Mat x, double kM, Mat[] graph, Mat startPos)
@@ -245,7 +241,7 @@ namespace FloorSweep.PathFinding
 
         private static void sett(Mat s, double val, Mat[] graph)
         {
-            graph[2]._<double>(s.__(0), s.__(1)) = val;
+            graph[2]._Set<double>(s.__(0), s.__(1), val);
         }
 
         //private static void setQ(Mat s, Mat[] graph)
@@ -263,7 +259,7 @@ namespace FloorSweep.PathFinding
         private static Mat calculateKey2(Mat x, Mat[] graph, double kM)
         {
             return MatExtensions.FromRows(
-            new[] { k(x, graph) + kM, Math.Min(h(x, graph), k(x, graph)) }
+            new[] { k(x, graph) + kM }, new[] { Math.Min(h(x, graph), k(x, graph)) }
             );
         }
 
@@ -288,8 +284,8 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key = calculateKey(s, kM, graph, startPos);
-            s._<double>(2, 0) = key._<double>(0, 0);
-            s._<double>(3, 0) = key._<double>(1, 0);
+            s._Set<double>(2, 0, key._<double>(0, 0));
+            s._Set<double>(3, 0, key._<double>(1, 0));
             stack.Add(s);
             sett(s, (double)OutcomeState.OPEN, graph);
 
@@ -320,8 +316,8 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key2 = calculateKey2(s, graph, kM);
-            s._<double>(2, 0) = key2._<double>(0, 0);
-            s._<double>(3, 0) = key2._<double>(1, 0);
+            s._Set<double>(2, 0, key2._<double>(0, 0));
+            s._Set<double>(3, 0, key2._<double>(1, 0));
             stack.Add(s);
             sett(s, (double)OutcomeState.OPEN, graph);
 

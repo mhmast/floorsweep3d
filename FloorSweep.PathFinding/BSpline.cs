@@ -40,28 +40,28 @@ namespace FloorSweep.PathFinding
 
             for (var j = 0; j < f.Cols; j++)
             {
-                f._<double>(m, j)= (points._<double>(m + 2, j) + points._<double>(m + 1, j)) / 2;
+                f._Set<double>(m, j, (points._<double>(m + 2, j) + points._<double>(m + 1, j)) / 2);
             }
             for (var j = 0; j < g.Cols; j++)
             {
-                g._<double>(m - 1, j) = points._<double>(m + 1, j);
+                g._Set<double>(m - 1, j, points._<double>(m + 1, j));
             }
             for (var j = 0; j < e.Cols; j++)
             {
-                e._<double>(0, j)= points._<double>(0, j);
+                e._Set<double>(0, j, points._<double>(0, j));
             }
 
             for (int i = 1; i < m; i++)
             {
                 for (var j = 0; j < e.Cols; j++)
                 {
-                    e._<double>(0, j)= (g._<double>(i - 1, j) + f._<double>(i, j)) / 2;
+                    e._Set<double>(0, j, (g._<double>(i - 1, j) + f._<double>(i, j)) / 2);
                 }
             }
 
             for (var j = 0; j < e.Cols; j++)
             {
-                e._<double>(m, j) = points._<double>(m + 2, j);
+                e._Set<double>(m, j, points._<double>(m + 2, j));
             }
 
             Mat[] retVal = new Mat[m];
@@ -127,7 +127,7 @@ namespace FloorSweep.PathFinding
             for (int i = 1; i < len; i++)
             {
                 var delta = w_distance(points.Row(i), points.Row(i - 1));
-                distance._<double>(i) = delta + distance._<double>(i - 1);
+                distance._Set<double>(i, delta + distance._<double>(i - 1));
             }
 
             var t = MatExtensions.FromRange(0, distance.__(distance.Cols - 1), sampling);
@@ -137,7 +137,7 @@ namespace FloorSweep.PathFinding
         private static double w_distance(Mat p1, Mat p2)
         {
             var vec = (p1 - p2).ToMat();
-            return Math.Sqrt(vec.Pow( 2).Sum2());
+            return Math.Sqrt(vec.Pow(2).Sum2());
         }
 
         private static Mat interp1(Mat X, Mat Y, Mat targetX)

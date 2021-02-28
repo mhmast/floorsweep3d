@@ -23,15 +23,15 @@ namespace FloorSweep.PathFinding
             {
                 for (int y = 0; y < d - 1; y++)
                 {
-                    var tmp = mapB.Range((int)(x * s - a + 1), (int)(x * s + b + 1),(int)(y * s - a + 1), (int)(y * s + b + 1)).Sum2();
+                    var tmp = mapB.Range((int)(x * s - a + 1), (int)(x * s + b + 1), (int)(y * s - a + 1), (int)(y * s + b + 1)).Sum2();
 
                     if (tmp < 12)
                     {
-                        @out._<double>(x, y) = 0;
+                        @out._Set<double>(x, y, 0);
                     }
                     else
                     {
-                        @out._<double>(x, y) = 1;
+                        @out._Set<double>(x, y, 1);
                     }
                 }
             }

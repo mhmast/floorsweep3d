@@ -1,15 +1,62 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.InteropServices;
 
 namespace FloorSweep.PathFinding
 {
     public static class MatExtensions
     {
+
+
+        private static event Action<Mat, int, int, double> MatChangedd;
+        private static event Action<Mat, int, int, byte> MatChangedb;
+        public static void RegisterMatChanged(this Mat m, Action<int, int, double> action)
+        {
+            MatChangedd += (mat, x, y, n) =>
+            {
+                if (m == mat)
+                {
+                    action(x, y, n);
+                }
+            };
+        }
+
+        public static Mat _T(this Mat m)
+        {
+            if(m.Cols ==0 || m.Rows ==0)
+            {
+                return new Mat(m.Cols, m.Rows, m.Type());
+            }
+            return m.T().ToMat();
+        }
+
+        public static void SetColRange(this Mat m, int startcol, int endCol, double value)
+        {
+            if (m.Cols < endCol)
+            {
+                Cv2.HConcat(m, new Mat(rows: m.Rows, endCol - m.Cols+1, m.Type()), m);
+            }
+            for (var r = 0; r < m.Rows; r++)
+            {
+                for (int c = startcol; c <= endCol; c++)
+                {
+                    m._Set(r, c, value);
+                }
+            }
+        }
+        public static void RegisterMatChanged(this Mat m, Action<int, int, byte> action)
+        {
+            MatChangedb += (mat, x, y, n) =>
+            {
+                if (m == mat)
+                {
+                    action(x, y, n);
+                }
+            };
+        }
+
         public static ref T At<T>(this Mat m, Point p) where T : unmanaged
         {
             return ref m.At<T>(p.X, p.Y);
@@ -41,13 +88,13 @@ namespace FloorSweep.PathFinding
                     var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
                     var ovalCol = other.Cols == 1 ? 0 : c;
                     var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
-                    retVal._<double>(i, c) = val + oval;
+                    retVal.___<double>(i, c) = val + oval;
                 }
             }
 
             return retVal;
         }
-        
+
         public static Mat Minus(this Mat m, Mat other)
         {
             if (m.Empty())
@@ -74,7 +121,7 @@ namespace FloorSweep.PathFinding
                     var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
                     var ovalCol = other.Cols == 1 ? 0 : c;
                     var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
-                    retVal._<double>(i, c) = val - oval;
+                    retVal.___<double>(i, c) = val - oval;
                 }
             }
 
@@ -86,13 +133,13 @@ namespace FloorSweep.PathFinding
 
         public static Mat Range(this Mat m, int startRow, int endRow, int startCol, int endCol)
         {
-            Mat retVal = new Mat(endRow - startRow, endCol-startCol, m.Type());
+            Mat retVal = new Mat(endRow - startRow, endCol - startCol, m.Type());
 
             for (int i = startRow; i <= endRow; i++)
             {
                 for (int c = startCol; c <= endCol; c++)
                 {
-                    retVal._<double>(i - startRow, c - startCol) = m._<double>(i, c);
+                    retVal.___<double>(i - startRow, c - startCol) = m._<double>(i, c);
                 }
             }
             return retVal;
@@ -128,7 +175,9 @@ namespace FloorSweep.PathFinding
         {
             Cv2.HConcat(m, other, m);
         }
-        public static ref T _<T>(this Mat m, int pos) where T : unmanaged
+        public static T _<T>(this Mat m, int pos) where T : unmanaged
+        => m.___<T>(pos);
+        private static ref T ___<T>(this Mat m, int pos) where T : unmanaged
         {
             for (int row = 0; row < m.Rows; row++)
             {
@@ -164,7 +213,9 @@ namespace FloorSweep.PathFinding
             return (int)m.At<double>(x, y);
         }
 
-        public static ref T _<T>(this Mat m, int row, int col) where T : unmanaged
+        public static T _<T>(this Mat m, int row, int col) where T : unmanaged
+            => m.___<T>(row, col);
+        private static ref T ___<T>(this Mat m, int row, int col) where T : unmanaged
         {
             if (m.Rows <= row)
             {
@@ -174,6 +225,7 @@ namespace FloorSweep.PathFinding
             {
                 Cv2.HConcat(m, Mat.Zeros(m.Type(), m.Rows, col + 1 - m.Cols), m);
             }
+
             return ref m.At<T>(row, col);
         }
 
@@ -214,6 +266,30 @@ namespace FloorSweep.PathFinding
                 arr.Add(i);
             }
             return Mat.FromArray(arr.ToArray());
+        }
+
+        public static Mat FromCols(params double[][] cols)
+        {
+
+            var len = cols[0].Length;
+            if (cols.All(r => r.Length != len))
+            {
+                throw new ArgumentException();
+            }
+            if (len == 0)
+            {
+                return new Mat(rows: len, cols.Length, MatType.CV_64FC1);
+            }
+            var arr = new double[cols.Length, len];
+            for (int r = 0; r < cols.Length; r++)
+            {
+                var col = cols[r];
+                for (int j = 0; j < len; j++)
+                {
+                    arr[j, r] = col[r];
+                }
+            }
+            return Mat.FromArray(arr);
         }
         public static Mat FromRows(params double[][] rows)
         {
@@ -318,6 +394,10 @@ namespace FloorSweep.PathFinding
                 }
             }
             retVals.Sort(CompareDoubles);
+            if(retVals.Count ==0)
+            {
+                return new Mat(rows:0,0,m.Type());
+            }
             return FromRows(retVals.Select(r => r.ToArray()).ToArray());
         }
 
@@ -369,11 +449,47 @@ namespace FloorSweep.PathFinding
                 var mret = new Mat(m.Rows, 1, m.Type());
                 for (int r = 0; r < m.Rows; r++)
                 {
-                    mret._<double>(r, 0) = m._<double>(r, i);
+                    mret.___<double>(r, 0) = m._<double>(r, i);
                 }
                 yield return mret;
-
             }
+        }
+
+        public static void _Set<T>(this Mat m, int row, int col, T value) where T : unmanaged
+        {
+
+            if (typeof(T) == typeof(double))
+            {
+                MatChangedd?.Invoke(m, row, col, m.___<double>(row, col));
+            }
+            else if (typeof(T) == typeof(byte))
+            {
+                MatChangedb?.Invoke(m, row, col, m.___<byte>(row, col));
+            }
+            m.___<T>(row, col) = value;
+        }
+
+        public static void _Set<T>(this Mat m, int pos, T value) where T : unmanaged
+        {
+            for (int row = 0; row < m.Rows; row++)
+            {
+                for (int col = 0; col < m.Cols; col++)
+                {
+                    if (row + col == pos)
+                    {
+                        if (typeof(T) == typeof(double))
+                        {
+                            MatChangedd?.Invoke(m, row, col, m.___<double>(row, col));
+                        }
+                        else if (typeof(T) == typeof(byte))
+                        {
+                            MatChangedb?.Invoke(m, row, col, m.___<byte>(row, col));
+                        }
+                        m.___<T>(row, col) = value;
+                    }
+                }
+            }
+
         }
 
         public static double Min(this Mat m)

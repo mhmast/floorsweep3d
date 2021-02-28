@@ -17,7 +17,7 @@ namespace FloorSweep.PathFinding
         {
             var s = state.EndPos;
             var @out = s.Copy(); 
-            state.Graph[0]._<double>(s.__(0), s.__(1)) = double.PositiveInfinity;
+            state.Graph[0]._Set<double>(s.__(0), s.__(1), double.PositiveInfinity);
             var uval = g(s, state.Graph);
             var minval = double.PositiveInfinity;
             while (!s.RowRange(0, 1).IsEqual(state.StartPos.RowRange(0, 1)))
@@ -43,7 +43,7 @@ namespace FloorSweep.PathFinding
                     return new Mat();
                 }
                 s = s.Plus(it);
-                state.Graph[0]._<double>(s.__(0), s.__(1)) = double.PositiveInfinity;
+                state.Graph[0]._Set<double>(s.__(0), s.__(1), double.PositiveInfinity);
                 @out.AddColumn(s);
 
             }
