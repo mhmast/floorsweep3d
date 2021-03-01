@@ -17,7 +17,7 @@ namespace FloorSweep.PathFinding
             var mapData = new MapData();
             var img = OpenCvSharp.Cv2.ImRead(path,ImreadModes.Grayscale);//.CvtColor(OpenCvSharp.ColorConversionCodes.RGB2GRAY);
             
-            var se = OpenCvSharp.Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new OpenCvSharp.Size(4, 4));
+            var se = OpenCvSharp.Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new OpenCvSharp.Size(9, 9));
             var im_robot = img.Threshold(255*thr2, 255, OpenCvSharp.ThresholdTypes.Binary);
             var im_target = img.Threshold(255*thr1, 255, OpenCvSharp.ThresholdTypes.Binary);
             im_target = im_target.Erode(se);

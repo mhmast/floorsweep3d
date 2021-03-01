@@ -25,7 +25,7 @@ namespace FloorSweep.PathFinding
 
         public static Mat _T(this Mat m)
         {
-            if(m.Cols ==0 || m.Rows ==0)
+            if (m.Cols == 0 || m.Rows == 0)
             {
                 return new Mat(m.Cols, m.Rows, m.Type());
             }
@@ -36,7 +36,7 @@ namespace FloorSweep.PathFinding
         {
             if (m.Cols < endCol)
             {
-                Cv2.HConcat(m, new Mat(rows: m.Rows, endCol - m.Cols+1, m.Type()), m);
+                Cv2.HConcat(m, new Mat(rows: m.Rows, endCol - m.Cols + 1, m.Type()), m);
             }
             for (var r = 0; r < m.Rows; r++)
             {
@@ -80,14 +80,14 @@ namespace FloorSweep.PathFinding
 
             Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
 
-            for (int i = 0; i < Math.Max(m.Rows, other.Rows); i++)
+            for (int i = 1; i <= Math.Max(m.Rows, other.Rows); i++)
             {
-                for (int c = 0; c < Math.Max(m.Cols, other.Cols); c++)
+                for (int c = 1; c <= Math.Max(m.Cols, other.Cols); c++)
                 {
-                    var valCol = m.Cols == 1 ? 0 : c;
-                    var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
-                    var ovalCol = other.Cols == 1 ? 0 : c;
-                    var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
+                    var valCol = m.Cols == 1 ? 1 : c;
+                    var val = m.Rows == 1 ? m._<double>(1, valCol) : m._<double>(i, valCol);
+                    var ovalCol = other.Cols == 1 ? 1 : c;
+                    var oval = other.Rows == 1 ? other._<double>(1, ovalCol) : other._<double>(i, ovalCol);
                     retVal.___<double>(i, c) = val + oval;
                 }
             }
@@ -113,14 +113,14 @@ namespace FloorSweep.PathFinding
 
             Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
 
-            for (int i = 0; i < Math.Max(m.Rows, other.Rows); i++)
+            for (int i = 1; i <= Math.Max(m.Rows, other.Rows); i++)
             {
-                for (int c = 0; c < Math.Max(m.Cols, other.Cols); c++)
+                for (int c = 1; c <= Math.Max(m.Cols, other.Cols); c++)
                 {
-                    var valCol = m.Cols == 1 ? 0 : c;
-                    var val = m.Rows == 1 ? m._<double>(0, valCol) : m._<double>(i, valCol);
-                    var ovalCol = other.Cols == 1 ? 0 : c;
-                    var oval = other.Rows == 1 ? other._<double>(0, ovalCol) : other._<double>(i, ovalCol);
+                    var valCol = m.Cols == 1 ? 1 : c;
+                    var val = m.Rows == 1 ? m._<double>(1, valCol) : m._<double>(i, valCol);
+                    var ovalCol = other.Cols == 1 ? 1 : c;
+                    var oval = other.Rows == 1 ? other._<double>(1, ovalCol) : other._<double>(i, ovalCol);
                     retVal.___<double>(i, c) = val - oval;
                 }
             }
@@ -129,7 +129,7 @@ namespace FloorSweep.PathFinding
         }
 
         public static Mat Rows(this Mat m, int startRow, int endRow)
-        => m.Range(startRow, endRow, 0, m.Cols);
+        => m.Range(startRow, endRow, 1, m.Cols);
 
         public static Mat Range(this Mat m, int startRow, int endRow, int startCol, int endCol)
         {
@@ -139,7 +139,7 @@ namespace FloorSweep.PathFinding
             {
                 for (int c = startCol; c <= endCol; c++)
                 {
-                    retVal.___<double>(i - startRow, c - startCol) = m._<double>(i, c);
+                    retVal.___<double>(i - startRow + 1, c - startCol + 1) = m._<double>(i, c);
                 }
             }
             return retVal;
@@ -148,7 +148,7 @@ namespace FloorSweep.PathFinding
 
 
         public static Mat Cols(this Mat m, int startCol, int endCol)
-        => m.Range(0, m.Rows, startCol, endCol);
+        => m.Range(1, m.Rows, startCol, endCol);
 
         public static void AddBottom(this Mat m, params double[][] other)
         {
@@ -156,13 +156,17 @@ namespace FloorSweep.PathFinding
         }
         public static void AddBottom(this Mat m, Mat other)
         {
+            if (m.Cols != other.Cols)
+            {
+                throw new ArgumentException();
+            }
             var rows = m.Rows;
             m.Resize(rows + other.Rows);
-            for (int i = 0; i < other.Rows; i++)
+            for (int i = 1; i <= other.Rows; i++)
             {
-                for (int c = 0; c < m.Cols; c++)
+                for (int c = 1; c <= m.Cols; c++)
                 {
-                    m.At<double>(i + rows, c) = other._<double>(i, c);
+                    m._Set<double>(i + rows, c, other._<double>(i, c));
                 }
             }
         }
@@ -179,13 +183,13 @@ namespace FloorSweep.PathFinding
         => m.___<T>(pos);
         private static ref T ___<T>(this Mat m, int pos) where T : unmanaged
         {
-            for (int row = 0; row < m.Rows; row++)
+            for (int row = 1; row <= m.Rows; row++)
             {
-                for (int col = 0; col < m.Cols; col++)
+                for (int col = 1; col <= m.Cols; col++)
                 {
                     if (row + col == pos)
                     {
-                        return ref m.At<T>(row, col);
+                        return ref m.At<T>(row - 1, col - 1);
                     }
                 }
             }
@@ -195,13 +199,14 @@ namespace FloorSweep.PathFinding
 
         public static int __(this Mat m, int pos)
         {
-            for (int row = 0; row < m.Rows; row++)
+            for (int col = 0; col <= m.Cols; col++)
             {
-                for (int col = 0; col < m.Cols; col++)
+                for (int row = 0; row <= m.Rows; row++)
                 {
-                    if (row + col == pos)
+
+                    if (row + col + 1 == pos)
                     {
-                        return (int)m.At<double>(row, col);
+                        return (int)m.___<double>(row + 1, col + 1);
                     }
                 }
             }
@@ -210,23 +215,27 @@ namespace FloorSweep.PathFinding
 
         public static int __(this Mat m, int x, int y)
         {
-            return (int)m.At<double>(x, y);
+            return (int)m.___<double>(x, y);
         }
 
         public static T _<T>(this Mat m, int row, int col) where T : unmanaged
             => m.___<T>(row, col);
         private static ref T ___<T>(this Mat m, int row, int col) where T : unmanaged
         {
-            if (m.Rows <= row)
+            if (row == 0 || col == 0)
             {
-                m.Resize(row + 1);
+                throw new ArgumentException();
             }
-            if (m.Cols <= col)
+            if (m.Rows < row)
             {
-                Cv2.HConcat(m, Mat.Zeros(m.Type(), m.Rows, col + 1 - m.Cols), m);
+                m.Resize(row);
+            }
+            if (m.Cols < col)
+            {
+                Cv2.HConcat(m, Mat.Zeros(m.Type(), m.Rows, col - m.Cols), m);
             }
 
-            return ref m.At<T>(row, col);
+            return ref m.At<T>(row - 1, col - 1);
         }
 
         public static T[] DataLeftToRight<T>(this Mat m) where T : unmanaged
@@ -313,13 +322,7 @@ namespace FloorSweep.PathFinding
             }
             return Mat.FromArray(arr);
         }
-        public static Mat ComplexConjugate(this Mat m)
-        {
-            Mat ones = Mat.Ones(m.Rows, m.Cols, m.Type()).ToMat();
-            Mat ret = Mat.Zeros(m.Rows, m.Cols, m.Type()).ToMat();
-            Cv2.MulSpectrums(ones, m, ret, DftFlags.None, true);
-            return ret;
-        }
+
 
         public static Mat RemoveRows(this Mat m, params int[] rows)
         {
@@ -361,9 +364,9 @@ namespace FloorSweep.PathFinding
             {
                 return false;
             }
-            for (int row = 0; row < m.Rows; row++)
+            for (int row = 1; row <= m.Rows; row++)
             {
-                for (int col = 0; col < m.Cols; col++)
+                for (int col = 1; col <= m.Cols; col++)
                 {
                     var val = m._<double>(row, col);
                     var o = other._<double>(row, col);
@@ -380,10 +383,10 @@ namespace FloorSweep.PathFinding
         {
             var retVals = new List<List<double>>();
 
-            for (int row = 0; row < m.Rows; row++)
+            for (int row = 1; row <= m.Rows; row++)
             {
                 var rowVals = new List<double>();
-                for (int col = 0; col < m.Cols; col++)
+                for (int col = 1; col <= m.Cols; col++)
                 {
                     var val = m._<double>(row, col);
                     rowVals.Add(val);
@@ -394,9 +397,9 @@ namespace FloorSweep.PathFinding
                 }
             }
             retVals.Sort(CompareDoubles);
-            if(retVals.Count ==0)
+            if (retVals.Count == 0)
             {
-                return new Mat(rows:0,0,m.Type());
+                return new Mat(rows: 0, 0, m.Type());
             }
             return FromRows(retVals.Select(r => r.ToArray()).ToArray());
         }
@@ -444,12 +447,12 @@ namespace FloorSweep.PathFinding
 
         public static IEnumerable<Mat> AsMathlabColEnumerable(this Mat m)
         {
-            for (int i = 0; i < m.Cols; i++)
+            for (int i = 1; i <= m.Cols; i++)
             {
                 var mret = new Mat(m.Rows, 1, m.Type());
-                for (int r = 0; r < m.Rows; r++)
+                for (int r = 1; r <= m.Rows; r++)
                 {
-                    mret.___<double>(r, 0) = m._<double>(r, i);
+                    mret.___<double>(r, 1) = m._<double>(r, i);
                 }
                 yield return mret;
             }
@@ -457,6 +460,10 @@ namespace FloorSweep.PathFinding
 
         public static void _Set<T>(this Mat m, int row, int col, T value) where T : unmanaged
         {
+            if (row == 0 || col == 0)
+            {
+                throw new ArgumentException();
+            }
 
             if (typeof(T) == typeof(double))
             {
@@ -471,9 +478,9 @@ namespace FloorSweep.PathFinding
 
         public static void _Set<T>(this Mat m, int pos, T value) where T : unmanaged
         {
-            for (int row = 0; row < m.Rows; row++)
+            for (int row = 1; row <= m.Rows; row++)
             {
-                for (int col = 0; col < m.Cols; col++)
+                for (int col = 1; col <= m.Cols; col++)
                 {
                     if (row + col == pos)
                     {

@@ -19,11 +19,11 @@ namespace FloorSweep.PathFinding
             a = Math.Floor((double)(scaling - 1) / 2);
             b = scaling - a;
 
-            for (int x = 0; x < c - 1; x++)
+            for (int x = 1; x <= c; x++)
             {
-                for (int y = 0; y < d - 1; y++)
+                for (int y = 1; y <= d; y++)
                 {
-                    var tmp = mapB.Range((int)(x * s - a + 1), (int)(x * s + b + 1), (int)(y * s - a + 1), (int)(y * s + b + 1)).Sum2();
+                    var tmp = mapB.Range((int)(x * s - a ), (int)(x * s + b ), (int)(y * s - a ), (int)(y * s + b )).Sum2();
 
                     if (tmp < 12)
                     {

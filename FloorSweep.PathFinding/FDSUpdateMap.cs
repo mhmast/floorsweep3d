@@ -95,16 +95,16 @@ namespace FloorSweep.PathFinding
 
         private static double t(Mat s, Mat[] graph)
         {
-            return graph[2]._<double>(s.__(0), s.__(1));
+            return graph[2]._<double>(s.__(1), s.__(2));
         }
         private static double h(Mat s, Mat[] graph)
         {
-            return graph[0]._<double>(s.__(0), s.__(1));
+            return graph[0]._<double>(s.__(1), s.__(2));
         }
 
         private static double k(Mat s, Mat[] graph)
         {
-            return graph[1]._<double>(s.__(0), s.__(1));
+            return graph[1]._<double>(s.__(1), s.__(2));
         }
 
         private static double g(Mat s, Mat startPos)
@@ -115,12 +115,12 @@ namespace FloorSweep.PathFinding
 
         private static void sett(Mat s, double val, Mat[] graph)
         {
-            graph[2]._Set<double>(s.__(0), s.__(1), val);
+            graph[2]._Set<double>(s.__(1), s.__(2), val);
         }
 
         private static void seth(Mat s, double val, Mat[] graph)
         {
-            graph[0]._Set<double>(s.__(0), s.__(1), val);
+            graph[0]._Set<double>(s.__(1), s.__(2), val);
         }
 
         private static void insert(Mat s, double h_new, Mat[] graph, double kM, Mat startPos, SortedSet<Mat> stack)
@@ -151,12 +151,12 @@ namespace FloorSweep.PathFinding
 
         private static double inQ(Mat s, Mat[] graph)
         {
-            return graph[2]._<double>(s.__(0), s.__(1));
+            return graph[2]._<double>(s.__(1), s.__(2));
         }
 
         private static void setk(Mat s, double val, Mat[] graph)
         {
-            graph[1]._Set<double>(s.__(0), s.__(1), val);
+            graph[1]._Set<double>(s.__(1), s.__(2), val);
         }
 
 

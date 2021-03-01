@@ -80,9 +80,9 @@ namespace FloorSweep.PathFinding.TestApp
         {
             Bitmap bmp = new Bitmap(m.Width, m.Height);
             using var g = Graphics.FromImage(bmp);
-            for (var r = 0; r < m.Rows; r++)
+            for (var r = 1; r <= m.Rows; r++)
             {
-                for (var c = 0; c < m.Cols; c++)
+                for (var c = 1; c <= m.Cols; c++)
                 {
                     var val = m._<double>(r, c);
                     if (onesandzeros)

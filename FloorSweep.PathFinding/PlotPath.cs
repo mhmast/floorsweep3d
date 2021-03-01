@@ -42,7 +42,7 @@ namespace FloorSweep.PathFinding
             foreach (var it in pathInterpolated.T().ToMat().AsMathlabColEnumerable())
             {
                 var a = it.Round();
-                imag._Set<double>(a.__(0), a.__(1), 0.6);
+                imag._Set<double>(a.__(1), a.__(2), 0.6);
             }
             var name = Path.GetTempFileName();
             imag.SaveImage(name);

@@ -17,49 +17,49 @@ namespace FloorSweep.PathFinding
             var g = Mat.Zeros(m, 4).ToMat();
             var e = Mat.Zeros(m + 1, 4).ToMat();
 
-            for (var i = 0; i < f.Cols; i++)
+            for (var i = 1; i <= f.Cols; i++)
             {
                 f.Set(0, i, points._<double>(1, i));
             }
-            for (var i = 0; i < g.Cols; i++)
+            for (var i = 1; i <= g.Cols; i++)
             {
                 g.Set(0, i, points._<double>(1, i) + points._<double>(2, i) / 2);
             }
 
             for (int i = 1; i < m - 2; i++)
             {
-                for (var j = 0; j < f.Cols; j++)
+                for (var j = 1; j <= f.Cols; j++)
                 {
                     f.Set(i, j, 2 * (points._<double>(i + 1, j) + points._<double>(i + 2, j)) / 3);
                 }
-                for (var j = 0; j < g.Cols; j++)
+                for (var j = 1; j <= g.Cols; j++)
                 {
                     g.Set(i, j, (points._<double>(i + 1, j) + 2 * points._<double>(i + 2, j)) / 3);
                 }
             }
 
-            for (var j = 0; j < f.Cols; j++)
+            for (var j = 1; j <= f.Cols; j++)
             {
-                f._Set<double>(m, j, (points._<double>(m + 2, j) + points._<double>(m + 1, j)) / 2);
+                f._Set<double>(m, j, (points._<double>(m + 1, j) + points._<double>(m, j)) / 2);
             }
-            for (var j = 0; j < g.Cols; j++)
+            for (var j = 1; j <= g.Cols; j++)
             {
-                g._Set<double>(m - 1, j, points._<double>(m + 1, j));
+                g._Set<double>(m, j, points._<double>(m + 1, j));
             }
-            for (var j = 0; j < e.Cols; j++)
+            for (var j = 1; j <= e.Cols; j++)
             {
                 e._Set<double>(0, j, points._<double>(0, j));
             }
 
             for (int i = 1; i < m; i++)
             {
-                for (var j = 0; j < e.Cols; j++)
+                for (var j = 1; j <= e.Cols; j++)
                 {
                     e._Set<double>(0, j, (g._<double>(i - 1, j) + f._<double>(i, j)) / 2);
                 }
             }
 
-            for (var j = 0; j < e.Cols; j++)
+            for (var j = 1; j <= e.Cols; j++)
             {
                 e._Set<double>(m, j, points._<double>(m + 2, j));
             }
@@ -124,13 +124,13 @@ namespace FloorSweep.PathFinding
             var len = points.Rows;
             var distance = Mat.Zeros(len, 1).ToMat();
 
-            for (int i = 1; i < len; i++)
+            for (int i = 1; i <= len; i++)
             {
                 var delta = w_distance(points.Row(i), points.Row(i - 1));
                 distance._Set<double>(i, delta + distance._<double>(i - 1));
             }
 
-            var t = MatExtensions.FromRange(0, distance.__(distance.Cols - 1), sampling);
+            var t = MatExtensions.FromRange(0, distance.__(distance.Cols), sampling);
             return interp1(distance, points, t);
         }
 
@@ -143,9 +143,9 @@ namespace FloorSweep.PathFinding
         private static Mat interp1(Mat X, Mat Y, Mat targetX)
         {
             Mat retVal = new Mat();
-            for (int i = 0; i < X.Cols; i++)
+            for (int i = 1; i <= X.Cols; i++)
             {
-                retVal.AddBottom(interp1(X, Y, targetX.Get<int>(i)));
+                retVal.AddBottom(interp1(X, Y, targetX.__(i)));
             }
             return retVal.T().ToMat();
         }
@@ -164,7 +164,7 @@ namespace FloorSweep.PathFinding
             Cv2.MinMaxLoc(dist, out minVal, out maxVal, out minLoc2, out maxLoc, mask);
 
             // use the two nearest neighbours to interpolate the target value
-            double res = interpolate(X.At<int>(minLoc1), Y.At<double>(minLoc1), X.At<int>(minLoc2), Y.At<double>(minLoc2), targetX);
+            double res = interpolate(X.__(minLoc1.X, minLoc1.Y), Y._<double>(minLoc1.X, minLoc1.Y), X.__(minLoc2.X, minLoc2.Y), Y._<double>(minLoc2.X, minLoc2.Y), targetX);
             return res;
         }
 
@@ -193,12 +193,12 @@ namespace FloorSweep.PathFinding
             var len = Math.Max(t.Rows, t.Cols);
             var @out = Mat.Zeros(len, bez.Cols).ToMat();
             var t1 = t.T().ToMat();
-            for (int i = 0; i < len; i++)
+            for (int i = 1; i <= len; i++)
             {
-                var k = bez._<double>(0, bez.Cols - 1) * (w_b(t1._<double>(i), n, 0));
-                var l = bez._<double>(1, bez.Cols - 1) * (w_b(t1._<double>(i), n, 1));
-                var m = bez._<double>(2, bez.Cols - 1) * (w_b(t1._<double>(i), n, 2));
-                var u = bez._<double>(3, bez.Cols - 1) * (w_b(t1._<double>(i), n, 3));
+                var k = bez._<double>(1, bez.Cols ) * (w_b(t1._<double>(i), n, 1));
+                var l = bez._<double>(2, bez.Cols ) * (w_b(t1._<double>(i), n, 2));
+                var m = bez._<double>(3, bez.Cols ) * (w_b(t1._<double>(i), n, 3));
+                var u = bez._<double>(4, bez.Cols ) * (w_b(t1._<double>(i), n, 4));
                 @out.AddBottom((k * bez.Row(0) + l * bez.Row(1) + m * bez.Row(2) + u * bez.Row(3)) / (k + l + m + u));
             }
             return @out;
