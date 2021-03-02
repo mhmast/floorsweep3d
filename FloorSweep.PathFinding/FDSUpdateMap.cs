@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace FloorSweep.PathFinding
@@ -28,7 +29,7 @@ namespace FloorSweep.PathFinding
             var ydata = y.DataLeftToRight<double>();
 
             var indices = MatExtensions.FromCols(xdata, ydata);
-            indices.SetColRange(2, 3, 0);
+            indices.SetColRange(3, 4, 0);
             
             var Ind = indices._T();
 
@@ -48,7 +49,7 @@ namespace FloorSweep.PathFinding
             ydata = y.DataLeftToRight<double>();
 
             indices = MatExtensions.FromCols(xdata, ydata);
-            indices.SetColRange(2, 3, 0);
+            indices.SetColRange(3, 4, 0);
             Ind = indices._T();
 
             foreach (var n in indices._T().AsMathlabColEnumerable())
@@ -78,8 +79,12 @@ namespace FloorSweep.PathFinding
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        s._Set<double>(2, 0, -k(s, graph) + kM);
-                        s._Set<double>(3, 0, k(s, graph) + g(s, startPos));
+                        s._Set<double>(3, 1, -k(s, graph) + kM);
+                        s._Set<double>(4, 1, k(s, graph) + g(s, startPos));
+                        if (s._<double>(2, 1) == 2)
+                        {
+                            Debugger.Break();
+                        }
                         stack.Add(s);
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
@@ -142,8 +147,12 @@ namespace FloorSweep.PathFinding
                     setk(s, Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
-                s._Set<double>(2, 0, k(s, graph) + kM + g(s, startPos));
-                s._Set<double>(3, 0, k(s, graph) + g(s, startPos));
+                s._Set<double>(3, 1, k(s, graph) + kM + g(s, startPos));
+                s._Set<double>(4, 1, k(s, graph) + g(s, startPos));
+                if (s._<double>(2, 1) == 2)
+                {
+                    Debugger.Break();
+                }
                 stack.Add(s);
                 sett(s, (double)OutcomeState.OPEN, graph);
             }

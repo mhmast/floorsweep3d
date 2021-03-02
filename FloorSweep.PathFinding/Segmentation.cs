@@ -16,7 +16,7 @@ namespace FloorSweep.PathFinding
         {
             var mapData = new MapData();
             var img = OpenCvSharp.Cv2.ImRead(path,ImreadModes.Grayscale);//.CvtColor(OpenCvSharp.ColorConversionCodes.RGB2GRAY);
-            
+            mapData.Image = img;
             var se = OpenCvSharp.Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new OpenCvSharp.Size(9, 9));
             var im_robot = img.Threshold(255*thr2, 255, OpenCvSharp.ThresholdTypes.Binary);
             var im_target = img.Threshold(255*thr1, 255, OpenCvSharp.ThresholdTypes.Binary);
@@ -35,7 +35,7 @@ namespace FloorSweep.PathFinding
             var num = Cv2.ConnectedComponentsWithStats(im_robot, label, stats, centroids, PixelConnectivity.Connectivity4);
             if (num > 0)
             {
-                mapData.Start = centroids;
+                mapData.Start = centroids.Row(1);
             }
             else
             {
@@ -47,7 +47,7 @@ namespace FloorSweep.PathFinding
 
             if (num > 0)
             {
-                mapData.Target = centroids;
+                mapData.Target = centroids.Row(1);
             }
             else
             {

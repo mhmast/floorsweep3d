@@ -25,9 +25,7 @@ namespace FloorSweep.PathFinding.TestApp
             for (int i = 0; i < mapsNames.Length; i++)
             {
                 var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
-                var start = tmp.Start.T();
-                var goal = tmp.Target.T();
-                maps.Add(new MapData { Map = tmp.Map, Start = start, Target = goal });
+                     maps.Add(tmp);
             }
 
 
@@ -53,7 +51,7 @@ namespace FloorSweep.PathFinding.TestApp
                 }
 
                 //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
-                state.Path = ResolvePath.DoResolvePath(state);
+                ResolvePath.DoResolvePath(state);
                 
             }));
             //%% show A - star graph

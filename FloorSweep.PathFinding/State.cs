@@ -32,5 +32,6 @@ namespace FloorSweep.PathFinding
         public Mat Path { get; set; }
         public Mat Vis { get; internal set; }
         public Mat Template { get; internal set; }
+        public Mat Image { get; internal set; }
     }
 }

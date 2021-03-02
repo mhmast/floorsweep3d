@@ -183,11 +183,11 @@ namespace FloorSweep.PathFinding
         => m.___<T>(pos);
         private static ref T ___<T>(this Mat m, int pos) where T : unmanaged
         {
-            for (int row = 1; row <= m.Rows; row++)
+            for (int row = 0; row < m.Rows; row++)
             {
-                for (int col = 1; col <= m.Cols; col++)
+                for (int col = 0; col < m.Cols; col++)
                 {
-                    if (row + col == pos)
+                    if (row + col +1 == pos)
                     {
                         return ref m.At<T>(row - 1, col - 1);
                     }
@@ -425,9 +425,9 @@ namespace FloorSweep.PathFinding
         {
             var x = new Mat();
             var y = new Mat();
-            for (int row = 0; row < m.Rows; row++)
+            for (int row = 1; row <= m.Rows; row++)
             {
-                for (int column = 0; column < m.Cols; column++)
+                for (int column = 1; column <= m.Cols; column++)
                 {
                     if (expr(m._<double>(row, column)))
                     {
@@ -458,6 +458,19 @@ namespace FloorSweep.PathFinding
             }
         }
 
+        public static Mat Invert(this Mat m)
+        {
+            var ret = new Mat(m.Rows, m.Cols, m.Type());
+            for(int row=0;row<m.Rows;row++)
+            {
+                for(int col=0;col<m.Cols;col++)
+                {
+                    ret.___<double>(m.Rows - row, m.Cols - col) = m.___<double>(row + 1, col + 1);
+                }
+            }
+            return ret;
+        }
+
         public static void _Set<T>(this Mat m, int row, int col, T value) where T : unmanaged
         {
             if (row == 0 || col == 0)
@@ -467,11 +480,11 @@ namespace FloorSweep.PathFinding
 
             if (typeof(T) == typeof(double))
             {
-                MatChangedd?.Invoke(m, row, col, m.___<double>(row, col));
+                MatChangedd?.Invoke(m, row, col, (double)Convert.ChangeType(value,typeof(T)));
             }
             else if (typeof(T) == typeof(byte))
             {
-                MatChangedb?.Invoke(m, row, col, m.___<byte>(row, col));
+                MatChangedb?.Invoke(m, row, col, (byte)Convert.ChangeType(value,typeof(byte)));
             }
             m.___<T>(row, col) = value;
         }

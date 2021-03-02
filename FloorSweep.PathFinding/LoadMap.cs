@@ -21,13 +21,17 @@ namespace FloorSweep.PathFinding
             @out.Map = Mat.Zeros(5, map.Cols,map.Type());
             @out.Map.AddBottom(map);
             @out.Map.AddBottom(Mat.Zeros(6, map.Cols, map.Type()));
-            @out.Map = @out.Map.T();
-            @out.Map.AddBottom(Mat.Zeros(5, @out.Map.Cols, map.Type()));
-            @out.Map.AddBottom(Mat.Zeros(6, @out.Map.Cols, map.Type()));
+            var m = @out.Map.T().ToMat();
+            @out.Map = Mat.Zeros(5, m.Cols, map.Type());
+            @out.Map.AddBottom(m);
+            @out.Map.AddBottom(Mat.Zeros(6, m.Cols, map.Type()));
             @out.Map = @out.Map.T();
 
             @out.Start = (robot_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, robot_xy.Type(), 5)) ;
             @out.Target = (target_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, target_xy.Type(), 5)) ;
+            @out.Start = @out.Start.T();
+            @out.Target = @out.Target.T();
+            @out.Image = mapData.Image;
             return @out;
         }
     }

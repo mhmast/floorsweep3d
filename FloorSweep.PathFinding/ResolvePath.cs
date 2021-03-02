@@ -13,10 +13,10 @@ namespace FloorSweep.PathFinding
             return graph[0]._<double>(s.__(1), s.__(2));
         }
 
-        private static Mat resolve(State state)
+        private static void resolve(State state)
         {
             var s = state.EndPos;
-            var @out = s.Copy(); 
+            var @out = s.Copy();
             state.Graph[0]._Set<double>(s.__(1), s.__(2), double.PositiveInfinity);
             var uval = g(s, state.Graph);
             var minval = double.PositiveInfinity;
@@ -40,14 +40,20 @@ namespace FloorSweep.PathFinding
                 if (it.Empty())
                 {
                     Console.WriteLine("there is no valid path");
-                    return new Mat();
+                    return;
                 }
                 s = s.Plus(it);
                 state.Graph[0]._Set<double>(s.__(1), s.__(2), double.PositiveInfinity);
                 @out.AddColumn(s);
 
             }
-            return @out;
+            for (int r = 1; r < @out.Rows; r++)
+            {
+                for (int c = 1; c < @out.Cols; c++)
+                {
+                    state.Path._Set<double>(r, c, @out._<double>(r, c));
+                }
+            }
         }
 
         private static Mat b(Mat x, Mat[] graph)
@@ -55,7 +61,7 @@ namespace FloorSweep.PathFinding
             return x.Plus(MatExtensions.FromRows(new[] { graph[5]._<double>(x.__(1), x.__(2)) }, new[] { graph[6]._<double>(x.__(1), x.__(2)) }, new[] { 0.0 }, new[] { 0.0 }));
         }
 
-        public static Mat DoResolvePath(State state)
+        public static void DoResolvePath(State state)
         => resolve(state);
     }
 }

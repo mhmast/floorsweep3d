@@ -45,18 +45,21 @@ namespace FloorSweep.PathFinding
             var @out = new State();
 
             @out.Map = map;
-            @out.StartPos = startPos.Range(1, 2, 2, 2);
+            @out.StartPos = startPos.Invert();
             @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols, @out.StartPos.Type()));
-            @out.EndPos = endPos.Range(1, 2, 2, 2);
+            @out.EndPos = endPos.Invert();
             @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols, @out.EndPos.Type()));
             startPos = @out.StartPos;
 
             @out.Scaling = scaling;
             @out.Pattern = shapePattern.T();
-            @out.Ucc = neighbours;
+            @out.Ucc = neighbours.T();
 
             @out.Graph = new Mat[7];
-            Array.Fill(@out.Graph, Mat.Zeros(rows: @out.Height, @out.Width, MatType.CV_64F).ToMat());
+            for(int i=0;i<7;i++)
+            {
+                @out.Graph[i] = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1).ToMat();
+            }
             @out.Graph[0].SetAll(double.PositiveInfinity);
             @out.Graph[1].SetAll(double.PositiveInfinity);
             @out.Graph[2].SetAll(-1.0);
@@ -73,6 +76,8 @@ namespace FloorSweep.PathFinding
             @out.EndPos._Set<double>(3, 1, heur);
             @out.EndPos._Set<double>(4, 1, 0);
             @out.Stack.Add(@out.EndPos);
+            @out.Image = data.Image;
+            @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
             return @out;
         }
     }

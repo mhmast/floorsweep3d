@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -39,44 +40,56 @@ namespace FloorSweep.PathFinding.TestApp
         private void InitState(State state)
         {
             var i = 0;
-            foreach (var g in state.Graph)
-            {
-                AddPicureBox(graphPanel, g, true,$"graph{i}" );
-                i++;
-            }
-            AddPicureBox(mapBox, state.Map, true,"map" );
-            AddPicureBox(mapBox, state.Vis, true,"Vis" );
-            AddPicureBox(mapBox, state.Template, true,"Template" );
+            //foreach (var g in state.Graph)
+            //{
+            //    var stateLabel = i == 2 ? "nodestate" : "";
+            //    AddPicureBox(graphPanel, g, i==2, $"graph{i}{stateLabel}");
+            //    i++;
+            //}
+            //AddPicureBox(mapBox, state.Map, true, "map");
+            AddPicureBox(mapBox, state.Path, true, "path");
+
+            //AddPicureBox(mapBox, state.Vis, true, "Vis");
+            //AddPicureBox(mapBox, state.Template, true, "Template"); 
+            //AddPicureBox(mapBox, state.Image, false, "image");
+          
         }
 
-        private void AddPicureBox(Control panel, Mat g, bool onesAndZeros,string name)
+        private void AddPicureBox(Control panel, Mat g, bool onesAndZeros, string name)
         {
             var gbox = new GroupBox { Text = name, Size = new System.Drawing.Size(g.Width, g.Height) };
             gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
             panel.Controls.Add(gbox);
-            var p = new Panel { Dock = DockStyle.Fill };
+            var p = new Panel { Dock = DockStyle.Fill, Name = name };
+            p.Click += P_Click;
             gbox.Controls.Add(p);
-            AddEventHandler(p, g, onesAndZeros);
+            AddEventHandler(p, g, onesAndZeros, name);
         }
 
-        private void AddEventHandler(Control box, OpenCvSharp.Mat g, bool onesandzeros)
+        private void P_Click(object sender, EventArgs e)
         {
-            var img = DrawImage( g, onesandzeros);
+            var panel = sender as Panel;
+            new Form { BackgroundImage = panel.BackgroundImage, BackgroundImageLayout = ImageLayout.Stretch }.Show();
+        }
+
+        private void AddEventHandler(Control box, OpenCvSharp.Mat g, bool onesandzeros, string name)
+        {
+            var img = DrawImage(g, onesandzeros);
             box.BackgroundImage = img;
             box.BackgroundImageLayout = ImageLayout.Stretch;
             if (g.Type() == MatType.CV_8UC1)
             {
-                g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box,img, x, y, n, onesandzeros));
+                g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box, img, x, y, n, onesandzeros, name));
             }
             else
             {
 
-                g.RegisterMatChanged((int x, int y, double n) => UpdatePictureBox(box,img, x, y, n, onesandzeros)); ;
+                g.RegisterMatChanged((int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros, name)); ;
             }
-           
+
         }
 
-        private Bitmap DrawImage( Mat m, bool onesandzeros)
+        private Bitmap DrawImage(Mat m, bool onesandzeros)
         {
             Bitmap bmp = new Bitmap(m.Width, m.Height);
             using var g = Graphics.FromImage(bmp);
@@ -84,14 +97,14 @@ namespace FloorSweep.PathFinding.TestApp
             {
                 for (var c = 1; c <= m.Cols; c++)
                 {
-                    var val = m._<double>(r, c);
+                    var val = m.Type() == (double)MatType.CV_8UC1?m._<byte>(r,c): m._<double>(r, c);
                     if (onesandzeros)
                     {
-                        g.FillRectangle(new SolidBrush(val == 1 ? Color.White : val == 0 ? Color.Gray : Color.Black), new Rectangle(r, c, 1, 1));
+                        g.FillRectangle(new SolidBrush(val == 1 ? Color.Black : val == 0 ? Color.Gray : Color.White), new Rectangle(r, c, 1, 1));
                     }
                     else
                     {
-                        g.FillRectangle(new SolidBrush(Color.FromArgb((int)val, (int)val, (int)val)), new Rectangle(r, c, 1, 1));
+                        g.FillRectangle(new SolidBrush(Color.FromArgb((int)val)), new Rectangle(r, c, 1, 1));
                     }
                 }
             }
@@ -100,31 +113,29 @@ namespace FloorSweep.PathFinding.TestApp
 
         }
 
-        private void UpdatePictureBoxb(Control box,Image i, int x, int y, byte n, bool onesandzeros)
+        private void UpdatePictureBoxb(Control box, Bitmap i, int x, int y, int n, bool onesandzeros, string name)
         {
+           
             if (x < 0 || y < 0)
             {
                 throw new ArgumentException();
             }
             EndInvoke(BeginInvoke(new Action(() =>
             {
-                using var g = Graphics.FromImage(i);
-                if (onesandzeros)
-                {
-                    g.FillRectangle(new SolidBrush(n == 1 ? Color.Green : n == 0 ? Color.Blue : Color.Red), new Rectangle(x, y, 1, 1));
-                }
-                else
-                {
-                    g.FillRectangle(new SolidBrush(Color.FromArgb(n, n, n)), new Rectangle(x, y, 1, 1));
-                }
-                g.Dispose();
+                Color c = onesandzeros ? (n == 1 ? Color.Green : n == 0 ? Color.Red : Color.Blue) : Color.FromArgb(n);
+                 i.SetPixel(x, y, c);
                 box.BackgroundImage = i;
+                box.Refresh();
             })));
         }
 
-        private void UpdatePictureBox(Control box,Image i, int x, int y, double n, bool onesandzeros)
+        private void UpdatePictureBox(Control box, Bitmap i, int x, int y, double n, bool onesandzeros, string name)
         {
-            UpdatePictureBoxb(box,i, x, y, (byte)n, onesandzeros);
+            if (box.Name.Contains("5") && n == -1)
+            {
+                //Debugger.Break();
+            }
+            UpdatePictureBoxb(box, i, x, y, (int)n, onesandzeros, name);
         }
 
         protected override void OnLoad(EventArgs e)
