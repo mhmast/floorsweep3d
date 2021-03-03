@@ -20,6 +20,7 @@ namespace FloorSweep.PathFinding.TestApp
         static void Main()
         {
             var mapsNames = new[] { "a", "e", "b", "c", "map01" };
+            int mapno = 2;
             var maps = new List<MapData>();
             var scaling = 4;
             for (int i = 0; i < mapsNames.Length; i++)
@@ -30,7 +31,7 @@ namespace FloorSweep.PathFinding.TestApp
 
 
             var @bool = false;
-            var state = FDSInit.DoFDSInit(maps[0], scaling);
+            var state = FDSInit.DoFDSInit(maps[mapno], scaling);
             var tsk = new Task(new Action(() =>
             {
                
@@ -42,7 +43,7 @@ namespace FloorSweep.PathFinding.TestApp
                 if (@bool)
                 {
                     @bool = false;
-                    state = FDSUpdateMap.DoFDSUpdateMap(state, maps[0].Map);
+                    state = FDSUpdateMap.DoFDSUpdateMap(state, maps[mapno].Map);
                     state.KM = 50;
                 }
                 else
