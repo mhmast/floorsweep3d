@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,15 +16,15 @@ namespace FloorSweep.PathFinding
             var ucc = state.Ucc;
             var graph = state.Graph;
             var kM = state.KM;
-            var SQRT2 = Math.Sqrt(2) - 1;
+            var SQRT2 = System.Math.Sqrt(2) - 1;
             var stack = state.Stack;
 
             var map = newMap;
             var difference = map.Minus(state.Map);
             state.Map = map;
             var (x, y) = difference.Find(d => d == -1);
-            var xdata = x.DataLeftToRight<double>();
-            var ydata = y.DataLeftToRight<double>();
+            var xdata = x.Data;
+            var ydata = y.Data;
 
             var indices = MatExtensions.FromCols(xdata, ydata);
             indices.SetColRange(3, 4, 0);
@@ -43,8 +43,8 @@ namespace FloorSweep.PathFinding
             var added = Ind._T().UniqueRows()._T();
 
             (x, y) = difference.Find(d => d == 1);
-            xdata = x.DataLeftToRight<double>();
-            ydata = y.DataLeftToRight<double>();
+            xdata = x.Data;
+            ydata = y.Data;
 
             indices = MatExtensions.FromCols(xdata, ydata);
             indices.SetColRange(3, 4, 0);
@@ -112,8 +112,8 @@ namespace FloorSweep.PathFinding
 
         private static double g(Mat s, Mat startPos)
         {
-            var ss = (startPos - s).Abs().ToMat();
-            return Math.Sqrt(Math.Pow(ss._<double>(0), 2) + Math.Pow(ss._<double>(1), 2));
+            var ss = (startPos.Minus(s)).Abs().ToMat();
+            return System.Math.Sqrt(System.Math.Pow(ss._<double>(0), 2) + System.Math.Pow(ss._<double>(1), 2));
         }
 
         private static void sett(Mat s, double val, Mat[] graph)
@@ -138,11 +138,11 @@ namespace FloorSweep.PathFinding
             {
                 if (t == (double)OutcomeState.OPEN)
                 {
-                    setk(s, Math.Min(k(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(k(s, graph), h_new), graph);
                 }
                 else
                 {
-                    setk(s, Math.Min(h(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
                 s._Set<double>(3, 1, k(s, graph) + kM + g(s, startPos));

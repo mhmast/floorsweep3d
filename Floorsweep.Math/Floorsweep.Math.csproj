@@ -1,19 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>FloorSweep.Math</AssemblyName>
+    <RootNamespace>FloorSweep.Math</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4" Version="4.5.1.20210210" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.1.20210210" />
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Floorsweep.Math\Floorsweep.Math.csproj" />
   </ItemGroup>
 
 </Project>

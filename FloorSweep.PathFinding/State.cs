@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+﻿
+using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
 
@@ -16,8 +17,8 @@ namespace FloorSweep.PathFinding
             set
             {
                 _map = value;
-                Vis = Mat.Zeros(rows: Height, Width, MatType.CV_64F);
-                Template = Mat.Zeros(rows: Height, Width, MatType.CV_64F);
+                Vis = Mat.Zeros(Height, Width);
+                Template = Mat.Zeros(Height, Width);
             }
         }
         public Mat StartPos { get; internal set; }
@@ -25,8 +26,8 @@ namespace FloorSweep.PathFinding
         public int Scaling { get; internal set; }
         public Mat Pattern { get; internal set; }
         public Mat Ucc { get; internal set; }
-        public int Height { get => Map.Height; }
-        public int Width { get => Map.Width; }
+        public int Height { get => Map.Rows; }
+        public int Width { get => Map.Cols; }
         public Mat[] Graph { get; internal set; }
         public double KM { get; set; }
         public SortedSet<Mat> Stack { get; internal set; }

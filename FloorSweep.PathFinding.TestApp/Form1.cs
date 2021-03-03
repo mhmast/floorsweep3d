@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+﻿
+using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,18 +26,14 @@ namespace FloorSweep.PathFinding.TestApp
             InitializeComponent();
         }
 
-        public Form1(PlottedPath resp)
-        {
-            BackgroundImage = resp.Image;
-            BackgroundImageLayout = ImageLayout.Stretch;
-        }
+    
 
         public Form1(State state, Task tsk,bool dbg = false) : this()
         {
             _state = state;
-            InitState(state);
             _tsk = tsk;
             _dbg = dbg;
+            InitState(state);
         }
 
         private void InitState(State state)
@@ -89,7 +86,7 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void AddPicureBox(Control panel, Mat g, bool onesAndZeros, string name, bool autoUpdate = true)
         {
-            var gbox = new GroupBox { Text = name, Size = new System.Drawing.Size(g.Width, g.Height) };
+            var gbox = new GroupBox { Text = name, Size = new System.Drawing.Size(g.Cols, g.Rows) };
             gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
             panel.Controls.Add(gbox);
             var p = new Panel { Dock = DockStyle.Fill, Name = name };
@@ -111,29 +108,29 @@ namespace FloorSweep.PathFinding.TestApp
             new Form { BackgroundImage = panel.BackgroundImage, BackgroundImageLayout = ImageLayout.Stretch }.Show();
         }
 
-        private void AddEventHandler(Control box, OpenCvSharp.Mat g, bool onesandzeros, string name, Bitmap img)
+        private void AddEventHandler(Control box, Mat g, bool onesandzeros, string name, Bitmap img)
         {
-            if (g.Type() == MatType.CV_8UC1)
-            {
-                g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box, img, x, y, n, onesandzeros, name));
-            }
-            else
-            {
+            //if (g.Type() == MatType.CV_8UC1)
+            //{
+            //    g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box, img, x, y, n, onesandzeros, name));
+            //}
+            //else
+            //{
 
                 g.RegisterMatChanged((int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros, name)); ;
-            }
+            //}
 
         }
 
         private Bitmap DrawImage(Mat m, bool onesandzeros)
         {
-            Bitmap bmp = new Bitmap(m.Width, m.Height);
+            Bitmap bmp = new Bitmap(m.Cols, m.Rows);
             using var g = Graphics.FromImage(bmp);
             for (var r = 1; r <= m.Rows; r++)
             {
                 for (var c = 1; c <= m.Cols; c++)
                 {
-                    var val = m.Type() == (double)MatType.CV_8UC1 ? m._<byte>(r, c) : m._<double>(r, c);
+                    var val = m._<double>(r, c);
                     if (onesandzeros)
                     {
                         g.FillRectangle(new SolidBrush(val == 1 ? Color.Black : val == 0 ? Color.Gray : Color.White), new Rectangle(r, c, 1, 1));

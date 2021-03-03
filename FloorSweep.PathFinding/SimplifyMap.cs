@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+﻿using FloorSweep.Math;
 using System;
 
 namespace FloorSweep.PathFinding
@@ -11,12 +11,12 @@ namespace FloorSweep.PathFinding
             var mapB = map;
             double a = mapB.Rows;
             double b = mapB.Cols;
-            var @out = Mat.Zeros((int)(a / scaling), (int)(b / scaling), MatType.CV_64FC1).ToMat();
+            var @out = Mat.Zeros((int)(a / scaling), (int)(b / scaling)).ToMat();
             double c = @out.Rows;
             double d = @out.Cols;
 
             var s = scaling;
-            a = Math.Floor((double)(scaling - 1) / 2);
+            a = System.Math.Floor((double)(scaling - 1) / 2);
             b = scaling - a;
 
             for (int x = 1; x <= c; x++)

@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+﻿using FloorSweep.Math;
 using System;
 
 namespace FloorSweep.PathFinding
@@ -18,17 +18,17 @@ namespace FloorSweep.PathFinding
             var a = map.Rows;
             var b = map.Cols;
             var @out = new MapData();
-            @out.Map = Mat.Zeros(5, map.Cols,map.Type());
+            @out.Map = Mat.Zeros(5, map.Cols);
             @out.Map.AddBottom(map);
-            @out.Map.AddBottom(Mat.Zeros(6, map.Cols, map.Type()));
+            @out.Map.AddBottom(Mat.Zeros(6, map.Cols));
             var m = @out.Map.T().ToMat();
-            @out.Map = Mat.Zeros(5, m.Cols, map.Type());
+            @out.Map = Mat.Zeros(5, m.Cols);
             @out.Map.AddBottom(m);
-            @out.Map.AddBottom(Mat.Zeros(6, m.Cols, map.Type()));
+            @out.Map.AddBottom(Mat.Zeros(6, m.Cols));
             @out.Map = @out.Map.T();
 
-            @out.Start = (robot_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, robot_xy.Type(), 5)) ;
-            @out.Target = (target_xy / scaling).ToMat().Floor().Plus( new Mat(1, 2, target_xy.Type(), 5)) ;
+            @out.Start = (robot_xy.Div(scaling)).ToMat().Floor().Plus( new Mat(1, 2, 5)) ;
+            @out.Target = (target_xy.Div(scaling)).ToMat().Floor().Plus( new Mat(1, 2, 5)) ;
             @out.Start = @out.Start.T();
             @out.Target = @out.Target.T();
             @out.Image = mapData.Image;

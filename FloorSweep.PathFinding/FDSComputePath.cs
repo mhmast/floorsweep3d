@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -101,17 +101,17 @@ namespace FloorSweep.PathFinding
                             var y = x.Plus(n);
                             if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
                             {
-                                
+
                                 insert(y, h_val + 1, graph, mindist, stack, kM, startPos);
                                 setb(y, x, graph);
                             }
-                           
+
                         }
                         var xcol = x.Range(1, 2, 1, 1);
                         var startPosCol = startPos.Range(1, 2, 1, 1);
                         if (xcol.IsEqual(startPosCol))
                         {
-                            mindist = Math.Min(mindist, h(x, graph)) + 1;
+                            mindist = System.Math.Min(mindist, h(x, graph)) + 1;
                             return true;
                         }
                     }
@@ -145,7 +145,7 @@ namespace FloorSweep.PathFinding
                 }
                 else
                 {
-                 
+
                     sett(x, (double)OutcomeState.CLOSED, graph);
                     setk(x, double.PositiveInfinity, graph);
                     seth(x, double.PositiveInfinity, graph);
@@ -175,7 +175,7 @@ namespace FloorSweep.PathFinding
 
         private static void setk(Mat s, double val, Mat[] graph)
         {
-            graph[1]._Set(s.__(1), s.__(2), val);
+            graph[1]._Set<double>(s.__(1), s.__(2), val);
         }
 
         public static double h(Mat s, Mat[] graph)
@@ -220,13 +220,13 @@ namespace FloorSweep.PathFinding
 
         private static Mat b(Mat x, Mat[] graph)
         {
-            var gMat = Mat.FromArray(new double[,] {
-                        { graph[5]._<double>(x.__(1), x.__(2))},
-                    { graph[6]._<double>(x.__(1),x.__(2))},
-                    {0 },
-                    {0 }
-                    });
-            return x + gMat;
+            var gMat = MatExtensions.FromRows(
+                  new[] { graph[5]._<double>(x.__(1), x.__(2)) },
+                  new[] { graph[6]._<double>(x.__(1), x.__(2)) },
+                  new[] { 0.0 },
+                  new[] { 0.0 }
+                    );
+            return x.Plus(gMat);
         }
 
         private static OutcomeState inQ(Mat s, Mat[] graph)
@@ -245,13 +245,13 @@ namespace FloorSweep.PathFinding
         {
             return MatExtensions.FromRows(
                 new[] { h(x, graph) + g(x) + kM },
-                new[] { Math.Min(h(x, graph), k(x, graph)) }
+                new[] { System.Math.Min(h(x, graph), k(x, graph)) }
             );
         }
 
         private static double g(Mat s)
         {
-            return Math.Sqrt(Math.Pow(s._<double>(1), 2) + Math.Pow(s._<double>(2), 2));
+            return System.Math.Sqrt(System.Math.Pow(s._<double>(1), 2) + System.Math.Pow(s._<double>(2), 2));
         }
 
         private static void sett(Mat s, double val, Mat[] graph)
@@ -278,7 +278,7 @@ namespace FloorSweep.PathFinding
         private static Mat calculateKey2(Mat x, Mat[] graph, double kM)
         {
             return MatExtensions.FromRows(
-                new[] { k(x, graph) + kM }, new[] { Math.Min(h(x, graph), k(x, graph)) }
+                new[] { k(x, graph) + kM }, new[] { System.Math.Min(h(x, graph), k(x, graph)) }
             );
         }
 
@@ -293,19 +293,19 @@ namespace FloorSweep.PathFinding
             {
                 if (t == OutcomeState.OPEN && h_new < mindist)
                 {
-                    setk(s, Math.Min(k(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(k(s, graph), h_new), graph);
                 }
                 else if (h_new < mindist)
                 {
 
-                    setk(s, Math.Min(h(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(h(s, graph), h_new), graph);
                 }
             }
             seth(s, h_new, graph);
             var key = calculateKey(s, kM, graph);
             s._Set<double>(3, 1, key._<double>(1, 1));
             s._Set<double>(4, 1, key._<double>(2, 1));
-            if(s._<double>(2,1) == 2)
+            if (s._<double>(2, 1) == 2)
             {
                 Debugger.Break();
             }
@@ -317,7 +317,7 @@ namespace FloorSweep.PathFinding
 
         private static bool cmp(Mat s1, Mat s2)
         {
-            return (s1._<double>(1) < s2._<double>(1) ) ||( s1._<double>(1) == s2._<double>(1) && s1._<double>(2) < s2._<double>(2));
+            return (s1._<double>(1) < s2._<double>(1)) || (s1._<double>(1) == s2._<double>(1) && s1._<double>(2) < s2._<double>(2));
         }
         private static void insert2(Mat s, double h_new, Mat[] graph, double mindist, double kM, SortedSet<Mat> stack)
         {
@@ -330,11 +330,11 @@ namespace FloorSweep.PathFinding
             {
                 if (t == OutcomeState.OPEN && h_new < mindist)
                 {
-                    setk(s, Math.Min(k(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(k(s, graph), h_new), graph);
                 }
                 else if (h_new < mindist)
                 {
-                    setk(s, Math.Min(h(s, graph), h_new), graph);
+                    setk(s, System.Math.Min(h(s, graph), h_new), graph);
                 }
             }
             seth(s, h_new, graph);
@@ -342,7 +342,7 @@ namespace FloorSweep.PathFinding
             s._Set<double>(3, 1, key2._<double>(1, 1));
             s._Set<double>(4, 1, key2._<double>(2, 1));
             stack.Add(s);
-            if (s._<double>(2,1) == 2)
+            if (s._<double>(2, 1) == 2)
             {
                 Debugger.Break();
             }

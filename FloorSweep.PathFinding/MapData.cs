@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+﻿using FloorSweep.Math;
 
 namespace FloorSweep.PathFinding
 {
