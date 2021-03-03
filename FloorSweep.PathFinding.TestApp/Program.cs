@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace FloorSweep.PathFinding.TestApp
             var state = FDSInit.DoFDSInit(maps[mapno], scaling);
             var tsk = new Task(new Action(() =>
             {
-               
+                var sw =Stopwatch.StartNew();
                 state = FDSComputePath.DoFdsComputePath(state);
                 @bool = true;
                 var gah = state;
@@ -53,6 +54,8 @@ namespace FloorSweep.PathFinding.TestApp
 
                 //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
                 ResolvePath.DoResolvePath(state);
+                sw.Stop();
+                Debug.WriteLine(sw.ElapsedMilliseconds);
                 //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
                 
             }));
@@ -80,7 +83,7 @@ namespace FloorSweep.PathFinding.TestApp
             //            b = b * 0.7;
             //            imshow(b + a, 'Border', 'tight')
 
-            Application.Run(new Form1(state,tsk));
+            Application.Run(new Form1(state,tsk,false));
 
 
 
