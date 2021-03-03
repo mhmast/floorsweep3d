@@ -18,6 +18,7 @@ namespace FloorSweep.PathFinding.TestApp
         private PlottedPath _resp;
         private State _state;
         private Task _tsk;
+        private readonly bool _dbg;
 
         public Form1()
         {
@@ -30,27 +31,32 @@ namespace FloorSweep.PathFinding.TestApp
             BackgroundImageLayout = ImageLayout.Stretch;
         }
 
-        public Form1(State state, Task tsk) : this()
+        public Form1(State state, Task tsk,bool dbg = false) : this()
         {
             _state = state;
             InitState(state);
             _tsk = tsk;
+            _dbg = dbg;
         }
 
         private void InitState(State state)
         {
             var i = 0;
-            //foreach (var g in state.Graph)
-            //{
-            //    var stateLabel = i == 2 ? "nodestate" : "";
-            //    AddPicureBox(graphPanel, g, i == 2, $"graph{i}{stateLabel}");
-            //    i++;
-            //}
+            if (_dbg)
+            {
+                foreach (var g in state.Graph)
+                {
+                    var stateLabel = i == 2 ? "nodestate" : "";
+                    AddPicureBox(graphPanel, g, i == 2, $"graph{i}{stateLabel}");
+                    i++;
+                }
+            }
             AddPicureBox(mapBox, state.Map, true, "map", false);
-            // AddPicureBox(mapBox, state.Path, true, "path");
-
-            //AddPicureBox(mapBox, state.Vis, true, "Vis");
-            //AddPicureBox(mapBox, state.Template, true, "Template");
+            if (_dbg)
+            {
+                AddPicureBox(mapBox, state.Vis, true, "Vis");
+                AddPicureBox(mapBox, state.Template, true, "Template");
+            }
             state.PathFound += () => State_PathFound(state, mapBox, "path");
            // AddPicureBox(mapBox, state.Image, false, "image", false);
 
