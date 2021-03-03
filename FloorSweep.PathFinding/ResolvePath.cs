@@ -16,11 +16,12 @@ namespace FloorSweep.PathFinding
         private static void resolve(State state)
         {
             var s = state.EndPos;
-            var @out = s.Copy();
+
             state.Graph[0]._Set<double>(s.__(1), s.__(2), double.PositiveInfinity);
             var uval = g(s, state.Graph);
             var minval = double.PositiveInfinity;
-            while (!s.RowRange(0, 1).IsEqual(state.StartPos.RowRange(0, 1)))
+            var path = new List<Mat>();
+            while (!s.Rows(1, 2).IsEqual(state.StartPos.Rows(1, 2)))
             {
                 minval = double.PositiveInfinity;
                 var it = new Mat();
@@ -44,16 +45,11 @@ namespace FloorSweep.PathFinding
                 }
                 s = s.Plus(it);
                 state.Graph[0]._Set<double>(s.__(1), s.__(2), double.PositiveInfinity);
-                @out.AddColumn(s);
+                path.Add(s);
 
             }
-            for (int r = 1; r < @out.Rows; r++)
-            {
-                for (int c = 1; c < @out.Cols; c++)
-                {
-                    state.Path._Set<double>(r, c, @out._<double>(r, c));
-                }
-            }
+            state.Path = path;
+            
         }
 
         private static Mat b(Mat x, Mat[] graph)

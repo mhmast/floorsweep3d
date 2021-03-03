@@ -43,19 +43,45 @@ namespace FloorSweep.PathFinding.TestApp
             //foreach (var g in state.Graph)
             //{
             //    var stateLabel = i == 2 ? "nodestate" : "";
-            //    AddPicureBox(graphPanel, g, i==2, $"graph{i}{stateLabel}");
+            //    AddPicureBox(graphPanel, g, i == 2, $"graph{i}{stateLabel}");
             //    i++;
             //}
-            //AddPicureBox(mapBox, state.Map, true, "map");
-            AddPicureBox(mapBox, state.Path, true, "path");
+            AddPicureBox(mapBox, state.Map, true, "map", false);
+            // AddPicureBox(mapBox, state.Path, true, "path");
 
             //AddPicureBox(mapBox, state.Vis, true, "Vis");
-            //AddPicureBox(mapBox, state.Template, true, "Template"); 
-            //AddPicureBox(mapBox, state.Image, false, "image");
-          
+            //AddPicureBox(mapBox, state.Template, true, "Template");
+            state.PathFound += () => State_PathFound(state, mapBox, "path");
+           // AddPicureBox(mapBox, state.Image, false, "image", false);
+
         }
 
-        private void AddPicureBox(Control panel, Mat g, bool onesAndZeros, string name)
+        private void State_PathFound(State obj, Control panel, string name)
+        {
+            EndInvoke(BeginInvoke(new Action(() =>
+            {
+                var bmp = DrawImage(obj.Map, true);
+                var gbox = new GroupBox { Text = name, Size = bmp.Size };
+                gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
+                panel.Controls.Add(gbox);
+                var p = new Panel { Dock = DockStyle.Fill, Name = name };
+                p.Click += P_Click;
+                gbox.Controls.Add(p);
+                var g = Graphics.FromImage(bmp);
+                g.DrawLines(Pens.Green, ConvertToPoints(obj.Path));
+                p.BackgroundImage = bmp;
+                p.Refresh();
+
+            }
+                )));
+        }
+
+        private PointF[] ConvertToPoints(List<Mat> path)
+        {
+            return path.Select(m => new PointF(m.__(1), m.__(2))).ToArray();
+        }
+
+        private void AddPicureBox(Control panel, Mat g, bool onesAndZeros, string name, bool autoUpdate = true)
         {
             var gbox = new GroupBox { Text = name, Size = new System.Drawing.Size(g.Width, g.Height) };
             gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
@@ -63,7 +89,14 @@ namespace FloorSweep.PathFinding.TestApp
             var p = new Panel { Dock = DockStyle.Fill, Name = name };
             p.Click += P_Click;
             gbox.Controls.Add(p);
-            AddEventHandler(p, g, onesAndZeros, name);
+            var img = DrawImage(g, onesAndZeros);
+            p.BackgroundImage = img;
+            p.BackgroundImageLayout = ImageLayout.Stretch;
+
+            if (autoUpdate)
+            {
+                AddEventHandler(p, g, onesAndZeros, name, img);
+            }
         }
 
         private void P_Click(object sender, EventArgs e)
@@ -72,11 +105,8 @@ namespace FloorSweep.PathFinding.TestApp
             new Form { BackgroundImage = panel.BackgroundImage, BackgroundImageLayout = ImageLayout.Stretch }.Show();
         }
 
-        private void AddEventHandler(Control box, OpenCvSharp.Mat g, bool onesandzeros, string name)
+        private void AddEventHandler(Control box, OpenCvSharp.Mat g, bool onesandzeros, string name, Bitmap img)
         {
-            var img = DrawImage(g, onesandzeros);
-            box.BackgroundImage = img;
-            box.BackgroundImageLayout = ImageLayout.Stretch;
             if (g.Type() == MatType.CV_8UC1)
             {
                 g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box, img, x, y, n, onesandzeros, name));
@@ -97,7 +127,7 @@ namespace FloorSweep.PathFinding.TestApp
             {
                 for (var c = 1; c <= m.Cols; c++)
                 {
-                    var val = m.Type() == (double)MatType.CV_8UC1?m._<byte>(r,c): m._<double>(r, c);
+                    var val = m.Type() == (double)MatType.CV_8UC1 ? m._<byte>(r, c) : m._<double>(r, c);
                     if (onesandzeros)
                     {
                         g.FillRectangle(new SolidBrush(val == 1 ? Color.Black : val == 0 ? Color.Gray : Color.White), new Rectangle(r, c, 1, 1));
@@ -115,7 +145,7 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void UpdatePictureBoxb(Control box, Bitmap i, int x, int y, int n, bool onesandzeros, string name)
         {
-           
+
             if (x < 0 || y < 0)
             {
                 throw new ArgumentException();
@@ -123,7 +153,7 @@ namespace FloorSweep.PathFinding.TestApp
             EndInvoke(BeginInvoke(new Action(() =>
             {
                 Color c = onesandzeros ? (n == 1 ? Color.Green : n == 0 ? Color.Red : Color.Blue) : Color.FromArgb(n);
-                 i.SetPixel(x, y, c);
+                i.SetPixel(x, y, c);
                 box.BackgroundImage = i;
                 box.Refresh();
             })));

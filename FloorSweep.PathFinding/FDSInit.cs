@@ -66,7 +66,7 @@ namespace FloorSweep.PathFinding
             @out.Graph[4].SetAll(-1.0);
             @out.KM = 0.0;
             var SQRT2 = Math.Sqrt(2) - 1;
-            @out.Stack = new SortedSet<Mat>(new DStarComparator());
+            
             @out.Graph[1]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 0);
             @out.Graph[0]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 0);
             @out.Graph[2]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 1);
@@ -75,9 +75,10 @@ namespace FloorSweep.PathFinding
             var heur = SQRT2 * m11m21.Min() + m11m21.Max();
             @out.EndPos._Set<double>(3, 1, heur);
             @out.EndPos._Set<double>(4, 1, 0);
+            @out.Stack = new SortedSet<Mat>(new DStarComparator(@out.StartPos));
             @out.Stack.Add(@out.EndPos);
             @out.Image = data.Image;
-            @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
+          //  @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
             return @out;
         }
     }

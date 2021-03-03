@@ -127,6 +127,65 @@ namespace FloorSweep.PathFinding
 
             return retVal;
         }
+        public static Mat Minus(this Mat m, double other) 
+        {
+            Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
+
+            for (int i = 1; i <= m.Rows; i++)
+            {
+                for (int c = 1; c <= m.Cols; c++)
+                {
+                    retVal.___<double>(i, c) = m._<double>(i,c) - other;
+                }
+            }
+
+            return retVal;
+        }
+        
+        public static Mat Mult(this Mat m, double other) 
+        {
+            Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
+
+            for (int i = 1; i <= m.Rows; i++)
+            {
+                for (int c = 1; c <= m.Cols; c++)
+                {
+                    retVal.___<double>(i, c) = m._<double>(i,c) * other;
+                }
+            }
+
+            return retVal;
+        }
+        
+        public static Mat Div(this Mat m, double other) 
+        {
+            Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
+
+            for (int i = 1; i <= m.Rows; i++)
+            {
+                for (int c = 1; c <= m.Cols; c++)
+                {
+                    retVal.___<double>(i, c) = m._<double>(i,c) / other;
+                }
+            }
+
+            return retVal;
+        }
+        
+        public static Mat Plus(this Mat m, double other) 
+        {
+            Mat retVal = new Mat(m.Rows, m.Cols, m.Type());
+
+            for (int i = 1; i <= m.Rows; i++)
+            {
+                for (int c = 1; c <= m.Cols; c++)
+                {
+                    retVal.___<double>(i, c) = m._<double>(i,c) + other;
+                }
+            }
+
+            return retVal;
+        }
 
         public static Mat Rows(this Mat m, int startRow, int endRow)
         => m.Range(startRow, endRow, 1, m.Cols);
@@ -189,7 +248,7 @@ namespace FloorSweep.PathFinding
                 {
                     if (row + col +1 == pos)
                     {
-                        return ref m.At<T>(row - 1, col - 1);
+                        return ref m.At<T>(row , col );
                     }
                 }
             }
@@ -274,7 +333,7 @@ namespace FloorSweep.PathFinding
             {
                 arr.Add(i);
             }
-            return Mat.FromArray(arr.ToArray());
+            return new Mat(rows: 1, arr.Count, MatType.CV_64FC1, arr.ToArray());
         }
 
         public static Mat FromCols(params double[][] cols)
@@ -326,12 +385,12 @@ namespace FloorSweep.PathFinding
 
         public static Mat RemoveRows(this Mat m, params int[] rows)
         {
-            Mat ret = new Mat();
-            for (int i = 0; i < m.Rows; i++)
+            Mat ret = new Mat(rows:0,m.Cols,m.Type());
+            for (int i = 1; i <= m.Rows; i++)
             {
                 if (!rows.Contains(i))
                 {
-                    ret.Add(m.Row(i));
+                    ret.AddBottom(m.Rows(i,i));
                 }
             }
             return ret;

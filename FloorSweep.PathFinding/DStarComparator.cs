@@ -1,23 +1,27 @@
 ﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
 {
     internal class DStarComparator : IComparer<Mat>
     {
+        private readonly Mat _target;
+
+        public DStarComparator(Mat target)
+        {
+            _target = target;
+        }
         public int Compare(Mat m, Mat m2)
         {
-            var array = m.DataLeftToRight<double>();
-            var array2 = m2.DataLeftToRight<double>();
-            if (array[0] < array2[0] || (array[0] == array2[0] && array[1] < array2[1]))
+            var mDist = Math.Abs(_target.Rows(1, 2).Minus(m.Rows(1, 2)).Sum2());
+            var m2Dist = Math.Abs(_target.Rows(1, 2).Minus(m2.Rows(1, 2)).Sum2());
+            var cmp = mDist.CompareTo(m2Dist);
+            if (cmp == 0 && m.IsEqual(m2))
             {
-                return -1;
+                return 0;
             }
-            if (array[0] > array2[0] || (array[0] == array2[0] && array[1] > array2[1]))
-            {
-                return 1;
-            }
-            return 0;
+            return cmp == 0 ? -1 : cmp;
         }
     }
 }

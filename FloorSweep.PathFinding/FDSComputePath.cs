@@ -99,7 +99,7 @@ namespace FloorSweep.PathFinding
                         foreach (var n in ucc.AsMathlabColEnumerable())
                         {
                             var y = x.Plus(n);
-                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) > h_val + 1 && t(y, graph) != OutcomeState.CLOSED))
+                            if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
                             {
                                 
                                 insert(y, h_val + 1, graph, mindist, stack, kM, startPos);
@@ -109,7 +109,7 @@ namespace FloorSweep.PathFinding
                         }
                         var xcol = x.Range(1, 2, 1, 1);
                         var startPosCol = startPos.Range(1, 2, 1, 1);
-                        if (xcol == startPosCol)
+                        if (xcol.IsEqual(startPosCol))
                         {
                             mindist = Math.Min(mindist, h(x, graph)) + 1;
                             return true;
@@ -266,13 +266,13 @@ namespace FloorSweep.PathFinding
         //private static void setQ(Mat s, Mat[] graph)
         //{
         //    var s2 = s.T().ToMat();
-        //    graph[2].Set(s2.__(1), s2.__(2), 1);
+        //    graph[2]._Set<double>(s2.__(1), s2.__(2), 1);
         //}
 
         //private static void incr(Mat s, Mat[] graph)
         //{
         //    var s2 = s.T().ToMat();
-        //    graph[3].Set(s2.__(1), s2.__(2), graph[3]._<double>(s2.__(1), s2.__(2)) + 1);
+        //    graph[3]._Set<double>(s2.__(1), s2.__(2), graph[3]._<double>(s2.__(1), s2.__(2)) + 1);
         //}
 
         private static Mat calculateKey2(Mat x, Mat[] graph, double kM)

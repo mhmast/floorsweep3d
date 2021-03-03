@@ -19,8 +19,6 @@ namespace FloorSweep.PathFinding
             var SQRT2 = Math.Sqrt(2) - 1;
             var stack = state.Stack;
 
-            var stack2 = new SortedSet<Mat>(new DStarComparator());
-            var stack3 = new SortedSet<Mat>(new DStarComparator());
             var map = newMap;
             var difference = map.Minus(state.Map);
             state.Map = map;

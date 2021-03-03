@@ -1,4 +1,5 @@
 ﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
@@ -6,7 +7,9 @@ namespace FloorSweep.PathFinding
     public class State
     {
         private Mat _map;
+        private List<Mat> _path = new List<Mat>();
 
+        public event Action PathFound;
         public Mat Map
         {
             get { return _map; }
@@ -29,9 +32,18 @@ namespace FloorSweep.PathFinding
         public SortedSet<Mat> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
-        public Mat Path { get; set; }
+        public List<Mat> Path
+        {
+            get => _path; 
+            set
+            {
+                _path = value;
+                PathFound?.Invoke();
+            }
+        }
         public Mat Vis { get; internal set; }
         public Mat Template { get; internal set; }
         public Mat Image { get; internal set; }
+
     }
 }

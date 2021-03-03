@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -13,28 +14,28 @@ namespace FloorSweep.PathFinding
             var n = 3;
             var len = points.Rows;
             var m = len - n;
-            var f = Mat.Zeros(m, 4).ToMat();
-            var g = Mat.Zeros(m, 4).ToMat();
-            var e = Mat.Zeros(m + 1, 4).ToMat();
+            var f = Mat.Zeros(MatType.CV_64FC1, m, 4).ToMat();
+            var g = Mat.Zeros(MatType.CV_64FC1, m, 4).ToMat();
+            var e = Mat.Zeros(MatType.CV_64FC1, m + 1, 4).ToMat();
 
             for (var i = 1; i <= f.Cols; i++)
             {
-                f.Set(0, i, points._<double>(1, i));
+                f._Set<double>(1, i, points._<double>(1, i));
             }
             for (var i = 1; i <= g.Cols; i++)
             {
-                g.Set(0, i, points._<double>(1, i) + points._<double>(2, i) / 2);
+                g._Set<double>(1, i, points._<double>(1, i) + points._<double>(2, i) / 2);
             }
 
             for (int i = 1; i < m - 2; i++)
             {
                 for (var j = 1; j <= f.Cols; j++)
                 {
-                    f.Set(i, j, 2 * (points._<double>(i + 1, j) + points._<double>(i + 2, j)) / 3);
+                    f._Set<double>(i, j, 2 * (points._<double>(i + 1, j) + points._<double>(i + 2, j)) / 3);
                 }
                 for (var j = 1; j <= g.Cols; j++)
                 {
-                    g.Set(i, j, (points._<double>(i + 1, j) + 2 * points._<double>(i + 2, j)) / 3);
+                    g._Set<double>(i, j, (points._<double>(i + 1, j) + 2 * points._<double>(i + 2, j)) / 3);
                 }
             }
 
@@ -48,14 +49,14 @@ namespace FloorSweep.PathFinding
             }
             for (var j = 1; j <= e.Cols; j++)
             {
-                e._Set<double>(0, j, points._<double>(0, j));
+                e._Set<double>(1, j, points._<double>(1, j));
             }
 
-            for (int i = 1; i < m; i++)
+            for (int i = 2; i <= m; i++)
             {
                 for (var j = 1; j <= e.Cols; j++)
                 {
-                    e._Set<double>(0, j, (g._<double>(i - 1, j) + f._<double>(i, j)) / 2);
+                    e._Set<double>(1, j, (g._<double>(i - 1, j) + f._<double>(i, j)) / 2);
                 }
             }
 
@@ -66,17 +67,17 @@ namespace FloorSweep.PathFinding
 
             Mat[] retVal = new Mat[m];
 
-            for (int i = 0; i < m; i++)
+            for (int i = 1; i <= m; i++)
             {
 
-                var m1 = new Mat();
-                m1.AddBottom(e.Row(i));
-                m1.AddBottom(f.Row(i));
-                m1.AddBottom(g.Row(i));
-                m1.AddBottom(e.Row(i + 1));
-                retVal[i] = m1;
+                var m1 = new Mat(rows: 0, e.Cols, e.Type());
+                m1.AddBottom(e.Rows(i, i));
+                m1.AddBottom(f.Rows(i, i));
+                m1.AddBottom(g.Rows(i, i));
+                m1.AddBottom(e.Rows(i + 1, i + 1));
+                retVal[i - 1] = m1;
             }
-            var spline = new Mat();
+            var spline = new Mat(rows: 0, e.Cols, MatType.CV_64FC1);
             var t = MatExtensions.FromRange(0, 1, 0.2);
 
             foreach (var i in retVal)
@@ -106,9 +107,9 @@ namespace FloorSweep.PathFinding
         {
 
             var indicesToDelete = new List<int>();
-            for (int i = 0; i < points.Rows - 1; i++)
+            for (int i = 1; i <= points.Rows - 1; i++)
             {
-                if (w_distance(points.Row(i), points.Row(i + 1)) < 0.01)
+                if (w_distance(points.Rows(i, i), points.Rows(i + 1, i + 1)) < 0.01)
                 {
                     indicesToDelete.Add(i);
                 }
@@ -122,12 +123,17 @@ namespace FloorSweep.PathFinding
             }
 
             var len = points.Rows;
-            var distance = Mat.Zeros(len, 1).ToMat();
+            var distance = Mat.Zeros(rows: len, 1, MatType.CV_64FC1).ToMat();
 
-            for (int i = 1; i <= len; i++)
+            for (int i = 2; i <= len; i++)
             {
-                var delta = w_distance(points.Row(i), points.Row(i - 1));
-                distance._Set<double>(i, delta + distance._<double>(i - 1));
+                var delta = w_distance(points.Rows(i, i), points.Rows(i - 1, i - 1));
+                var val = delta + distance._<double>(i - 1);
+                if(double.IsNaN(val))
+                {
+                    //Debugger.Break();
+                }
+                distance._Set<double>(i, val);
             }
 
             var t = MatExtensions.FromRange(0, distance.__(distance.Cols), sampling);
@@ -136,13 +142,13 @@ namespace FloorSweep.PathFinding
 
         private static double w_distance(Mat p1, Mat p2)
         {
-            var vec = (p1 - p2).ToMat();
+            var vec = p1.Minus(p2);
             return Math.Sqrt(vec.Pow(2).Sum2());
         }
 
         private static Mat interp1(Mat X, Mat Y, Mat targetX)
         {
-            Mat retVal = new Mat();
+            Mat retVal = new Mat(rows: 0, X.Cols, MatType.CV_64FC1);
             for (int i = 1; i <= X.Cols; i++)
             {
                 retVal.AddBottom(interp1(X, Y, targetX.__(i)));
@@ -151,20 +157,21 @@ namespace FloorSweep.PathFinding
         }
         private static double interp1(Mat X, Mat Y, int targetX)
         {
-            var dist = (X - targetX).Abs().ToMat();
+            var dist = X.Minus(targetX).Abs().ToMat();
             double minVal, maxVal;
             Point minLoc1, minLoc2, maxLoc;
 
             // find the nearest neighbour
             Mat mask = Mat.Ones(X.Rows, X.Cols, MatType.CV_8UC1);
             Cv2.MinMaxLoc(dist, out minVal, out maxVal, out minLoc1, out maxLoc, mask);
-
+            minLoc1 = minLoc1 + new Point(1, 1);
             // mask out the nearest neighbour and search for the second nearest neighbour
-            mask.At<double>(minLoc1) = 0;
+            mask._Set<byte>(minLoc1.Y, minLoc1.X,  0);
             Cv2.MinMaxLoc(dist, out minVal, out maxVal, out minLoc2, out maxLoc, mask);
+            minLoc2 = minLoc2 + new Point(1, 1);
 
             // use the two nearest neighbours to interpolate the target value
-            double res = interpolate(X.__(minLoc1.X, minLoc1.Y), Y._<double>(minLoc1.X, minLoc1.Y), X.__(minLoc2.X, minLoc2.Y), Y._<double>(minLoc2.X, minLoc2.Y), targetX);
+            double res = interpolate(X.__(minLoc1.Y, minLoc1.X), Y._<double>(minLoc1.Y, minLoc1.X), X.__(minLoc2.Y, minLoc2.X), Y._<double>(minLoc2.Y, minLoc2.X), targetX);
             return res;
         }
 
@@ -191,15 +198,19 @@ namespace FloorSweep.PathFinding
         private static Mat bezier4(Mat bez, Mat t, double n)
         {
             var len = Math.Max(t.Rows, t.Cols);
-            var @out = Mat.Zeros(len, bez.Cols).ToMat();
-            var t1 = t.T().ToMat();
+            var @out = Mat.Zeros(rows: 0, bez.Cols, MatType.CV_64FC1).ToMat();
             for (int i = 1; i <= len; i++)
             {
-                var k = bez._<double>(1, bez.Cols ) * (w_b(t1._<double>(i), n, 1));
-                var l = bez._<double>(2, bez.Cols ) * (w_b(t1._<double>(i), n, 2));
-                var m = bez._<double>(3, bez.Cols ) * (w_b(t1._<double>(i), n, 3));
-                var u = bez._<double>(4, bez.Cols ) * (w_b(t1._<double>(i), n, 4));
-                @out.AddBottom((k * bez.Row(0) + l * bez.Row(1) + m * bez.Row(2) + u * bez.Row(3)) / (k + l + m + u));
+                var k = bez._<double>(1, bez.Cols) * (w_b(t._<double>(i), n, 0));
+                var l = bez._<double>(2, bez.Cols) * (w_b(t._<double>(i), n, 1));
+                var m = bez._<double>(3, bez.Cols) * (w_b(t._<double>(i), n, 2));
+                var u = bez._<double>(4, bez.Cols) * (w_b(t._<double>(i), n, 3));
+                var newrow = bez.Rows(1, 1).Mult(k).Plus(bez.Rows(2, 2).Mult(l)).Plus(bez.Rows(3, 3).Mult(m)).Plus(bez.Rows(4, 4).Mult(u)).Div(k + l + m + u);
+                if(newrow.DataLeftToRight<double>().Any(double.IsNaN))
+                {
+                    //Debugger.Break();
+                }
+                @out.AddBottom(newrow);
             }
             return @out;
         }

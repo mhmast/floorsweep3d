@@ -52,6 +52,7 @@ namespace FloorSweep.PathFinding.TestApp
 
                 //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
                 ResolvePath.DoResolvePath(state);
+                //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
                 
             }));
             //%% show A - star graph
