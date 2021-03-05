@@ -26,7 +26,7 @@ namespace FloorSweep.PathFinding
             {
                 minval = double.PositiveInfinity;
                 var it = new Mat();
-                foreach (var n in state.Ucc.AsMathlabColEnumerable())
+                foreach (var n in state.Ucc)
                 {
 
                     var u = s.Plus(n);

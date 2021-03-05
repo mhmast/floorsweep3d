@@ -127,82 +127,90 @@ namespace FloorSweep.PathFinding
 
             return retVal;
         }
-        public static Mat Minus(this Mat m, double other)
-        {
-            Mat retVal = new Mat(m.Rows, m.Cols);
+        //public static Mat Minus(this Mat m, double other)
+        //{
+        //    Mat retVal = new Mat(m.Rows, m.Cols);
 
-            for (int i = 1; i <= m.Rows; i++)
-            {
-                for (int c = 1; c <= m.Cols; c++)
-                {
-                    retVal[i, c] = m._<double>(i, c) - other;
-                }
-            }
+        //    for (int i = 1; i <= m.Rows; i++)
+        //    {
+        //        for (int c = 1; c <= m.Cols; c++)
+        //        {
+        //            retVal[i, c] = m._<double>(i, c) - other;
+        //        }
+        //    }
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
-        public static Mat Mult(this Mat m, double other)
-        {
-            Mat retVal = new Mat(m.Rows, m.Cols);
+        //public static Mat Mult(this Mat m, double other)
+        //{
+        //    Mat retVal = new Mat(m.Rows, m.Cols);
 
-            for (int i = 1; i <= m.Rows; i++)
-            {
-                for (int c = 1; c <= m.Cols; c++)
-                {
-                    retVal[i, c] = m._<double>(i, c) * other;
-                }
-            }
+        //    for (int i = 1; i <= m.Rows; i++)
+        //    {
+        //        for (int c = 1; c <= m.Cols; c++)
+        //        {
+        //            retVal[i, c] = m._<double>(i, c) * other;
+        //        }
+        //    }
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
-        public static Mat Div(this Mat m, double other)
-        {
-            Mat retVal = new Mat(m.Rows, m.Cols);
+        //public static Mat Div(this Mat m, double other)
+        //{
+        //    Mat retVal = new Mat(m.Rows, m.Cols);
 
-            for (int i = 1; i <= m.Rows; i++)
-            {
-                for (int c = 1; c <= m.Cols; c++)
-                {
-                    retVal[i, c] = m._<double>(i, c) / other;
-                }
-            }
+        //    for (int i = 1; i <= m.Rows; i++)
+        //    {
+        //        for (int c = 1; c <= m.Cols; c++)
+        //        {
+        //            retVal[i, c] = m._<double>(i, c) / other;
+        //        }
+        //    }
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
-        public static Mat Plus(this Mat m, double other)
-        {
-            Mat retVal = new Mat(m.Rows, m.Cols);
+        //public static Mat Plus(this Mat m, double other)
+        //{
+        //    Mat retVal = new Mat(m.Rows, m.Cols);
 
-            for (int i = 1; i <= m.Rows; i++)
-            {
-                for (int c = 1; c <= m.Cols; c++)
-                {
-                    retVal[i, c] = m._<double>(i, c) + other;
-                }
-            }
+        //    for (int i = 1; i <= m.Rows; i++)
+        //    {
+        //        for (int c = 1; c <= m.Cols; c++)
+        //        {
+        //            retVal[i, c] = m._<double>(i, c) + other;
+        //        }
+        //    }
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
         public static Mat Rows(this Mat m, int startRow, int endRow)
         => m.Range(startRow, endRow, 1, m.Cols);
 
-        public static Mat Range(this Mat m, int startRow, int endRow, int startCol, int endCol)
-        {
-            Mat retVal = new Mat(endRow - startRow, endCol - startCol);
+        //public static Mat Range(this Mat m, int startRow, int endRow, int startCol, int endCol)
+        //{
+        //    Mat retVal = new Mat(endRow - startRow+1, endCol - startCol+1);
 
-            for (int i = startRow; i <= endRow; i++)
-            {
-                for (int c = startCol; c <= endCol; c++)
-                {
-                    retVal[i - startRow + 1, c - startCol + 1] = m._<double>(i, c);
-                }
-            }
-            return retVal;
-        }
+        //    if (m.Rows < endRow)
+        //    {
+        //        m.VConcat(Mat.Zeros(endRow - m.Rows, m.Cols));
+        //    }
+        //    if (m.Cols < endCol)
+        //    {
+        //        m.HConcat(Mat.Zeros(m.Rows, endCol - m.Cols));
+        //    }
+        //    for (int i = startRow; i <= endRow; i++)
+        //    {
+        //        for (int c = startCol; c <= endCol; c++)
+        //        {
+        //            retVal[i - startRow + 1, c - startCol + 1] = m._<double>(i, c);
+        //        }
+        //    }
+        //    return retVal;
+        //}
 
 
 

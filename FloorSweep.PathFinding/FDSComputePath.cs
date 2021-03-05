@@ -48,7 +48,7 @@ namespace FloorSweep.PathFinding
         }
 
 
-        private static bool computeShortestPath(SortedSet<Mat> stack, Mat[] graph, double limit, Mat template, Mat ucc, ref double mindist, Mat startPos, Mat pattern, Mat map, double kM, Mat vis)
+        private static bool computeShortestPath(SortedSet<Mat> stack, Mat[] graph, double limit, Mat template, IEnumerable<Mat> ucc, ref double mindist, Mat startPos, Mat pattern, Mat map, double kM, Mat vis)
         {
             var terminate = false;
             var count = 0;
@@ -81,7 +81,7 @@ namespace FloorSweep.PathFinding
                 {
                     if (h_val > k_val)
                     {
-                        foreach (var n in ucc.AsMathlabColEnumerable())
+                        foreach (var n in ucc)
                         {
                             var y = x.Plus(n);
                             if (t(y, graph) != OutcomeState.NEW && k(x, graph) == k(y, graph) + 1)
@@ -96,7 +96,7 @@ namespace FloorSweep.PathFinding
                     if (k_val == h(x, graph) && h(x, graph) < mindist)
                     {
                         c2 = c2 + 1;
-                        foreach (var n in ucc.AsMathlabColEnumerable())
+                        foreach (var n in ucc)
                         {
                             var y = x.Plus(n);
                             if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
@@ -117,7 +117,7 @@ namespace FloorSweep.PathFinding
                     }
                     else if (h_val < mindist || double.IsInfinity(h_val))
                     {
-                        foreach (var n in ucc.AsMathlabColEnumerable())
+                        foreach (var n in ucc)
                         {
                             var y = x.Plus(n);
 

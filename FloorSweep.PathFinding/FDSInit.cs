@@ -1,6 +1,7 @@
 ﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FloorSweep.PathFinding
@@ -53,7 +54,7 @@ namespace FloorSweep.PathFinding
 
             @out.Scaling = scaling;
             @out.Pattern = shapePattern.T();
-            @out.Ucc = neighbours.T();
+            @out.Ucc = neighbours.T().Columns().ToList();
 
             @out.Graph = new Mat[7];
             for(int i=0;i<7;i++)

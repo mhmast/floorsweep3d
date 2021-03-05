@@ -25,7 +25,7 @@ namespace FloorSweep.PathFinding
         public Mat EndPos { get; internal set; }
         public int Scaling { get; internal set; }
         public Mat Pattern { get; internal set; }
-        public Mat Ucc { get; internal set; }
+        public IEnumerable<Mat> Ucc { get; internal set; }
         public int Height { get => Map.Rows; }
         public int Width { get => Map.Cols; }
         public Mat[] Graph { get; internal set; }

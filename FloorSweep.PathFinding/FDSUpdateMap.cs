@@ -63,7 +63,7 @@ namespace FloorSweep.PathFinding
 
             foreach (var u in removed.AsMathlabColEnumerable())
             {
-                foreach (var n in ucc.AsMathlabColEnumerable())
+                foreach (var n in ucc)
                 {
                     var s = u.Plus(n);
                     insert(s, h(s, graph), graph, kM, startPos, stack);
@@ -71,7 +71,7 @@ namespace FloorSweep.PathFinding
             }
             foreach (var u in added.AsMathlabColEnumerable())
             {
-                foreach (var n in ucc.AsMathlabColEnumerable())
+                foreach (var n in ucc)
                 {
                     var s = u.Plus(n);
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
