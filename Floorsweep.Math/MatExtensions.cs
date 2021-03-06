@@ -64,7 +64,7 @@ namespace FloorSweep.PathFinding
 
         public static Mat Plus(this Mat m, Mat other)
         {
-            if (m.Empty())
+            if (m.Empty() )
             {
                 return other.Copy();
             }
