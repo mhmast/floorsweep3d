@@ -67,21 +67,15 @@ namespace FloorSweep.PathFinding
                     insert(s, h(s, graph), graph, kM, startPos, stack);
                 }
             }
-            foreach (var u in added.AsMathlabColEnumerable())
+            foreach (var u in added)
             {
                 foreach (var n in ucc)
                 {
-                    var s = u.Plus(n);
+                    var s = u + n;
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        s._Set<double>(3, 1, -k(s, graph) + kM);
-                        s._Set<double>(4, 1, k(s, graph) + g(s, startPos));
-                        if (s._<double>(2, 1) == 2)
-                        {
-                            Debugger.Break();
-                        }
-                        stack.Add(s);
+                        stack.Add(new Point4(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos))));
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
                 }
@@ -114,9 +108,9 @@ namespace FloorSweep.PathFinding
             return System.Math.Sqrt(System.Math.Pow(ss.X, 2) + System.Math.Pow(ss.Y, 2));
         }
 
-        private static void sett(Mat s, double val, Mat[] graph)
+        private static void sett(Point s, double val, Mat[] graph)
         {
-            graph[2]._Set<double>(s.__(1), s.__(2), val);
+            graph[2]._Set<double>(s.X, s.Y, val);
         }
 
         private static void seth(Point s, double val, Mat[] graph)
@@ -143,10 +137,8 @@ namespace FloorSweep.PathFinding
                     setk(s, System.Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
-                s._Set<double>(3, 1, k(s, graph) + kM + g(s, startPos));
-                s._Set<double>(4, 1, k(s, graph) + g(s, startPos));
                 
-                stack.Add(s);
+                stack.Add(new Point4(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos))));
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
         }

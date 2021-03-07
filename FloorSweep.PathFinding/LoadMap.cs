@@ -27,10 +27,8 @@ namespace FloorSweep.PathFinding
             @out.Map.AddBottom(Mat.Zeros(6, m.Cols));
             @out.Map = @out.Map.T();
 
-            @out.Start = (robot_xy.Div(scaling)).ToMat().Floor().Plus( new Mat(1, 2, 5)) ;
-            @out.Target = (target_xy.Div(scaling)).ToMat().Floor().Plus( new Mat(1, 2, 5)) ;
-            @out.Start = @out.Start.T();
-            @out.Target = @out.Target.T();
+            @out.Start = robot_xy / scaling + 5;
+            @out.Target = target_xy / scaling + 5;
             @out.Image = mapData.Image;
             return @out;
         }

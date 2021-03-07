@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace FloorSweep.Math
 {
@@ -31,13 +32,15 @@ namespace FloorSweep.Math
         class PointComparer : IEqualityComparer<Point>
         {
             public bool Equals(Point x, Point y)
-            => x?.X == y?.X && x?.Y == y?.Y;
+            => x == y;
 
             public int GetHashCode(Point obj)
             {
                 return obj.GetHashCode();
             }
         }
+
+
         public static IEqualityComparer<Point> Comparer
         {
             get => _comparer;
@@ -48,14 +51,30 @@ namespace FloorSweep.Math
             X = x;
             Y = y;
         }
+
+        public int Min() => X < Y ? X : Y;
+        public int Max() => X > Y ? X : Y;
         public int X { get; }
         public int Y { get; }
 
 
+        public static bool operator ==(Point left, Point right) => left?.X == right?.X && left?.Y == right?.Y;
+        public static bool operator !=(Point left, Point right) => !(left == right);
         public static Point operator +(Point left, Point right) => new Point(left.X + right.X, left.Y + right.Y);
+        public static Point operator +(Point left, int right) => new Point(left.X + right, left.Y + right);
         public static Point operator -(Point left, Point right) => new Point(left.X - right.X, left.Y - right.Y);
+        public static Point operator -(Point left, int right) => new Point(left.X - right, left.Y - right);
+        public static Point operator /(Point left, Point right) => new Point(left.X / right.X, left.Y / right.Y);
+        public static Point operator /(Point left, int right) => new Point(left.X / right, left.Y / right);
+        public static Point operator *(Point left, Point right) => new Point(left.X * right.X, left.Y * right.Y);
+        public static Point operator *(Point left, int right) => new Point(left.X * right, left.Y * right);
 
         public Point Abs() => new Point(System.Math.Abs(X), System.Math.Abs(Y));
+
+        public static implicit operator PointF(Point p) => new PointF(p.X, p.Y);
+
+        public long Sum()
+        => X + Y;
     }
 
     public class PointD

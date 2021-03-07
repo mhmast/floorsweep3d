@@ -8,7 +8,7 @@ namespace FloorSweep.PathFinding
     public class State
     {
         private Mat _map;
-        private List<Mat> _path = new List<Mat>();
+        private List<Point> _path = new List<Point>();
 
         public event Action PathFound;
         public Mat Map
@@ -33,7 +33,7 @@ namespace FloorSweep.PathFinding
         public SortedSet<Point4> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
-        public List<Mat> Path
+        public List<Point> Path
         {
             get => _path; 
             set

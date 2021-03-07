@@ -4,24 +4,24 @@ using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
 {
-    internal class DStarComparator : IComparer<Mat>
+    internal class DStarComparator : IComparer<Point4>
     {
-        private readonly Mat _target;
+        private readonly Point _target;
 
-        public DStarComparator(Mat target)
+        public DStarComparator(Point target)
         {
             _target = target;
         }
-        public int Compare(Mat m, Mat m2)
+        public int Compare(Point4 m, Point4 m2)
         {
-            var mDist = System.Math.Abs(_target[1, 1] - m[1, 1] + _target[2, 1] - m[2, 1]);
-            var m2Dist = System.Math.Abs(_target[1, 1] - m2[1, 1] + _target[2, 1] - m2[2, 1]);
+            var mDist = System.Math.Abs(_target.Sum() - m.XY.Sum());
+            var m2Dist = System.Math.Abs(_target.Sum() - m2.XY.Sum());
             var cmp = mDist.CompareTo(m2Dist);
-            if (cmp == 0 && m[1, 1] == m2[1, 1])
+            if (cmp == 0)
             {
-                return 0;
+                return m.XY.X == m2.XY.X ? 0 : -1;
             }
-            return cmp == 0 ? -1 : cmp;
+            return cmp;
         }
     }
 }

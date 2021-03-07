@@ -17,47 +17,47 @@ namespace FloorSweep.PathFinding
             var mat = Mat.Zeros((int)(radius * 2), (int)(radius * 2)).ToMat();
             double dista(double a, double b) => System.Math.Sqrt(a * a + b * b);
 
-            var rows = new List<double[]>();
-
+            //var rows = new List<double[]>();
+            var shapePattern = new List<Point>();
             for (int x = 1; x <= 2 * radius; x++)
             {
                 for (int y = 1; y <= 2 * radius; y++)
                 {
                     if (dista(x - radius - 0.5, y - radius - 0.5) > radius - 1 && dista(x - radius - 0.5, y - radius - 0.5) < radius)
                     {
-                        mat._Set<double>(x, y, 1.0);
-                        rows.Add(new double[] { System.Math.Floor((double)x - radius), System.Math.Floor((double)y - radius), 0, 0 });
+                        //mat._Set<double>(x, y, 1.0);
+                        shapePattern.Add(new Point((int)System.Math.Floor(x - radius), (int)System.Math.Floor(y - radius)));
                     }
                 }
             }
-            var shapePattern = MatExtensions.FromRows(rows.ToArray());
+            //var shapePattern = MatExtensions.FromRows(rows.ToArray());
 
-            var neighbours = MatExtensions.FromRows(
-          new[] { 0.0, 1, 0, 0, },
-          new[] { -1.0, 0, 0, 0 },
-          new[] { 0.0, -1, 0, 0 },
-          new[] { 1.0, 1, 0, 0 },
-          new[] { -1.0, -1, 0, 0 },
-          new[] { 1.0, 0, 0, 0 },
-          new[] { 1.0, -1, 0, 0 },
-          new[] { -1.0, 1, 0, 0 }
-          );
+            var neighbours = new List<Point> {
+                new Point( 0, 1),
+                new Point( -1, 0 ),
+                new Point( 0, -1 ),
+                new Point( 1, 1),
+                new Point( -1, -1),
+                new Point( 1, 0),
+                new Point( 1, -1 ),
+                new Point( -1, 1 )
+            };
 
             var @out = new State();
 
             @out.Map = map;
-            @out.StartPos = startPos.Invert();
-            @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols));
-            @out.EndPos = endPos.Invert();
-            @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols));
+            @out.StartPos = startPos;
+            //  @out.StartPos.AddBottom(Mat.Zeros(2, @out.StartPos.Cols));
+            @out.EndPos = endPos;
+            //            @out.EndPos.AddBottom(Mat.Zeros(2, @out.EndPos.Cols));
             startPos = @out.StartPos;
 
             @out.Scaling = scaling;
-            @out.Pattern = shapePattern.T();
-            @out.Ucc = neighbours.T().Columns().ToList();
+            @out.Pattern = shapePattern;//.T();
+            @out.Ucc = neighbours;
 
             @out.Graph = new Mat[7];
-            for(int i=0;i<7;i++)
+            for (int i = 0; i < 7; i++)
             {
                 @out.Graph[i] = Mat.Zeros(map.Rows, map.Cols).ToMat();
             }
@@ -67,19 +67,16 @@ namespace FloorSweep.PathFinding
             @out.Graph[4].SetAll(-1.0);
             @out.KM = 0.0;
             var SQRT2 = System.Math.Sqrt(2) - 1;
-            
-            @out.Graph[1]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 0);
-            @out.Graph[0]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 0);
-            @out.Graph[2]._Set<double>(@out.EndPos.__(1, 1), @out.EndPos.__(2, 1), 1);
-            var k = (startPos.Minus(@out.EndPos)).Abs().ToMat();
-            var m11m21 = k.Rows(1, 2).Cols(1, 1);
-            var heur = SQRT2 * m11m21.Min() + m11m21.Max();
-            @out.EndPos._Set<double>(3, 1, heur);
-            @out.EndPos._Set<double>(4, 1, 0);
-            @out.Stack = new SortedSet<Mat>(new DStarComparator(@out.StartPos));
-            @out.Stack.Add(@out.EndPos);
+
+            @out.Graph[1]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 0);
+            @out.Graph[0]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 0);
+            @out.Graph[2]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 1);
+            var k = (startPos - @out.EndPos).Abs();
+            var heur = SQRT2 * k.Min() + k.Max();
+            @out.Stack = new SortedSet<Point4>(new DStarComparator(@out.StartPos));
+            @out.Stack.Add(new Point4(@out.EndPos,new PointD(heur,0)));
             @out.Image = data.Image;
-          //  @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
+            //  @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
             return @out;
         }
     }
