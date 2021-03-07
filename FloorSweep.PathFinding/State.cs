@@ -21,16 +21,16 @@ namespace FloorSweep.PathFinding
                 Template = Mat.Zeros(Height, Width);
             }
         }
-        public Mat StartPos { get; internal set; }
-        public Mat EndPos { get; internal set; }
+        public Point StartPos { get; internal set; }
+        public Point EndPos { get; internal set; }
         public int Scaling { get; internal set; }
-        public Mat Pattern { get; internal set; }
-        public IEnumerable<Mat> Ucc { get; internal set; }
+        public IEnumerable<Point> Pattern { get; internal set; }
+        public IEnumerable<Point> Ucc { get; internal set; }
         public int Height { get => Map.Rows; }
         public int Width { get => Map.Cols; }
         public Mat[] Graph { get; internal set; }
         public double KM { get; set; }
-        public SortedSet<Mat> Stack { get; internal set; }
+        public SortedSet<Point4> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
         public List<Mat> Path

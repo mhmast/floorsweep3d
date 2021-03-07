@@ -1,8 +1,10 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace FloorSweep.Math
 {
@@ -151,8 +153,8 @@ namespace FloorSweep.Math
             }
             var noRows = endRow - startRow + 1;
             var noCols = endCol - startCol + 1;
-            var overlapCols = System.Math.Min(Cols, endCol) - startCol+1;
-            var overlapRows = System.Math.Min(Rows, endRow) - startRow+1;
+            var overlapCols = System.Math.Min(Cols, endCol) - startCol + 1;
+            var overlapRows = System.Math.Min(Rows, endRow) - startRow + 1;
             var retMat = Zeros(noRows, noCols);
             if (overlapCols == 0 || overlapRows == 0)
             {
@@ -161,7 +163,7 @@ namespace FloorSweep.Math
 
             for (int row = 0; row < overlapRows; row++)
             {
-                Array.Copy(_data[row+startRow-1], startCol-1, retMat._data[row], 0, overlapCols);
+                Array.Copy(_data[row + startRow - 1], startCol - 1, retMat._data[row], 0, overlapCols);
             }
 
             return retMat;
@@ -209,23 +211,8 @@ namespace FloorSweep.Math
 
         public Mat Copy()
         => new Mat(Rows, Cols, _data);
-        public Mat Div(double value)
-            => ForeachInThisMat(d => d / value);
 
-        public static Mat operator /(Mat m, double value) => m.Div(value);
-
-        public Mat Plus(double value)
-            => ForeachInThisMat(d => d + value);
-
-        public static Mat operator +(Mat m, double value) => m.Plus(value);
-
-        public Mat Mul(double value)
-            => ForeachInThisMat(d => d * value);
-
-        public static Mat operator *(Mat m, double value) => m.Mul(value);
-
-
-        public Mat Minus(Mat other)
+        private Mat ProductTemplate(Mat other, Func<double, double, double> @operator)
         {
             if (Empty())
             {
@@ -236,46 +223,108 @@ namespace FloorSweep.Math
                 return Copy();
             }
 
-            if (other.Size() != Size() && !(other.Rows == 1 || other.Cols == 1) && !(Rows == 1 || Cols == 1))
+            if (other.Size() == Size())
             {
-                throw new ArgumentException();
+                return ProductTemplate(this, (row, col) => other[row, col], @operator);
             }
-            var newData = new double[Rows][];
-
-            for (int i = 0; i < System.Math.Max(Rows, other.Rows); i++)
+            if (Cols == other.Cols)
             {
-                var newCols = new double[Cols];
-
-                for (int c = 0; c < System.Math.Max(Cols, other.Cols); c++)
+                if (Rows == 1)
                 {
-                    var valCol = Cols == 1 ? 0 : c;
-                    var val = Rows == 1 ? _data[0][valCol] : _data[i][valCol];
-                    var ovalCol = other.Cols == 1 ? 0 : c;
-                    var oval = other.Rows == 1 ? other._data[0][ovalCol] : other._data[i][ovalCol];
-                    newCols[c] = val - oval;
+                    return ProductTemplate(other, (row, col) => this[1, col], @operator);
                 }
-                newData[i] = newCols;
+                if (other.Rows == 1)
+                {
+                    return ProductTemplate(this, (row, col) => other[1, col], @operator);
+                }
             }
-            return new Mat(Rows, Cols, newData);
-
+            else if (Rows == other.Rows)
+            {
+                if (Cols == 1)
+                {
+                    return ProductTemplate(other, (row, col) => this[row, 1], @operator);
+                }
+                if (other.Rows == 1)
+                {
+                    return ProductTemplate(this, (row, col) => other[row, 1], @operator);
+                }
+            }
+            throw new ArgumentException();
         }
+
+        public Point Point(int row, int col) => new Point((int)this[row, col], (int)this[row + 1, col]);
+
+        private Mat ProductTemplate(Mat m, Func<int, int, double> valueSelector, Func<double, double, double> @operator)
+        {
+            var retVal = new double[m.Rows][];
+
+            for (int i = 1; i <= m.Rows; i++)
+            {
+                var col = new double[m.Cols];
+                for (int c = 1; c <= Cols; c++)
+                {
+                    col[c - 1] = @operator(m[i, c], valueSelector(i, c));
+                }
+                retVal[i - 1] = col;
+            }
+            return new Mat(Rows, Cols, retVal);
+        }
+
+        public Mat Mul(double value)
+            => ProductTemplate(this, (row, col) => value, (l, r) => l * r);
+
+        public Mat Mul(Mat value)
+            => ProductTemplate(value, (l, r) => l * r);
+
+        public static Mat operator *(Mat m, double value) => m.Mul(value);
+        public static Mat operator *(Mat m, Mat value) => m.Mul(value);
+
         public Mat Minus(double value)
-            => ForeachInThisMat(d => d - value);
+            => ProductTemplate(this, (row, col) => value, (l, r) => l - r);
+        public Mat Minus(Mat value)
+            => ProductTemplate(value, (l, r) => l - r);
 
         public static Mat operator -(Mat m, double value) => m.Minus(value);
+        public static Mat operator -(Mat m, Mat value) => m.Minus(value);
+
+        public Mat Div(double value)
+            => ProductTemplate(this, (row, col) => value, (l, r) => l / r);
+        public Mat Div(Mat value)
+            => ProductTemplate(value, (l, r) => l / r);
+
+        public static Mat operator /(Mat m, double value) => m.Div(value);
+        public static Mat operator /(Mat m, Mat value) => m.Div(value);
+
+
+        public Mat Plus(double value)
+            => ProductTemplate(this, (row, col) => value, (l, r) => l + r);
+        public Mat Plus(Mat value)
+            => ProductTemplate(value, (l, r) => l + r);
+
+        public static Mat operator +(Mat m, double value) => m.Plus(value);
+        public static Mat operator +(Mat m, Mat value) => m.Plus(value);
 
 
         public int Rows { get; private set; }
         public int Cols { get; private set; }
-        public double[] Data => _data.SelectMany(s => s).ToArray();
+        public unsafe double[] Data
+        {
+            get
+            {
+                var dta = new double[Rows * Cols];
+                for (var row = 0; row < Rows; row++)
+                {
+                    Array.Copy(_data[row], 0, dta, row * Cols, Cols);
+                }
+                return dta;
+            }
+        }
 
         public double Max()
         => Data.Max();
 
         public double Min()
         => Data.Min();
-        private int GetArrAddr(int row, int col)
-                => ((row - 1) * Cols) + (col - 1);
 
         private (int, int) GetRowCol(int pos)
         {
@@ -291,15 +340,27 @@ namespace FloorSweep.Math
         public static double[] ResolveCvData(OpenCvSharp.Mat m)
             => m.ElemSize() switch
             {
-                1 when m.Channels() == 1 => GetArray<byte>(m),
+                1 when m.Channels() == 1 => GetByteArray(m),
                 8 when m.Channels() == 1 => GetArray<double>(m),
                 _ => throw new ArgumentException()
             };
 
-        private static double[] GetArray<T>(OpenCvSharp.Mat m) where T : unmanaged
+        private unsafe static double[] GetByteArray(OpenCvSharp.Mat m)
         {
-            m.GetArray<T>(out var data);
-            return data.Select(t => Convert.ToDouble(t)).ToArray();
+            var bytes = GetArray<byte>(m);
+            return bytes.Select(Convert.ToDouble).ToArray();
+        }
+        private unsafe static double[] GetDoubleArray(OpenCvSharp.Mat m)
+        => GetArray<double>(m);
+        private unsafe static T[] GetArray<T>(OpenCvSharp.Mat m) where T : unmanaged
+        {
+            var buffer = new T[m.Rows * m.Cols];
+            fixed (void* dtaPtr = &buffer[0])
+            {
+                var len = buffer.Length * sizeof(T);
+                Buffer.MemoryCopy(m.DataPointer, dtaPtr, len, len);
+                return buffer;
+            }
         }
 
         public Size Size()

@@ -43,12 +43,12 @@ namespace FloorSweep.PathFinding
             state.StartPos = endPos;
             state.Graph = graph;
             state.Stack = stack;
-            state.Length = graph[1]._<double>(startPos.__(1), startPos.__(2));
+            state.Length = graph[1]._<double>(startPos.X, startPos.Y);
             return state;
         }
 
 
-        private static bool computeShortestPath(SortedSet<Mat> stack, Mat[] graph, double limit, Mat template, IEnumerable<Mat> ucc, ref double mindist, Mat startPos, Mat pattern, Mat map, double kM, Mat vis)
+        private static bool computeShortestPath(SortedSet<Point4> stack, Mat[] graph, double limit, Mat template, IEnumerable<Point> ucc, ref double mindist, Point startPos, IEnumerable<Point> pattern, Mat map, double kM, Mat vis)
         {
             var terminate = false;
             var count = 0;
@@ -67,51 +67,50 @@ namespace FloorSweep.PathFinding
                 count = count + 1;
                 var x = stack.First();
                 stack.Remove(x);
-                if (t(x, graph) == OutcomeState.CLOSED)
+                var xXY = x.XY;
+                if (t(xXY, graph) == OutcomeState.CLOSED)
                 {
                     continue;
                 }
 
-                var val = x.Range(3, 4, 1, 1);
-                var k_val = k(x, graph);
-                var h_val = h(x, graph);
-                rsetQ(x, graph);
+                var val = x.AB;
+                var k_val = k(xXY, graph);
+                var h_val = h(xXY, graph);
+                rsetQ(xXY, graph);
 
-                if (testNode(x, template, pattern, map))
+                if (testNode(xXY, template, pattern, map))
                 {
                     if (h_val > k_val)
                     {
                         foreach (var n in ucc)
                         {
-                            var y = x.Plus(n);
-                            if (t(y, graph) != OutcomeState.NEW && k(x, graph) == k(y, graph) + 1)
+                            var y = x.XY + n;
+                            if (t(y, graph) != OutcomeState.NEW && k(xXY, graph) == k(y, graph) + 1)
                             {
-                                seth(x, h(y, graph) + 1, graph);
-                                h_val = h(x, graph);
-                                setb(x, y, graph);
+                                seth(x.XY, h(y, graph) + 1, graph);
+                                h_val = h(x.XY, graph);
+                                setb(x.XY, y, graph);
                                 c1 = c1 + 1;
                             }
                         }
                     }
-                    if (k_val == h(x, graph) && h(x, graph) < mindist)
+                    if (k_val == h(xXY, graph) && h(xXY, graph) < mindist)
                     {
                         c2 = c2 + 1;
                         foreach (var n in ucc)
                         {
-                            var y = x.Plus(n);
+                            var y = x.XY + n;
                             if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
                             {
 
-                                insert(y, h_val + 1, graph, mindist, stack, kM, startPos);
-                                setb(y, x, graph);
+                                insert(y, h_val + 1, graph, mindist, stack, kM);
+                                setb(y, xXY, graph);
                             }
 
                         }
-                        var xcol = x.Range(1, 2, 1, 1);
-                        var startPosCol = startPos.Range(1, 2, 1, 1);
-                        if (xcol.IsEqual(startPosCol))
+                        if (xXY == startPos)
                         {
-                            mindist = System.Math.Min(mindist, h(x, graph)) + 1;
+                            mindist = System.Math.Min(mindist, h(xXY, graph)) + 1;
                             return true;
                         }
                     }
@@ -119,22 +118,22 @@ namespace FloorSweep.PathFinding
                     {
                         foreach (var n in ucc)
                         {
-                            var y = x.Plus(n);
+                            var y = xXY + n;
 
-                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.__(1), y.__(2)) != 1)
+                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.X, y.Y) != 1)
                             {
                                 c3 = c3 + 1;
-                                vis._Set<double>(y.__(1), y.__(2), 1);
+                                vis._Set<double>(y.X, y.Y, 1);
                                 insert2(y, h_val + 1, graph, mindist, kM, stack);
-                                setb(y, x, graph);
+                                setb(y, xXY, graph);
                             }
                             else
                             {
-                                if ((!b(y, graph).IsEqual(x)) && h(y, graph) > h_val + 1 && t(x, graph) == OutcomeState.CLOSED)
+                                if ((b(y, graph) != xXY) && h(y, graph) > h_val + 1 && t(xXY, graph) == OutcomeState.CLOSED)
                                 {
-                                    insert2(x, h_val, graph, mindist, kM, stack);
+                                    insert2(xXY, h_val, graph, mindist, kM, stack);
                                 }
-                                else if (!(b(y, graph).IsEqual(x)) && h_val > h(y, graph) + 1 && t(y, graph) == OutcomeState.CLOSED && cmp(calculateKey(y, kM, graph), val))
+                                else if ((b(y, graph) != xXY) && h_val > h(y, graph) + 1 && t(y, graph) == OutcomeState.CLOSED && cmp(calculateKey(y, kM, graph), val))
                                 {
                                     insert2(y, h(y, graph), graph, mindist, kM, stack);
                                 }
@@ -146,9 +145,9 @@ namespace FloorSweep.PathFinding
                 else
                 {
 
-                    sett(x, (double)OutcomeState.CLOSED, graph);
-                    setk(x, double.PositiveInfinity, graph);
-                    seth(x, double.PositiveInfinity, graph);
+                    sett(xXY, (double)OutcomeState.CLOSED, graph);
+                    setk(xXY, double.PositiveInfinity, graph);
+                    seth(xXY, double.PositiveInfinity, graph);
                 }
 
 
@@ -159,108 +158,86 @@ namespace FloorSweep.PathFinding
             return found;
         }
 
-        private static OutcomeState t(Mat s, Mat[] graph)
+        private static OutcomeState t(Point s, Mat[] graph)
         {
-            if (s.__(1) == 8 && s.__(2) == 10)
-            {
-                Debugger.Break();
-            }
-            return (OutcomeState)graph[2]._<double>(s.__(1), s.__(2));
+            return (OutcomeState)graph[2]._<double>(s.X, s.Y);
         }
 
-        private static double k(Mat s, Mat[] graph)
+        private static double k(Point s, Mat[] graph)
         {
-            return graph[1]._<double>(s.__(1), s.__(2));
+            return graph[1]._<double>(s.X, s.Y);
         }
 
-        private static void setk(Mat s, double val, Mat[] graph)
+        private static void setk(Point s, double val, Mat[] graph)
         {
-            graph[1]._Set<double>(s.__(1), s.__(2), val);
+            graph[1]._Set<double>(s.X, s.Y, val);
         }
 
-        public static double h(Mat s, Mat[] graph)
+        public static int h(Point s, Mat[] graph)
         {
-            return graph[0]._<double>(s.__(1), s.__(2));
+            return graph[0].__(s.X, s.Y);
         }
-        private static void seth(Mat s, double val, Mat[] graph)
+        private static void seth(Point s, double val, Mat[] graph)
         {
-            if (s.__(1) == 8 && s.__(2) == 10)
-            {
-                Debugger.Break();
-            }
-            graph[0]._Set<double>(s.__(1), s.__(2), val);
+            graph[0]._Set<double>(s.X, s.Y, val);
         }
 
-        private static void rsetQ(Mat s, Mat[] graph)
+        private static void rsetQ(Point s, Mat[] graph)
         {
-            if (s.__(1) == 8 && s.__(2) == 10)
-            {
-                Debugger.Break();
-            }
-            graph[2]._Set<double>(s.__(1), s.__(2), 0);
+            graph[2]._Set<double>(s.X, s.Y, 0);
         }
 
-        private static bool testNode(Mat s, Mat template, Mat pattern, Mat map)
+        private static bool testNode(Point s, Mat template, IEnumerable<Point> pattern, Mat map)
         {
-            if (template.__(s.__(1), s.__(2)) == 1)
+            if (template.__(s.X, s.Y) == 1)
             {
                 return false;
             }
-            foreach (var n in pattern.AsMathlabColEnumerable())
+            foreach (var n in pattern)
             {
-                var pos = s.Plus(n);
-                if (map.__(pos.__(1), pos.__(2)) == 0)
+                var y = n + s;
+                if (map.__(y.X, y.Y) == 0)
                 {
-                    template._Set<double>(s.__(1), s.__(2), 1);
+                    template._Set<double>(y.X, y.Y, 1);
                     return false;
                 }
             }
             return true;
         }
 
-        private static Mat b(Mat x, Mat[] graph)
+        private static Point b(Point x, Mat[] graph)
         {
-            var gMat = MatExtensions.FromRows(
-                  new[] { graph[5]._<double>(x.__(1), x.__(2)) },
-                  new[] { graph[6]._<double>(x.__(1), x.__(2)) },
-                  new[] { 0.0 },
-                  new[] { 0.0 }
-                    );
-            return x.Plus(gMat);
+            return new Point(graph[5].__(x.X, x.Y), graph[6].__(x.X, x.Y)) + x;
         }
 
-        private static OutcomeState inQ(Mat s, Mat[] graph)
+        private static OutcomeState inQ(Point s, Mat[] graph)
         {
-            return (OutcomeState)graph[2].__(s.__(1), s.__(2));
+            return (OutcomeState)graph[2].__(s.X, s.Y);
         }
 
-        private static void setb(Mat x, Mat y, Mat[] graph)
+        private static void setb(Point x, Point y, Mat[] graph)
         {
-            var val = y.Range(1, 2, 1, 1).Minus(x.Range(1, 2, 1, 1));
-            graph[5]._Set<double>(x.__(1), x.__(2), val._<double>(1, 1));
-            graph[6]._Set<double>(x.__(1), x.__(2), val._<double>(2, 1));
+            var val = y - x;
+            graph[5]._Set<double>(x.X, x.Y, val.X);
+            graph[6]._Set<double>(x.X, x.Y, val.Y);
         }
 
-        private static Mat calculateKey(Mat x, double kM, Mat[] graph)
+        private static PointD calculateKey(Point x, double kM, Mat[] graph)
         {
-            return MatExtensions.FromRows(
-                new[] { h(x, graph) + g(x) + kM },
-                new[] { System.Math.Min(h(x, graph), k(x, graph)) }
+            return new PointD(
+                 h(x, graph) + g(x) + kM,
+                 System.Math.Min(h(x, graph), k(x, graph))
             );
         }
 
-        private static double g(Mat s)
+        private static double g(Point s)
         {
-            return System.Math.Sqrt(System.Math.Pow(s._<double>(1), 2) + System.Math.Pow(s._<double>(2), 2));
+            return System.Math.Sqrt(System.Math.Pow(s.X, 2) + System.Math.Pow(s.Y, 2));
         }
 
-        private static void sett(Mat s, double val, Mat[] graph)
+        private static void sett(Point s, double val, Mat[] graph)
         {
-            if (s.__(1) == 8 && s.__(2) == 10)
-            {
-                Debugger.Break();
-            }
-            graph[2]._Set<double>(s.__(1), s.__(2), val);
+            graph[2]._Set<double>(s.X, s.Y, val);
         }
 
         //private static void setQ(Mat s, Mat[] graph)
@@ -275,14 +252,9 @@ namespace FloorSweep.PathFinding
         //    graph[3]._Set<double>(s2.__(1), s2.__(2), graph[3]._<double>(s2.__(1), s2.__(2)) + 1);
         //}
 
-        private static Mat calculateKey2(Mat x, Mat[] graph, double kM)
-        {
-            return MatExtensions.FromRows(
-                new[] { k(x, graph) + kM }, new[] { System.Math.Min(h(x, graph), k(x, graph)) }
-            );
-        }
+        private static PointD calculateKey2(Point x, Mat[] graph, double kM) => new PointD(k(x, graph) + kM, System.Math.Min(h(x, graph), k(x, graph)));
 
-        public static void insert(Mat s, double h_new, Mat[] graph, double mindist, SortedSet<Mat> stack, double kM, Mat startPos)
+        public static void insert(Point s, double h_new, Mat[] graph, double mindist, SortedSet<Point4> stack, double kM)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -303,23 +275,17 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key = calculateKey(s, kM, graph);
-            s._Set<double>(3, 1, key._<double>(1, 1));
-            s._Set<double>(4, 1, key._<double>(2, 1));
-            if (s._<double>(2, 1) == 2)
-            {
-                Debugger.Break();
-            }
-            stack.Add(s);
+            stack.Add(new Point4(s, key));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }
 
 
-        private static bool cmp(Mat s1, Mat s2)
+        private static bool cmp(PointD s1, PointD s2)
         {
-            return (s1._<double>(1) < s2._<double>(1)) || (s1._<double>(1) == s2._<double>(1) && s1._<double>(2) < s2._<double>(2));
+            return s1.X < s2.X || (s1.X == s2.X && s1.Y < s2.Y);
         }
-        private static void insert2(Mat s, double h_new, Mat[] graph, double mindist, double kM, SortedSet<Mat> stack)
+        private static void insert2(Point s, double h_new, Mat[] graph, double mindist, double kM, SortedSet<Point4> stack)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -339,13 +305,7 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key2 = calculateKey2(s, graph, kM);
-            s._Set<double>(3, 1, key2._<double>(1, 1));
-            s._Set<double>(4, 1, key2._<double>(2, 1));
-            stack.Add(s);
-            if (s._<double>(2, 1) == 2)
-            {
-                Debugger.Break();
-            }
+            stack.Add(new Point4(s, key2));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }

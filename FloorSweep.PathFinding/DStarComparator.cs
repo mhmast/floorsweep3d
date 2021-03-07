@@ -14,10 +14,10 @@ namespace FloorSweep.PathFinding
         }
         public int Compare(Mat m, Mat m2)
         {
-            var mDist = System.Math.Abs(_target.Rows(1, 2).Minus(m.Rows(1, 2)).Sum2());
-            var m2Dist = System.Math.Abs(_target.Rows(1, 2).Minus(m2.Rows(1, 2)).Sum2());
+            var mDist = System.Math.Abs(_target[1, 1] - m[1, 1] + _target[2, 1] - m[2, 1]);
+            var m2Dist = System.Math.Abs(_target[1, 1] - m2[1, 1] + _target[2, 1] - m2[2, 1]);
             var cmp = mDist.CompareTo(m2Dist);
-            if (cmp == 0 && m.IsEqual(m2))
+            if (cmp == 0 && m[1, 1] == m2[1, 1])
             {
                 return 0;
             }

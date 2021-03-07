@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace FloorSweep.PathFinding
@@ -26,46 +27,43 @@ namespace FloorSweep.PathFinding
             var xdata = x.Data;
             var ydata = y.Data;
 
-            var indices = MatExtensions.FromCols(xdata, ydata);
-            indices.SetColRange(3, 4, 0);
-            
-            var Ind = indices._T();
+            var indices = MatExtensions.FromCols(xdata, ydata)._T().Columns().Select(c => new Point(c.__(1), c.__(2))).ToList();
+            var Ind = new List<Point>(indices);
 
-            foreach (var n in indices._T().AsMathlabColEnumerable())
+            foreach (var n in indices)
             {
-                foreach (var s in state.Pattern.AsMathlabColEnumerable())
+                foreach (var s in state.Pattern)
                 {
-                    Ind.AddColumn(n.Plus(s));
+                    Ind.Add(n + s);
                 }
             }
 
 
-            var added = Ind._T().UniqueRows()._T();
+            var added = Ind.Distinct(Point.Comparer);//._T().UniqueRows()._T();
 
             (x, y) = difference.Find(d => d == 1);
             xdata = x.Data;
             ydata = y.Data;
 
-            indices = MatExtensions.FromCols(xdata, ydata);
-            indices.SetColRange(3, 4, 0);
-            Ind = indices._T();
+            indices = MatExtensions.FromCols(xdata, ydata)._T().Columns().Select(c => new Point(c.__(1), c.__(2))).ToList();
+            Ind = new List<Point>(indices);
 
-            foreach (var n in indices._T().AsMathlabColEnumerable())
+            foreach (var n in indices)
             {
-                foreach (var s in state.Pattern.AsMathlabColEnumerable())
+                foreach (var s in state.Pattern)
                 {
-                    Ind.AddColumn(n.Plus(s));
+                    Ind.Add(n + s);
                 }
             }
 
 
-            var removed = Ind._T().UniqueRows()._T();
+            var removed = Ind.Distinct(Point.Comparer);
 
-            foreach (var u in removed.AsMathlabColEnumerable())
+            foreach (var u in removed)
             {
                 foreach (var n in ucc)
                 {
-                    var s = u.Plus(n);
+                    var s = u + n;
                     insert(s, h(s, graph), graph, kM, startPos, stack);
                 }
             }
@@ -96,24 +94,24 @@ namespace FloorSweep.PathFinding
             return outState;
         }
 
-        private static double t(Mat s, Mat[] graph)
+        private static double t(Point s, Mat[] graph)
         {
-            return graph[2]._<double>(s.__(1), s.__(2));
+            return graph[2]._<double>(s.X, s.Y);
         }
-        private static double h(Mat s, Mat[] graph)
+        private static double h(Point s, Mat[] graph)
         {
-            return graph[0]._<double>(s.__(1), s.__(2));
-        }
-
-        private static double k(Mat s, Mat[] graph)
-        {
-            return graph[1]._<double>(s.__(1), s.__(2));
+            return graph[0]._<double>(s.X, s.Y);
         }
 
-        private static double g(Mat s, Mat startPos)
+        private static double k(Point s, Mat[] graph)
         {
-            var ss = (startPos.Minus(s)).Abs().ToMat();
-            return System.Math.Sqrt(System.Math.Pow(ss._<double>(0), 2) + System.Math.Pow(ss._<double>(1), 2));
+            return graph[1]._<double>(s.X, s.Y);
+        }
+
+        private static double g(Point s, Point startPos)
+        {
+            var ss = (startPos - s).Abs();
+            return System.Math.Sqrt(System.Math.Pow(ss.X, 2) + System.Math.Pow(ss.Y, 2));
         }
 
         private static void sett(Mat s, double val, Mat[] graph)
@@ -121,12 +119,12 @@ namespace FloorSweep.PathFinding
             graph[2]._Set<double>(s.__(1), s.__(2), val);
         }
 
-        private static void seth(Mat s, double val, Mat[] graph)
+        private static void seth(Point s, double val, Mat[] graph)
         {
-            graph[0]._Set<double>(s.__(1), s.__(2), val);
+            graph[0]._Set<double>(s.X, s.Y, val);
         }
 
-        private static void insert(Mat s, double h_new, Mat[] graph, double kM, Mat startPos, SortedSet<Mat> stack)
+        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, SortedSet<Point4> stack)
         {
             var t = inQ(s, graph);
             if (t == (double)OutcomeState.NEW)
@@ -147,23 +145,20 @@ namespace FloorSweep.PathFinding
                 }
                 s._Set<double>(3, 1, k(s, graph) + kM + g(s, startPos));
                 s._Set<double>(4, 1, k(s, graph) + g(s, startPos));
-                if (s._<double>(2, 1) == 2)
-                {
-                    Debugger.Break();
-                }
+                
                 stack.Add(s);
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
         }
 
-        private static double inQ(Mat s, Mat[] graph)
+        private static double inQ(Point s, Mat[] graph)
         {
-            return graph[2]._<double>(s.__(1), s.__(2));
+            return graph[2]._<double>(s.X, s.Y);
         }
 
-        private static void setk(Mat s, double val, Mat[] graph)
+        private static void setk(Point s, double val, Mat[] graph)
         {
-            graph[1]._Set<double>(s.__(1), s.__(2), val);
+            graph[1]._Set<double>(s.X, s.Y, val);
         }
 
 
