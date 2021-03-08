@@ -6,23 +6,18 @@ namespace FloorSweep.Math
 {
     public class Point4
     {
-        public Point4(int x, int y, double a, double b)
-        {
-            XY = new Point(x, y);
-            AB = new PointD(a, b);
-        }
-
-        public Point4(Point xy, PointD ab)
+      
+        public Point4(Point xy, PointD ab,Point targetPos)
         {
             XY = xy;
             AB = ab;
+            Length = System.Math.Abs(xy.Length - targetPos.Length);
         }
 
         public Point XY { get; set; }
         public PointD AB { get; set; }
+        public long Length { get; }
 
-        public static Point4 operator +(Point4 left, Point4 right) => new Point4(left.XY + right.XY, left.AB + right.AB);
-        public static Point4 operator -(Point4 left, Point4 right) => new Point4(left.XY - right.XY, left.AB - right.AB);
     }
 
     public class Point
@@ -50,13 +45,14 @@ namespace FloorSweep.Math
         {
             X = x;
             Y = y;
+            Length = X + Y;
         }
 
         public int Min() => X < Y ? X : Y;
         public int Max() => X > Y ? X : Y;
         public int X { get; }
         public int Y { get; }
-
+        public int Length { get;  }
 
         public static bool operator ==(Point left, Point right) => left?.X == right?.X && left?.Y == right?.Y;
         public static bool operator !=(Point left, Point right) => !(left == right);

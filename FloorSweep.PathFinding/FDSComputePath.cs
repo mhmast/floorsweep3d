@@ -48,7 +48,18 @@ namespace FloorSweep.PathFinding
         }
 
 
-        private static bool computeShortestPath(SortedSet<Point4> stack, Mat[] graph, double limit, Mat template, IEnumerable<Point> ucc, ref double mindist, Point startPos, IEnumerable<Point> pattern, Mat map, double kM, Mat vis)
+        private static bool computeShortestPath(
+            SortedSet<Point4> stack, 
+            Mat[] graph, 
+            double limit, 
+            Mat template, 
+            IEnumerable<Point> ucc, 
+            ref double mindist, 
+            Point startPos, 
+            IEnumerable<Point> pattern, 
+            Mat map, 
+            double kM, 
+            Mat vis)
         {
             var terminate = false;
             var count = 0;
@@ -103,7 +114,7 @@ namespace FloorSweep.PathFinding
                             if (t(y, graph) == OutcomeState.NEW || h(y, graph) > h_val + 1)
                             {
 
-                                insert(y, h_val + 1, graph, mindist, stack, kM);
+                                insert(y, h_val + 1, graph, mindist, stack, kM, startPos);
                                 setb(y, xXY, graph);
                             }
 
@@ -124,18 +135,18 @@ namespace FloorSweep.PathFinding
                             {
                                 c3 = c3 + 1;
                                 vis._Set<double>(y.X, y.Y, 1);
-                                insert2(y, h_val + 1, graph, mindist, kM, stack);
+                                insert2(y, h_val + 1, graph, mindist, kM, stack, startPos);
                                 setb(y, xXY, graph);
                             }
                             else
                             {
                                 if ((b(y, graph) != xXY) && h(y, graph) > h_val + 1 && t(xXY, graph) == OutcomeState.CLOSED)
                                 {
-                                    insert2(xXY, h_val, graph, mindist, kM, stack);
+                                    insert2(xXY, h_val, graph, mindist, kM, stack, startPos);
                                 }
                                 else if ((b(y, graph) != xXY) && h_val > h(y, graph) + 1 && t(y, graph) == OutcomeState.CLOSED && cmp(calculateKey(y, kM, graph), val))
                                 {
-                                    insert2(y, h(y, graph), graph, mindist, kM, stack);
+                                    insert2(y, h(y, graph), graph, mindist, kM, stack, startPos);
                                 }
                             }
                         }
@@ -254,7 +265,7 @@ namespace FloorSweep.PathFinding
 
         private static PointD calculateKey2(Point x, Mat[] graph, double kM) => new PointD(k(x, graph) + kM, System.Math.Min(h(x, graph), k(x, graph)));
 
-        public static void insert(Point s, double h_new, Mat[] graph, double mindist, SortedSet<Point4> stack, double kM)
+        public static void insert(Point s, double h_new, Mat[] graph, double mindist, SortedSet<Point4> stack, double kM, Point startPos)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -275,7 +286,7 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key = calculateKey(s, kM, graph);
-            stack.Add(new Point4(s, key));
+            stack.Add(new Point4(s, key, startPos));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }
@@ -285,7 +296,7 @@ namespace FloorSweep.PathFinding
         {
             return s1.X < s2.X || (s1.X == s2.X && s1.Y < s2.Y);
         }
-        private static void insert2(Point s, double h_new, Mat[] graph, double mindist, double kM, SortedSet<Point4> stack)
+        private static void insert2(Point s, double h_new, Mat[] graph, double mindist, double kM, SortedSet<Point4> stack, Point startPos)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -305,7 +316,7 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key2 = calculateKey2(s, graph, kM);
-            stack.Add(new Point4(s, key2));
+            stack.Add(new Point4(s, key2, startPos));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }

@@ -64,7 +64,7 @@ namespace FloorSweep.PathFinding
                 foreach (var n in ucc)
                 {
                     var s = u + n;
-                    insert(s, h(s, graph), graph, kM, startPos, stack);
+                    insert(s, h(s, graph), graph, kM, startPos, stack, endPos);
                 }
             }
             foreach (var u in added)
@@ -75,7 +75,7 @@ namespace FloorSweep.PathFinding
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        stack.Add(new Point4(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos))));
+                        stack.Add(new Point4(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos)), endPos));
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
                 }
@@ -118,7 +118,7 @@ namespace FloorSweep.PathFinding
             graph[0]._Set<double>(s.X, s.Y, val);
         }
 
-        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, SortedSet<Point4> stack)
+        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, SortedSet<Point4> stack, Point endPos)
         {
             var t = inQ(s, graph);
             if (t == (double)OutcomeState.NEW)
@@ -137,8 +137,8 @@ namespace FloorSweep.PathFinding
                     setk(s, System.Math.Min(h(s, graph), h_new), graph);
                     seth(s, h_new, graph);
                 }
-                
-                stack.Add(new Point4(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos))));
+
+                stack.Add(new Point4(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos)), endPos));
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
         }
