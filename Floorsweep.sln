@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FloorSweep.PathFinding", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FloorSweep.Pathfinding.TestApp", "FloorSweep.Pathfinding.TestApp\FloorSweep.Pathfinding.TestApp.csproj", "{719BFED4-3683-4462-89A4-578911FD9952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Floorsweep.Math", "Floorsweep.Math\Floorsweep.Math.csproj", "{21FE5AFD-BFEA-45CF-86A5-224110158D8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Floorsweep.Math", "Floorsweep.Math\Floorsweep.Math.csproj", "{21FE5AFD-BFEA-45CF-86A5-224110158D8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Floorsweep.Math.Tests", "Floorsweep.Math.Tests\Floorsweep.Math.Tests.csproj", "{02D60AE9-27DB-4398-AE14-27A880E10234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{21FE5AFD-BFEA-45CF-86A5-224110158D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21FE5AFD-BFEA-45CF-86A5-224110158D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21FE5AFD-BFEA-45CF-86A5-224110158D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D60AE9-27DB-4398-AE14-27A880E10234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D60AE9-27DB-4398-AE14-27A880E10234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D60AE9-27DB-4398-AE14-27A880E10234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D60AE9-27DB-4398-AE14-27A880E10234}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

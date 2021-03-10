@@ -89,9 +89,9 @@ namespace FloorSweep.Math
         public double SumAll()
         {
             var sum = 0.0;
-            for (var row = 1; row < Rows; row++)
+            for (var row = 1; row <= Rows; row++)
             {
-                for (var col = 1; col < Cols; col++)
+                for (var col = 1; col <= Cols; col++)
                 {
                     sum += this[row, col];
                 }
@@ -101,9 +101,9 @@ namespace FloorSweep.Math
         public double Min()
         {
             var min = double.PositiveInfinity;
-            for (var row = 1; row < Rows; row++)
+            for (var row = 1; row <= Rows; row++)
             {
-                for (var col = 1; col < Cols; col++)
+                for (var col = 1; col <= Cols; col++)
                 {
                     min = System.Math.Min(min, this[row, col]);
                 }
@@ -114,9 +114,9 @@ namespace FloorSweep.Math
         public double Max()
         {
             var max = double.NegativeInfinity;
-            for (var row = 1; row < Rows; row++)
+            for (var row = 1; row <= Rows; row++)
             {
-                for (var col = 1; col < Cols; col++)
+                for (var col = 1; col <= Cols; col++)
                 {
                     max = System.Math.Max(max, this[row, col]);
                 }
@@ -280,7 +280,7 @@ namespace FloorSweep.Math
                 {
                     return ProductTemplate(other, (row, col) => this[row, 1], @operator);
                 }
-                if (other.Rows == 1)
+                if (other.Cols == 1)
                 {
                     return ProductTemplate(this, (row, col) => other[row, 1], @operator);
                 }
@@ -396,19 +396,10 @@ namespace FloorSweep.Math
         public Size Size()
         => new Size(Cols, Rows);
 
-        public bool IsEqual(Mat other)
-        {
-            if (Size() != other.Size())
-            {
-                return false;
-            }
-            return Data.SequenceEqual(other.Data);
-        }
-
+       
         public Mat Pow(double power) => ProductTemplate(this, (r, c) => power, System.Math.Pow);
         public Mat Floor() => ProductTemplate(this, (r, c) => 0.0, (l, r) => System.Math.Floor(l));
-        public Mat Abs() => ProductTemplate(this, (r, c) => 0.0, (l, r) => System.Math.Abs(l));
-
+       
         internal void VConcat(Mat other)
         {
             var newRows = (Rows + other.Rows);
