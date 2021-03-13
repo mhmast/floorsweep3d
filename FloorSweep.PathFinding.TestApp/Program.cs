@@ -30,6 +30,7 @@ namespace FloorSweep.PathFinding.TestApp
                 var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
                 maps.Add(tmp);
             }
+            var mean = new List<long>();
             var tsk = new Func<State, string>((state) =>
              {
                  var retStr = new StringBuilder("Elapsed time ms:");
@@ -84,8 +85,8 @@ namespace FloorSweep.PathFinding.TestApp
                  ms = sw.ElapsedMilliseconds;
                  total += ms; 
                  retStr.Append($"{nameof(ResolvePath.DoResolvePath)} {ms}");
-
-                 retStr.Append($" total: {total} ms");
+                 mean.Add(total);
+                 retStr.Append($" total: {total} ms. Mean: {mean.Average()}");
                  return retStr.ToString();
                  //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
 
