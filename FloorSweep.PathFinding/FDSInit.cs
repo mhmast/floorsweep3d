@@ -73,8 +73,8 @@ namespace FloorSweep.PathFinding
             @out.Graph[2]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 1);
             var k = (startPos - @out.EndPos).Abs();
             var heur = SQRT2 * k.Min() + k.Max();
-            @out.Stack = new PriorityQueue<Point4>();
-            @out.Stack.Queue(new Point4(@out.EndPos, new PointD(heur, 0), endPos));
+            @out.Stack = new PriorityQueue<Node>();
+            @out.Stack.Queue(new Node(@out.EndPos, new PointD(heur, 0), endPos));
             @out.Image = data.Image;
             //  @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
             return @out;

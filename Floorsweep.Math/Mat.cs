@@ -414,7 +414,7 @@ namespace FloorSweep.Math
         public Mat Pow(double power) => ProductTemplate(this, (r, c) => power, System.Math.Pow);
         public Mat Floor() => ProductTemplate(this, (r, c) => 0.0, (l, r) => System.Math.Floor(l));
        
-        internal void VConcat(Mat other)
+        public void VConcat(Mat other)
         {
             var newRows = (Rows + other.Rows);
             var newData = new double[newRows][];
@@ -429,7 +429,7 @@ namespace FloorSweep.Math
             Rows = newRows;
         }
 
-        internal void HConcat(Mat other)
+        public void HConcat(Mat other)
         {
             var newcols = (Cols + other.Cols);
             var newData = new double[Rows, newcols];

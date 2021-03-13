@@ -23,11 +23,7 @@ namespace FloorSweep.PathFinding
             var map = newMap;
             var difference = map.Minus(state.Map);
             state.Map = map;
-            var (x, y) = difference.Find(d => d == -1);
-            var xdata = x.Data;
-            var ydata = y.Data;
-
-            var indices = MatExtensions.FromCols(xdata, ydata)._T().Columns().Select(c => new Point(c.__(1), c.__(2))).ToList();
+            var indices = difference.Find(d => d == -1);
             var Ind = new List<Point>(indices);
 
             foreach (var n in indices)
@@ -39,13 +35,10 @@ namespace FloorSweep.PathFinding
             }
 
 
-            var added = Ind.Distinct(Point.Comparer);//._T().UniqueRows()._T();
+            var added = Ind.Distinct(Point.Comparer);
 
-            (x, y) = difference.Find(d => d == 1);
-            xdata = x.Data;
-            ydata = y.Data;
+            indices = difference.Find(d => d == 1);
 
-            indices = MatExtensions.FromCols(xdata, ydata)._T().Columns().Select(c => new Point(c.__(1), c.__(2))).ToList();
             Ind = new List<Point>(indices);
 
             foreach (var n in indices)
@@ -75,7 +68,7 @@ namespace FloorSweep.PathFinding
                     if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
                     {
                         seth(s, double.PositiveInfinity, graph);
-                        stack.Queue(new Point4(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos)), endPos));
+                        stack.Queue(new Node(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos)), endPos));
                         sett(s, (double)OutcomeState.OPEN, graph);
                     }
                 }
@@ -118,7 +111,7 @@ namespace FloorSweep.PathFinding
             graph[0]._Set<double>(s.X, s.Y, val);
         }
 
-        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, PriorityQueue<Point4> stack, Point endPos)
+        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, PriorityQueue<Node> stack, Point endPos)
         {
             var t = inQ(s, graph);
             if (t == (double)OutcomeState.NEW)
@@ -138,7 +131,7 @@ namespace FloorSweep.PathFinding
                     seth(s, h_new, graph);
                 }
 
-                stack.Queue(new Point4(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos)), endPos));
+                stack.Queue(new Node(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos)), endPos));
                 sett(s, (double)OutcomeState.OPEN, graph);
             }
         }

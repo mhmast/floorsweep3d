@@ -1,27 +1,8 @@
-﻿using FloorSweep.PathFinding;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace FloorSweep.Math
 {
-    public struct Point4 : IQueueKeyProvider
-    {
-
-        public Point4(Point xy, PointD ab, Point targetPos)
-        {
-            XY = xy;
-            AB = ab;
-            Key = System.Math.Abs((long)xy.Length - targetPos.Length) << 32;
-            Key += xy.X;
-        }
-
-        public Point XY { get; set; }
-        public PointD AB { get; set; }
-
-        public long Key { get; }
-    }
-
     public struct Point
     {
         private static IEqualityComparer<Point> _comparer = new PointComparer();
@@ -48,6 +29,7 @@ namespace FloorSweep.Math
             X = x;
             Y = y;
             Length = X + Y;
+            Key = ((long)X << 32) + y;
         }
 
         public int Min() => X < Y ? X : Y;
@@ -56,7 +38,9 @@ namespace FloorSweep.Math
         public int Y { get; }
         public int Length { get; }
 
-        public static bool operator ==(Point left, Point right) => left.X == right.X && left.Y == right.Y;
+        private long Key { get; }
+
+        public static bool operator ==(Point left, Point right) => left.Key == right.Key;
         public static bool operator !=(Point left, Point right) => !(left == right);
         public static Point operator +(Point left, Point right) => new Point(left.X + right.X, left.Y + right.Y);
         public static Point operator +(Point left, int right) => new Point(left.X + right, left.Y + right);
@@ -73,19 +57,5 @@ namespace FloorSweep.Math
 
         public long Sum()
         => X + Y;
-    }
-
-    public struct PointD
-    {
-        public PointD(double x, double y)
-        {
-            X = x;
-            Y = y;
-        }
-        public double X { get; }
-        public double Y { get; }
-
-        public static PointD operator +(PointD left, PointD right) => new PointD(left.X + right.X, left.Y + right.Y);
-        public static PointD operator -(PointD left, PointD right) => new PointD(left.X - right.X, left.Y - right.Y);
     }
 }

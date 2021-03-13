@@ -1,9 +1,6 @@
 ﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace FloorSweep.PathFinding
 {
@@ -29,10 +26,10 @@ namespace FloorSweep.PathFinding
             var stack = state.Stack;
             var mindist = double.PositiveInfinity;
 
-            var vis = state.Vis;
 
-            //var last = [];
+            var vis = state.Vis;
             var found = computeShortestPath(stack, graph, limit, template, ucc, ref mindist, startPos, pattern, map, kM, vis);
+
             state.Exist = found;
             if (found)
             {
@@ -49,17 +46,18 @@ namespace FloorSweep.PathFinding
 
 
         private static bool computeShortestPath(
-            PriorityQueue<Point4> stack, 
-            Mat[] graph, 
-            double limit, 
-            Mat template, 
-            IEnumerable<Point> ucc, 
-            ref double mindist, 
-            Point startPos, 
-            IEnumerable<Point> pattern, 
-            Mat map, 
-            double kM, 
+            PriorityQueue<Node> stack,
+            Mat[] graph,
+            double limit,
+            Mat template,
+            IEnumerable<Point> ucc,
+            ref double mindist,
+            Point startPos,
+            IEnumerable<Point> pattern,
+            Mat map,
+            double kM,
             Mat vis)
+
         {
             var terminate = false;
             var count = 0;
@@ -133,6 +131,7 @@ namespace FloorSweep.PathFinding
                             if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.X, y.Y) != 1)
                             {
                                 c3 = c3 + 1;
+
                                 vis._Set<double>(y.X, y.Y, 1);
                                 insert2(y, h_val + 1, graph, mindist, kM, stack, startPos);
                                 setb(y, xXY, graph);
@@ -250,21 +249,9 @@ namespace FloorSweep.PathFinding
             graph[2]._Set<double>(s.X, s.Y, val);
         }
 
-        //private static void setQ(Mat s, Mat[] graph)
-        //{
-        //    var s2 = s.T().ToMat();
-        //    graph[2]._Set<double>(s2.__(1), s2.__(2), 1);
-        //}
-
-        //private static void incr(Mat s, Mat[] graph)
-        //{
-        //    var s2 = s.T().ToMat();
-        //    graph[3]._Set<double>(s2.__(1), s2.__(2), graph[3]._<double>(s2.__(1), s2.__(2)) + 1);
-        //}
-
         private static PointD calculateKey2(Point x, Mat[] graph, double kM) => new PointD(k(x, graph) + kM, System.Math.Min(h(x, graph), k(x, graph)));
 
-        public static void insert(Point s, double h_new, Mat[] graph, double mindist, PriorityQueue<Point4> stack, double kM, Point startPos)
+        public static void insert(Point s, double h_new, Mat[] graph, double mindist, PriorityQueue<Node> stack, double kM, Point startPos)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -285,7 +272,7 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key = calculateKey(s, kM, graph);
-            stack.Queue(new Point4(s, key, startPos));
+            stack.Queue(new Node(s, key, startPos));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }
@@ -295,7 +282,7 @@ namespace FloorSweep.PathFinding
         {
             return s1.X < s2.X || (s1.X == s2.X && s1.Y < s2.Y);
         }
-        private static void insert2(Point s, double h_new, Mat[] graph, double mindist, double kM, PriorityQueue<Point4> stack, Point startPos)
+        private static void insert2(Point s, double h_new, Mat[] graph, double mindist, double kM, PriorityQueue<Node> stack, Point startPos)
         {
             var t = inQ(s, graph);
             if (t == OutcomeState.NEW && h_new < mindist)
@@ -315,7 +302,7 @@ namespace FloorSweep.PathFinding
             }
             seth(s, h_new, graph);
             var key2 = calculateKey2(s, graph, kM);
-            stack.Queue(new Point4(s, key2, startPos));
+            stack.Queue(new Node(s, key2, startPos));
             sett(s, (double)OutcomeState.OPEN, graph);
 
         }

@@ -17,6 +17,7 @@ namespace FloorSweep.PathFinding
             set
             {
                 _map = value;
+
                 Vis = Mat.Zeros(Height, Width);
                 Template = Mat.Zeros(Height, Width);
             }
@@ -30,19 +31,22 @@ namespace FloorSweep.PathFinding
         public int Width { get => Map.Cols; }
         public Mat[] Graph { get; internal set; }
         public double KM { get; set; }
-        public PriorityQueue<Point4> Stack { get; internal set; }
+        public PriorityQueue<Node> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
         public List<Point> Path
         {
-            get => _path; 
+            get => _path;
             set
             {
                 _path = value;
                 PathFound?.Invoke();
             }
         }
+
+
         public Mat Vis { get; internal set; }
+
         public Mat Template { get; internal set; }
         public Mat Image { get; internal set; }
 

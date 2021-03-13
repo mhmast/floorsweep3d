@@ -407,22 +407,18 @@ namespace FloorSweep.PathFinding
             return 0;
         }
 
-        public static (Mat, Mat) Find(this Mat m, Predicate<double> expr)
+        public static IEnumerable<Point> Find(this Mat m, Predicate<double> expr)
         {
-            var x = new Mat();
-            var y = new Mat();
             for (int row = 1; row <= m.Rows; row++)
             {
                 for (int column = 1; column <= m.Cols; column++)
                 {
                     if (expr(m._<double>(row, column)))
                     {
-                        x.AddBottom(row);
-                        y.AddBottom(column);
+                        yield return new Point(column, row);
                     }
                 }
             }
-            return (x, y);
         }
 
         public static IEnumerable<Mat> AsMathlabColEnumerable(this Mat m)
