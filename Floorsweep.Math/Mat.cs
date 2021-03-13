@@ -86,19 +86,33 @@ namespace FloorSweep.Math
             return new Mat(rows, cols, GenerateDataZero(rows, cols));
         }
 
-        public double SumAll()
+        public double SumRange(int startRow, int endRow, int startCol, int endCol)
         {
-            var sum = 0.0;
-            for (var row = 1; row <= Rows; row++)
+            if (startRow * endRow * startCol * endCol == 0)
             {
-                for (var col = 1; col <= Cols; col++)
+                return 0;
+            }
+            if (startRow > Rows || startCol > Cols)
+            {
+                return 0;
+            }
+
+            endRow = System.Math.Min(Rows, endRow);
+            endCol = System.Math.Min(Cols, endCol);
+
+            var sum = 0.0;
+            for (var row = startRow; row <= endRow; row++)
+            {
+                for (var col = startCol; col <= endCol; col++)
                 {
                     sum += this[row, col];
                 }
             }
             return sum;
         }
-        public double Min()
+
+        public double SumAll()
+        => SumRange(1, Rows, 1, Cols); public double Min()
         {
             var min = double.PositiveInfinity;
             for (var row = 1; row <= Rows; row++)

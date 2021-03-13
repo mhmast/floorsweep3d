@@ -25,7 +25,7 @@ namespace FloorSweep.PathFinding
             while (s != state.StartPos)
             {
                 minval = double.PositiveInfinity;
-                Point it = null;
+                Point? it = null;
                 foreach (var n in state.Ucc)
                 {
 
@@ -44,7 +44,7 @@ namespace FloorSweep.PathFinding
                     Console.WriteLine("there is no valid path");
                     return;
                 }
-                s = s+it;
+                s = s+it.Value;
                 state.Graph[0]._Set<double>(s.X, s.Y, double.PositiveInfinity);
                 path.Add(s);
 

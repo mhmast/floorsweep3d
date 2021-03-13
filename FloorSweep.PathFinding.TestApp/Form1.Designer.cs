@@ -44,7 +44,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1730, 404);
+            this.groupBox1.Size = new System.Drawing.Size(2052, 404);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Graph";
@@ -54,7 +54,7 @@
             this.graphPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphPanel.Location = new System.Drawing.Point(3, 27);
             this.graphPanel.Name = "graphPanel";
-            this.graphPanel.Size = new System.Drawing.Size(1724, 374);
+            this.graphPanel.Size = new System.Drawing.Size(2046, 374);
             this.graphPanel.TabIndex = 0;
             // 
             // gb1
@@ -63,7 +63,7 @@
             this.gb1.Dock = System.Windows.Forms.DockStyle.Top;
             this.gb1.Location = new System.Drawing.Point(0, 404);
             this.gb1.Name = "gb1";
-            this.gb1.Size = new System.Drawing.Size(1730, 753);
+            this.gb1.Size = new System.Drawing.Size(2052, 753);
             this.gb1.TabIndex = 2;
             this.gb1.TabStop = false;
             this.gb1.Text = "Map";
@@ -73,7 +73,7 @@
             this.mapBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapBox.Location = new System.Drawing.Point(3, 27);
             this.mapBox.Name = "mapBox";
-            this.mapBox.Size = new System.Drawing.Size(1724, 723);
+            this.mapBox.Size = new System.Drawing.Size(2046, 723);
             this.mapBox.TabIndex = 1;
             // 
             // button1
@@ -81,7 +81,7 @@
             this.button1.Dock = System.Windows.Forms.DockStyle.Top;
             this.button1.Location = new System.Drawing.Point(0, 1157);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(1730, 34);
+            this.button1.Size = new System.Drawing.Size(2052, 34);
             this.button1.TabIndex = 3;
             this.button1.Text = "Run";
             this.button1.UseVisualStyleBackColor = true;
@@ -102,7 +102,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1756, 753);
+            this.ClientSize = new System.Drawing.Size(2078, 753);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.gb1);

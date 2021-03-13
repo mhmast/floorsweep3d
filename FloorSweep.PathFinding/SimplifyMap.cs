@@ -23,8 +23,7 @@ namespace FloorSweep.PathFinding
             {
                 for (int y = 1; y <= d; y++)
                 {
-                    var tmp = mapB.Range((int)(x * s - a ), (int)(x * s + b ), (int)(y * s - a ), (int)(y * s + b )).Sum2();
-
+                    var tmp = mapB.SumRange((int)(x * s - a), (int)(x * s + b), (int)(y * s - a), (int)(y * s + b));
                     if (tmp < 12)
                     {
                         @out._Set<double>(x, y, 0);

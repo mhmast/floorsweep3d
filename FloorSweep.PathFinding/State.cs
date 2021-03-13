@@ -30,7 +30,7 @@ namespace FloorSweep.PathFinding
         public int Width { get => Map.Cols; }
         public Mat[] Graph { get; internal set; }
         public double KM { get; set; }
-        public SortedSet<Point4> Stack { get; internal set; }
+        public PriorityQueue<Point4> Stack { get; internal set; }
         public bool Exist { get; internal set; }
         public double Length { get; internal set; }
         public List<Point> Path
