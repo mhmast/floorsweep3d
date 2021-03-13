@@ -1,11 +1,21 @@
+using BenchmarkDotNet.Analysers;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Loggers;
+using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Validators;
 using FloorSweep.PathFinding;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -59,8 +69,8 @@ namespace Floorsweep.PathFinding.Tests
             //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
             ResolvePath.DoResolvePath(state);
         }
-
-        [Test]
+        
+        
         public void Benchmark()
         {
             var sum = BenchmarkRunner.Run<PathFindingBenchmark>();

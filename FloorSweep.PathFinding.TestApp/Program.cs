@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,38 +28,68 @@ namespace FloorSweep.PathFinding.TestApp
             for (int i = 0; i < mapsNames.Length; i++)
             {
                 var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
-                     maps.Add(tmp);
+                maps.Add(tmp);
             }
+            var tsk = new Func<State, string>((state) =>
+             {
+                 var retStr = new StringBuilder("Elapsed time ms:");
+                 var @bool = false;
 
+                 var sw = Stopwatch.StartNew();
+                 state = FDSInit.DoFDSInit(maps[mapno], scaling,state);
+                 sw.Stop();
+                 var ms = sw.ElapsedMilliseconds;
+                 var total = ms;
+                 retStr.Append($"{nameof(FDSInit.DoFDSInit)} {ms}");
+                 
+                 sw = Stopwatch.StartNew();
+                 state = FDSComputePath.DoFdsComputePath(state);
+                 sw.Stop();
+                 ms = sw.ElapsedMilliseconds;
+                 total += ms;
+                 retStr.Append($"{nameof(FDSComputePath.DoFdsComputePath)} {ms}");
+                 @bool = true;
+                 var gah = state;
+                 state.KM = 50;
 
-            var @bool = false;
-            var state = FDSInit.DoFDSInit(maps[mapno], scaling);
-            var tsk = new Task(new Action(() =>
-            {
-                var sw =Stopwatch.StartNew();
-                state = FDSComputePath.DoFdsComputePath(state);
-                @bool = true;
-                var gah = state;
-                state.KM = 50;
+                 if (@bool)
+                 {
+                     @bool = false;
+                     sw = Stopwatch.StartNew();
+                     state = FDSUpdateMap.DoFDSUpdateMap(state, maps[mapno].Map);
+                     sw.Stop();
+                     ms = sw.ElapsedMilliseconds;
 
-                if (@bool)
-                {
-                    @bool = false;
-                    state = FDSUpdateMap.DoFDSUpdateMap(state, maps[mapno].Map);
-                    state.KM = 50;
-                }
-                else
-                {
-                    state = FDSComputePath.DoFdsComputePath(state);
-                }
+                     total += ms; 
+                     retStr.Append($" {nameof(FDSUpdateMap.DoFDSUpdateMap)} {ms}");
+                     state.KM = 50;
+                 }
+                 else
+                 {
 
-                //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
-                ResolvePath.DoResolvePath(state);
-                sw.Stop();
-                Debug.WriteLine(sw.ElapsedMilliseconds);
-                //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
-                
-            }));
+                     sw = Stopwatch.StartNew();
+                     state = FDSComputePath.DoFdsComputePath(state);
+                     sw.Stop();
+                     ms = sw.ElapsedMilliseconds;
+
+                     total += ms; 
+                     retStr.Append($" {nameof(FDSComputePath.DoFdsComputePath)} {ms}");
+                 }
+
+                 //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
+                 sw = Stopwatch.StartNew();
+
+                 ResolvePath.DoResolvePath(state);
+                 sw.Stop();
+                 ms = sw.ElapsedMilliseconds;
+                 total += ms; 
+                 retStr.Append($"{nameof(ResolvePath.DoResolvePath)} {ms}");
+
+                 retStr.Append($" total: {total} ms");
+                 return retStr.ToString();
+                 //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
+
+             });
             //%% show A - star graph
             //  a = state.graph(:,:,1);
             //            a(a(:,:) == -1) = 0; % unvisited
@@ -82,8 +113,9 @@ namespace FloorSweep.PathFinding.TestApp
             //            b(state.graph(:,:, 2) == inf) = 0;
             //            b = b * 0.7;
             //            imshow(b + a, 'Border', 'tight')
+            var state = FDSInit.DoFDSInit(maps[mapno], scaling);
 
-            Application.Run(new Form1(state,tsk,false));
+            Application.Run(new Form1(state, tsk, false));
 
 
 

@@ -17,9 +17,8 @@ namespace FloorSweep.PathFinding.TestApp
 {
     public partial class Form1 : Form
     {
-        private PlottedPath _resp;
-        private State _state;
-        private Task _tsk;
+        private readonly State _state;
+        private Func<State,string> _tsk;
         private readonly bool _dbg;
 
         public Form1()
@@ -29,12 +28,12 @@ namespace FloorSweep.PathFinding.TestApp
 
 
 
-        public Form1(State state, Task tsk, bool dbg = false) : this()
+        public Form1(State state,Func<State,string> tsk, bool dbg = false) : this()
         {
             _state = state;
             _tsk = tsk;
             _dbg = dbg;
-            InitState(state);
+            InitState(_state);
         }
 
         private void InitState(State state)
@@ -161,17 +160,18 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void UpdatePictureBox(Control box, Bitmap i, int x, int y, double n, bool onesandzeros, string name)
         {
-            if (box.Name.Contains("5") && n == -1)
-            {
-                //Debugger.Break();
-            }
             UpdatePictureBoxb(box, i, x, y, (int)n, onesandzeros, name);
         }
 
-        protected override void OnLoad(EventArgs e)
+
+        bool running;
+        private async void button1_Click(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            _tsk.Start();
+            if (running) return;
+            running = true;
+            var ms = await Task.Run(()=>_tsk(_state));
+            label1.Text = ms;
+            running = false;
         }
     }
 }

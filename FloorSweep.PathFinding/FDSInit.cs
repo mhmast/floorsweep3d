@@ -8,7 +8,7 @@ namespace FloorSweep.PathFinding
 {
     public class FDSInit
     {
-        public static State DoFDSInit(MapData data, int scaling)
+        public static State DoFDSInit(MapData data, int scaling,State state = null)
         {
             var map = data.Map;
             var startPos = data.Start;
@@ -43,7 +43,7 @@ namespace FloorSweep.PathFinding
                 new Point( -1, 1 )
             };
 
-            var @out = new State();
+            var @out = state ??new State();
 
             @out.Map = map;
             @out.StartPos = startPos;
