@@ -1,9 +1,8 @@
 ﻿using FloorSweep.PathFinding;
-using System;
 
 namespace FloorSweep.Math
 {
-    public struct Node : IQueueKeyProvider
+    internal class Node : IQueueKeyProvider
     {
 
         public Node(Point xy, PointD ab, Point targetPos)

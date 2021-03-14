@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FloorSweep.PathFinding
 {
-    public class ResolvePath
+    internal class ResolvePath
     {
 
         private static double g(Point s, Mat[] graph)

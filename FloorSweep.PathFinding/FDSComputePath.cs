@@ -1,16 +1,13 @@
 ﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("FloorSweep.Pathfinding.TestApp")]
 namespace FloorSweep.PathFinding
 {
-    public enum OutcomeState
-    {
-        NEW = -1,
-        OPEN = 1,
-        CLOSED = 0
-    }
-    public class FDSComputePath
+    
+    internal class FDSComputePath
     {
 
         public static State DoFdsComputePath(State state, double limit = double.PositiveInfinity)

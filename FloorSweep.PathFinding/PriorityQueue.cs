@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FloorSweep.PathFinding
 {
-    public class PriorityQueue<T> : SortedSet<T> where T : IQueueKeyProvider 
+    internal class PriorityQueue<T> : SortedSet<T> where T : IQueueKeyProvider 
     {
         public PriorityQueue() : base(new Comparer())
         {

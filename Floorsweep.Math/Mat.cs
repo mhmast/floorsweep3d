@@ -185,6 +185,20 @@ namespace FloorSweep.Math
         public bool Empty()
         => _data.Length == 0;
 
+
+        public IEnumerable<Point> Find(Predicate<double> expr)
+        {
+            for (int row = 1; row <= Rows; row++)
+            {
+                for (int column = 1; column <= Cols; column++)
+                {
+                    if (expr(this[row, column]))
+                    {
+                        yield return new Point(column, row);
+                    }
+                }
+            }
+        }
         public double this[int row, int col]
         {
             get

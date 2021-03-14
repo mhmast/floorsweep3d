@@ -1,6 +1,6 @@
 ﻿namespace FloorSweep.PathFinding
 {
-    public interface IQueueKeyProvider
+    internal interface IQueueKeyProvider
     {
         long Key { get; }
     }

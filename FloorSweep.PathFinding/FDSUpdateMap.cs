@@ -1,13 +1,10 @@
 ﻿using FloorSweep.Math;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace FloorSweep.PathFinding
 {
-    public class FDSUpdateMap
+    internal class FDSUpdateMap
     {
         public static State DoFDSUpdateMap(State state, Mat newMap)
         {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
 {
-    public class State
+    internal class State
     {
         private Mat _map;
         private List<Point> _path = new List<Point>();

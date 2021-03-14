@@ -27,7 +27,7 @@ namespace FloorSweep.PathFinding.TestApp
 
 
 
-        public Form1(State state, Func<State, string> tsk) : this()
+        internal Form1(State state, Func<State, string> tsk) : this()
         {
             _state = state;
             _tsk = tsk;

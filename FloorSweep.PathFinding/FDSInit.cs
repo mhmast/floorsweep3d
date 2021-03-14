@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FloorSweep.PathFinding
 {
-    public class FDSInit
+    internal class FDSInit
     {
         public static State DoFDSInit(MapData data, int scaling, State state = null)
         {
