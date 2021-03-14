@@ -18,8 +18,7 @@ namespace FloorSweep.PathFinding.TestApp
     public partial class Form1 : Form
     {
         private readonly State _state;
-        private Func<State,string> _tsk;
-        private readonly bool _dbg;
+        private Func<State, string> _tsk;
 
         public Form1()
         {
@@ -28,34 +27,36 @@ namespace FloorSweep.PathFinding.TestApp
 
 
 
-        public Form1(State state,Func<State,string> tsk, bool dbg = false) : this()
+        public Form1(State state, Func<State, string> tsk) : this()
         {
             _state = state;
             _tsk = tsk;
-            _dbg = dbg;
             InitState(_state);
+#if !DEBUG
+            splitContainer1.Panel1Collapsed = true;
+            splitContainer2.Panel1Collapsed = true;
+#endif
         }
 
         private void InitState(State state)
         {
+#if DEBUG
+
             var i = 0;
-            if (_dbg)
+
+            foreach (var gr in state.Graph)
             {
-                foreach (var g in state.Graph)
-                {
-                    var stateLabel = i == 2 ? "nodestate" : "";
-                    AddPicureBox(graphPanel, g, i == 2, $"graph{i}{stateLabel}");
-                    i++;
-                }
+                var stateLabel = i == 2 ? "nodestate" : "";
+                AddPicureBox(graphPanel, gr, true, $"graph{i}{stateLabel}");
+                i++;
             }
+            AddPicureBox(mapBox, state.Image, false, "Image");
+            AddPicureBox(mapBox, state.Vis, true, "Vis");
+            AddPicureBox(mapBox, state.Template, true, "Template");
+
+#endif
             AddPicureBox(mapBox, state.Map, true, "map", false);
-            if (_dbg)
-            {
-                AddPicureBox(mapBox, state.Vis, true, "Vis");
-                AddPicureBox(mapBox, state.Template, true, "Template");
-            }
-            state.PathFound += () => State_PathFound(state, mapBox, "path");
-            // AddPicureBox(mapBox, state.Image, false, "image", false);
+            state.PathFound += () => State_PathFound(state, pathbox, "path");
 
         }
 
@@ -75,6 +76,8 @@ namespace FloorSweep.PathFinding.TestApp
                 p.BackgroundImage = bmp;
                 p.Refresh();
 
+
+
             }
                 )));
         }
@@ -82,7 +85,7 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void AddPicureBox(Control panel, Mat g, bool onesAndZeros, string name, bool autoUpdate = true)
         {
-            var gbox = new GroupBox { Text = name, Size = new System.Drawing.Size(g.Cols, g.Rows) };
+            var gbox = new GroupBox { Text = name, Size = new Size(g.Cols, g.Rows) };
             gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
             panel.Controls.Add(gbox);
             var p = new Panel { Dock = DockStyle.Fill, Name = name };
@@ -127,13 +130,13 @@ namespace FloorSweep.PathFinding.TestApp
                 for (var c = 1; c <= m.Cols; c++)
                 {
                     var val = m._<double>(r, c);
-                    if (onesandzeros)
+                    if (onesandzeros || double.IsInfinity(val))
                     {
-                        g.FillRectangle(new SolidBrush(val == 1 ? Color.Black : val == 0 ? Color.Gray : Color.White), new Rectangle(r, c, 1, 1));
+                        g.FillRectangle(new SolidBrush(val == -1 ? Color.White : val == 0 ? Color.Gray : Color.Black), new Rectangle(r, c, 1, 1));
                     }
                     else
                     {
-                        g.FillRectangle(new SolidBrush(Color.FromArgb((int)val)), new Rectangle(r, c, 1, 1));
+                        g.FillRectangle(new SolidBrush(Color.FromArgb((int)val, (int)val, (int)val)), new Rectangle(r, c, 1, 1));
                     }
                 }
             }
@@ -151,7 +154,7 @@ namespace FloorSweep.PathFinding.TestApp
             }
             EndInvoke(BeginInvoke(new Action(() =>
             {
-                Color c = onesandzeros ? (n == 1 ? Color.Green : n == 0 ? Color.Red : Color.Blue) : Color.FromArgb(n);
+                Color c = onesandzeros ? (n == 1 ? Color.Green : n == 0 ? Color.Red : Color.Blue) : Color.FromArgb(n, n, n);
                 i.SetPixel(x, y, c);
                 box.BackgroundImage = i;
                 box.Invalidate();
@@ -169,7 +172,7 @@ namespace FloorSweep.PathFinding.TestApp
         {
             if (running) return;
             running = true;
-            var ms = await Task.Run(()=>_tsk(_state));
+            var ms = await Task.Run(() => _tsk(_state));
             label1.Text = ms;
             running = false;
         }

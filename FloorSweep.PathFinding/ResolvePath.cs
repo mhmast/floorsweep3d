@@ -50,6 +50,7 @@ namespace FloorSweep.PathFinding
 
             }
             state.Path = path;
+            state.Path.Reverse();
 
         }
 

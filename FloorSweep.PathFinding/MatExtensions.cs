@@ -14,13 +14,16 @@ namespace FloorSweep.PathFinding
         private static event Action<Mat, int, int, byte> MatChangedb;
         public static void RegisterMatChanged(this Mat m, Action<int, int, double> action)
         {
-            MatChangedd += (mat, x, y, n) =>
-            {
-                if (m == mat)
-                {
-                    action(x, y, n);
-                }
-            };
+            //MatChangedd += (mat, x, y, n) =>
+            //{
+            //    if (m == mat)
+            //    {
+            //        action(x, y, n);
+            //    }
+            //};
+#if DEBUG
+            m.MatChanged += action;
+#endif
         }
 
         public static Mat _T(this Mat m)

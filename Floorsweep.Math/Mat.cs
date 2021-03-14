@@ -1,18 +1,17 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace FloorSweep.Math
 {
     public class Mat
     {
         private double[][] _data;
-
+#if DEBUG
         public event Action<int, int, double> MatChanged;
+#endif
         public Mat(int rows, int cols, double value)
         : this(rows, cols, GenerateData(rows, cols, value)) { }
 
@@ -31,6 +30,40 @@ namespace FloorSweep.Math
                 data[r] = c;
             }
             return data;
+        }
+
+        public unsafe static Mat ImageToBinary(Bitmap b, double tresh = 126) => ImageTo(b, (b, g, r) => GrayScale(b, g, r) <= tresh ? 0 : 1);
+        public unsafe static Mat ImageToGrayScale(Bitmap b) => ImageTo(b, GrayScale);
+
+        private static double GrayScale(byte r, byte g, byte b)
+            => (b * .11) + (g * .59) + (r * .3);
+
+
+        private static unsafe Mat ImageTo(Bitmap b, Func<byte, byte, byte, double> valueSelector)
+        {
+            if (b.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+            {
+                throw new ArgumentException();
+            }
+            const int pixelSize = 4;
+            var newData = new double[b.Height][];
+            var bits = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            for (int y = 0; y < b.Height; y++)
+            {
+                //get the data from the original image
+                byte* oRow = (byte*)bits.Scan0 + (y * bits.Stride);
+                var row = new double[b.Width];
+
+                for (int x = 0; x < b.Width; x++)
+                {
+                    row[x] = valueSelector(oRow[x * pixelSize + 1], oRow[x * pixelSize + 2], oRow[x * pixelSize + 3]);
+                }
+                newData[y] = row;
+            }
+
+            //unlock the bitmaps
+            b.UnlockBits(bits);
+            return new Mat(b.Height, b.Width, newData);
         }
 
         private static double[][] GenerateDataZero(int rows, int cols)
@@ -185,13 +218,14 @@ namespace FloorSweep.Math
                 //    HConcat(Zeros(Rows, col - Cols));
                 //}
                 // var addr = GetArrAddr(row, col);
-                //var prev = _data[addr];
+
                 _data[row - 1][col - 1] = value;
-                //if (prev != value)
-                //{
-                //    
-                //    MatChanged?.Invoke(row, col, value);
-                //}
+#if DEBUG
+
+
+                MatChanged?.Invoke(row, col, value);
+
+#endif
             }
         }
 
@@ -262,6 +296,9 @@ namespace FloorSweep.Math
         public Mat Copy()
         => new Mat(Rows, Cols, _data);
 
+
+        public Mat BinaryTresh(double tresh)
+        => ProductTemplate(this, (_, __) => tresh, (v, t) => v <= t ? 0 : 1);
         private Mat ProductTemplate(Mat other, Func<double, double, double> @operator)
         {
             if (Empty())
@@ -410,10 +447,10 @@ namespace FloorSweep.Math
         public Size Size()
         => new Size(Cols, Rows);
 
-       
+
         public Mat Pow(double power) => ProductTemplate(this, (r, c) => power, System.Math.Pow);
         public Mat Floor() => ProductTemplate(this, (r, c) => 0.0, (l, r) => System.Math.Floor(l));
-       
+
         public void VConcat(Mat other)
         {
             var newRows = (Rows + other.Rows);
@@ -432,7 +469,6 @@ namespace FloorSweep.Math
         public void HConcat(Mat other)
         {
             var newcols = (Cols + other.Cols);
-            var newData = new double[Rows, newcols];
             if (other.Rows != Rows)
             {
                 throw new ArgumentException();

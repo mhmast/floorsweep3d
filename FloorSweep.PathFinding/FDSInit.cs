@@ -8,13 +8,13 @@ namespace FloorSweep.PathFinding
 {
     public class FDSInit
     {
-        public static State DoFDSInit(MapData data, int scaling,State state = null)
+        public static State DoFDSInit(MapData data, int scaling, State state = null)
         {
             var map = data.Map;
             var startPos = data.Start;
             var endPos = data.Target;
             var radius = 10.0 / scaling;
-            var mat = Mat.Zeros((int)(radius * 2), (int)(radius * 2)).ToMat();
+            //var mat = Mat.Zeros((int)(radius * 2), (int)(radius * 2)).ToMat();
             double dista(double a, double b) => System.Math.Sqrt(a * a + b * b);
 
             //var rows = new List<double[]>();
@@ -43,7 +43,7 @@ namespace FloorSweep.PathFinding
                 new Point( -1, 1 )
             };
 
-            var @out = state ??new State();
+            var @out = state ?? new State();
 
             @out.Map = map;
             @out.StartPos = startPos;
@@ -56,15 +56,28 @@ namespace FloorSweep.PathFinding
             @out.Pattern = shapePattern;//.T();
             @out.Ucc = neighbours;
 
-            @out.Graph = new Mat[7];
-            for (int i = 0; i < 7; i++)
+            if (@out.Graph == null)
             {
-                @out.Graph[i] = Mat.Zeros(map.Rows, map.Cols).ToMat();
+                @out.Graph = new Mat[] {
+                    new Mat(map.Rows, map.Cols,double.PositiveInfinity),
+                    new Mat(map.Rows, map.Cols,double.PositiveInfinity),
+                    new Mat(map.Rows, map.Cols,-1),
+                    new Mat(map.Rows, map.Cols,0),
+                    new Mat(map.Rows, map.Cols,-1),
+                    new Mat(map.Rows, map.Cols,0),
+                    new Mat(map.Rows, map.Cols,0),
+                };
             }
-            @out.Graph[0].SetAll(double.PositiveInfinity);
-            @out.Graph[1].SetAll(double.PositiveInfinity);
-            @out.Graph[2].SetAll(-1.0);
-            @out.Graph[4].SetAll(-1.0);
+            else
+            {
+                @out.Graph[0].SetAll(double.PositiveInfinity);
+                @out.Graph[1].SetAll(double.PositiveInfinity);
+                @out.Graph[2].SetAll(-1.0);
+                @out.Graph[3].SetAll(0);
+                @out.Graph[4].SetAll(-1.0);
+                @out.Graph[5].SetAll(0);
+                @out.Graph[6].SetAll(0);
+            }
             @out.KM = 0.0;
             var SQRT2 = System.Math.Sqrt(2) - 1;
 
@@ -75,7 +88,7 @@ namespace FloorSweep.PathFinding
             var heur = SQRT2 * k.Min() + k.Max();
             @out.Stack = new PriorityQueue<Node>();
             @out.Stack.Queue(new Node(@out.EndPos, new PointD(heur, 0), endPos));
-            @out.Image = data.Image;
+            @out.Image = data.OriginalImage;
             //  @out.Path = Mat.Zeros(map.Width, map.Height, MatType.CV_64FC1);
             return @out;
         }

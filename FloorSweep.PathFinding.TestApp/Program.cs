@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+﻿
+using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,12 +23,13 @@ namespace FloorSweep.PathFinding.TestApp
         static void Main()
         {
             var mapsNames = new[] { "a", "e", "b", "c", "map01" };
-            int mapno = 2;
+            int mapno = 1;
             var maps = new List<MapData>();
             var scaling = 4;
             for (int i = 0; i < mapsNames.Length; i++)
             {
-                var tmp = LoadMap.DoLoadMap(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png"), scaling);
+                var path = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, mapsNames[i] + ".png");
+                var tmp = MapData.FromImage(path, new Point(74, 86), new Point(541, 469), scaling);
                 maps.Add(tmp);
             }
             var mean = new List<long>();
@@ -37,12 +39,12 @@ namespace FloorSweep.PathFinding.TestApp
                  var @bool = false;
 
                  var sw = Stopwatch.StartNew();
-                 state = FDSInit.DoFDSInit(maps[mapno], scaling,state);
+                 state = FDSInit.DoFDSInit(maps[mapno], scaling, state);
                  sw.Stop();
                  var ms = sw.ElapsedMilliseconds;
                  var total = ms;
                  retStr.Append($"{nameof(FDSInit.DoFDSInit)} {ms}");
-                 
+
                  sw = Stopwatch.StartNew();
                  state = FDSComputePath.DoFdsComputePath(state);
                  sw.Stop();
@@ -61,7 +63,7 @@ namespace FloorSweep.PathFinding.TestApp
                      sw.Stop();
                      ms = sw.ElapsedMilliseconds;
 
-                     total += ms; 
+                     total += ms;
                      retStr.Append($" {nameof(FDSUpdateMap.DoFDSUpdateMap)} {ms}");
                      state.KM = 50;
                  }
@@ -73,7 +75,7 @@ namespace FloorSweep.PathFinding.TestApp
                      sw.Stop();
                      ms = sw.ElapsedMilliseconds;
 
-                     total += ms; 
+                     total += ms;
                      retStr.Append($" {nameof(FDSComputePath.DoFdsComputePath)} {ms}");
                  }
 
@@ -83,7 +85,7 @@ namespace FloorSweep.PathFinding.TestApp
                  ResolvePath.DoResolvePath(state);
                  sw.Stop();
                  ms = sw.ElapsedMilliseconds;
-                 total += ms; 
+                 total += ms;
                  retStr.Append($"{nameof(ResolvePath.DoResolvePath)} {ms}");
                  mean.Add(total);
                  retStr.Append($" total: {total} ms. Mean: {mean.Average()}");
@@ -116,7 +118,7 @@ namespace FloorSweep.PathFinding.TestApp
             //            imshow(b + a, 'Border', 'tight')
             var state = FDSInit.DoFDSInit(maps[mapno], scaling);
 
-            Application.Run(new Form1(state, tsk, false));
+            Application.Run(new Form1(state, tsk));
 
 
 
