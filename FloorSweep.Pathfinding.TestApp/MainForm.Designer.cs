@@ -33,22 +33,28 @@
             this.loadMapButton = new System.Windows.Forms.ToolStripButton();
             this.runButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.mapGroupBox = new System.Windows.Forms.GroupBox();
-            this.mapBox = new System.Windows.Forms.FlowLayoutPanel();
-            this.pathBoxgroup = new System.Windows.Forms.GroupBox();
-            this.pathbox = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.mapPanel = new System.Windows.Forms.Panel();
+            this.debugDataBox = new System.Windows.Forms.GroupBox();
+            this.debugPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.loadedMapsBox = new System.Windows.Forms.ListBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             this.mapGroupBox.SuspendLayout();
-            this.pathBoxgroup.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.debugDataBox.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -91,69 +97,87 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.splitContainer1);
+            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+            this.splitContainer2.Panel1MinSize = 1000;
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer2.Size = new System.Drawing.Size(2052, 719);
-            this.splitContainer2.SplitterDistance = 684;
+            this.splitContainer2.SplitterDistance = 1000;
             this.splitContainer2.TabIndex = 7;
             // 
-            // splitContainer1
+            // splitContainer3
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // splitContainer1.Panel1
+            // splitContainer3.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.mapGroupBox);
+            this.splitContainer3.Panel1.Controls.Add(this.mapGroupBox);
             // 
-            // splitContainer1.Panel2
+            // splitContainer3.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.pathBoxgroup);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Size = new System.Drawing.Size(684, 719);
-            this.splitContainer1.SplitterDistance = 205;
-            this.splitContainer1.TabIndex = 6;
+            this.splitContainer3.Panel2.Controls.Add(this.debugDataBox);
+            this.splitContainer3.Panel2.Controls.Add(this.label1);
+            this.splitContainer3.Panel2MinSize = 200;
+            this.splitContainer3.Size = new System.Drawing.Size(1000, 719);
+            this.splitContainer3.SplitterDistance = 425;
+            this.splitContainer3.TabIndex = 6;
             // 
             // mapGroupBox
             // 
-            this.mapGroupBox.Controls.Add(this.mapBox);
+            this.mapGroupBox.Controls.Add(this.panel1);
             this.mapGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapGroupBox.Location = new System.Drawing.Point(0, 0);
             this.mapGroupBox.Name = "mapGroupBox";
-            this.mapGroupBox.Size = new System.Drawing.Size(684, 205);
-            this.mapGroupBox.TabIndex = 4;
+            this.mapGroupBox.Size = new System.Drawing.Size(1000, 425);
+            this.mapGroupBox.TabIndex = 6;
             this.mapGroupBox.TabStop = false;
             this.mapGroupBox.Text = "Map";
             // 
-            // mapBox
+            // panel1
             // 
-            this.mapBox.AutoScroll = true;
-            this.mapBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapBox.Location = new System.Drawing.Point(3, 27);
-            this.mapBox.Name = "mapBox";
-            this.mapBox.Size = new System.Drawing.Size(678, 175);
-            this.mapBox.TabIndex = 2;
+            this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.mapPanel);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 27);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(994, 395);
+            this.panel1.TabIndex = 1;
             // 
-            // pathBoxgroup
+            // mapPanel
             // 
-            this.pathBoxgroup.Controls.Add(this.pathbox);
-            this.pathBoxgroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pathBoxgroup.Location = new System.Drawing.Point(0, 25);
-            this.pathBoxgroup.Name = "pathBoxgroup";
-            this.pathBoxgroup.Size = new System.Drawing.Size(684, 485);
-            this.pathBoxgroup.TabIndex = 4;
-            this.pathBoxgroup.TabStop = false;
-            this.pathBoxgroup.Text = "Path";
+            this.mapPanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.mapPanel.Location = new System.Drawing.Point(0, 0);
+            this.mapPanel.Name = "mapPanel";
+            this.mapPanel.Size = new System.Drawing.Size(994, 395);
+            this.mapPanel.TabIndex = 1;
+            this.mapPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnImgMouseDown);
+            this.mapPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnImgMouseMove);
+            this.mapPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnImgMouseUp);
             // 
-            // pathbox
+            // debugDataBox
             // 
-            this.pathbox.AutoScroll = true;
-            this.pathbox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pathbox.Location = new System.Drawing.Point(3, 27);
-            this.pathbox.Name = "pathbox";
-            this.pathbox.Size = new System.Drawing.Size(678, 455);
-            this.pathbox.TabIndex = 2;
+            this.debugDataBox.Controls.Add(this.debugPanel);
+            this.debugDataBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.debugDataBox.Location = new System.Drawing.Point(0, 25);
+            this.debugDataBox.Name = "debugDataBox";
+            this.debugDataBox.Size = new System.Drawing.Size(1000, 265);
+            this.debugDataBox.TabIndex = 7;
+            this.debugDataBox.TabStop = false;
+            this.debugDataBox.Text = "Debug data";
+            // 
+            // debugPanel
+            // 
+            this.debugPanel.AutoScroll = true;
+            this.debugPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.debugPanel.Location = new System.Drawing.Point(3, 27);
+            this.debugPanel.Name = "debugPanel";
+            this.debugPanel.Size = new System.Drawing.Size(994, 235);
+            this.debugPanel.TabIndex = 2;
             // 
             // label1
             // 
@@ -162,8 +186,31 @@
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(175, 25);
-            this.label1.TabIndex = 8;
+            this.label1.TabIndex = 10;
             this.label1.Text = "Elapsed miliseconds:";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.loadedMapsBox);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1048, 719);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Loaded Maps";
+            // 
+            // loadedMapsBox
+            // 
+            this.loadedMapsBox.DisplayMember = "File";
+            this.loadedMapsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loadedMapsBox.FormattingEnabled = true;
+            this.loadedMapsBox.ItemHeight = 25;
+            this.loadedMapsBox.Location = new System.Drawing.Point(3, 27);
+            this.loadedMapsBox.Name = "loadedMapsBox";
+            this.loadedMapsBox.Size = new System.Drawing.Size(1042, 689);
+            this.loadedMapsBox.TabIndex = 0;
+            this.loadedMapsBox.SelectedIndexChanged += new System.EventHandler(this.OnSelectedMapChanged);
             // 
             // MainForm
             // 
@@ -174,20 +221,23 @@
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip1);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "TestApp";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            this.splitContainer3.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             this.mapGroupBox.ResumeLayout(false);
-            this.pathBoxgroup.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.debugDataBox.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,12 +248,15 @@
         private System.Windows.Forms.ToolStripButton loadMapButton;
         private System.Windows.Forms.ToolStripButton runButton;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ListBox loadedMapsBox;
+        private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.GroupBox mapGroupBox;
-        private System.Windows.Forms.FlowLayoutPanel mapBox;
-        private System.Windows.Forms.GroupBox pathBoxgroup;
-        private System.Windows.Forms.FlowLayoutPanel pathbox;
+        private System.Windows.Forms.GroupBox debugDataBox;
+        private System.Windows.Forms.FlowLayoutPanel debugPanel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel mapPanel;
     }
 }
 

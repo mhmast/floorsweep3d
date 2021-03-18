@@ -91,10 +91,12 @@ namespace FloorSweep.Pathfinding.TestApp
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "\"Images|*.png,*.jpg,*.gif\"";
+            this.openFileDialog1.Filter = "\"Images (*.png,*.jpg,*.gif) |*.png;*.jpg;*.gif\"";
             // 
             // panel1
             // 
+            this.panel1.AutoSize = true;
+            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel1.Cursor = System.Windows.Forms.Cursors.Cross;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 34);
@@ -161,12 +163,14 @@ namespace FloorSweep.Pathfinding.TestApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1009, 744);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip2);
             this.Controls.Add(this.toolStrip1);
             this.Name = "LoadMapForm";
             this.Text = "LoadMapForm";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);

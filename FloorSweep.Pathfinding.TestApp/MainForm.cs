@@ -19,46 +19,38 @@ namespace FloorSweep.PathFinding.TestApp
 {
     public partial class MainForm : Form
     {
-        private List<LoadedMap> Maps = new  List<LoadedMap>();
-        private LoadedMap _currentMap = null;
+        private List<LoadedMap> Maps = new List<LoadedMap>();
+        private LoadedMap CurrentMap => loadedMapsBox?.SelectedItem as LoadedMap;
 
-        public MainForm(IPathFindingAlgorithm algorithm, IDictionary<string, Mat> matrices)
+        public MainForm(IPathFindingAlgorithm algorithm)
         {
             InitializeComponent();
-            InitState(matrices);
             _algorithm = algorithm;
 #if !DEBUG
-            splitContainer1.Panel1Collapsed = true;
-            splitContainer2.Panel1Collapsed = true;
+            splitContainer3.Panel2Collapsed = true;
 #endif
         }
 
-      
-        private void InitState(IDictionary<string,Mat> matrices, IDictionary<string, bool> isBinary)
+
+        private void InitState(IReadOnlyDictionary<string, Mat> matrices, IReadOnlyDictionary<string, bool> isBinary)
         {
 #if DEBUG
-            foreach (var gr in matrices)
+            EndInvoke(BeginInvoke(new Action(() =>
             {
-                AddPicureBox(graphPanel, gr.Value, isBinary[gr.Key], gr.Key);
-            }
+                foreach (var gr in matrices)
+                {
+                    AddPicureBox(debugPanel, gr.Value, isBinary[gr.Key], gr.Key);
+                }
+            })));
 #endif   
         }
 
-        private void OnPathFound(Mat map,IEnumerable<Math.Point> points, Control panel, string name)
+        private void OnPathFound(IEnumerable<Math.Point> points, Control panel)
         {
             EndInvoke(BeginInvoke(new Action(() =>
             {
-                var bmp = DrawImage(map, true);
-                var gbox = new GroupBox { Text = name, Size = bmp.Size };
-                gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
-                panel.Controls.Add(gbox);
-                var p = new Panel { Dock = DockStyle.Fill, Name = name };
-                p.Click += P_Click;
-                gbox.Controls.Add(p);
-                var g = Graphics.FromImage(bmp);
+                var g = panel.CreateGraphics();
                 g.DrawLines(Pens.Green, points.Select(p => (PointF)p).ToArray());
-                p.BackgroundImage = bmp;
-                p.Refresh();
             }
                 )));
         }
@@ -70,6 +62,7 @@ namespace FloorSweep.PathFinding.TestApp
             gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
             panel.Controls.Add(gbox);
             var p = new Panel { Dock = DockStyle.Fill, Name = name };
+            p.Cursor = Cursors.Hand;
             p.Click += P_Click;
             gbox.Controls.Add(p);
             var img = DrawImage(g, onesAndZeros);
@@ -148,26 +141,26 @@ namespace FloorSweep.PathFinding.TestApp
         {
             if (running) return;
             running = true;
-            var path = await _algorithm.CreateSession(_currentMap.Data).FindPathAsync();
-            _currentMap.Mean.Add(path.CalculationStatistics.Total);
+            var path = await _algorithm.CreateSession(CurrentMap.Data).FindPathAsync(InitState);
+            CurrentMap.Mean.Add(path.CalculationStatistics.Total);
             var builder = new StringBuilder("Results:");
-            foreach(var s in path.CalculationStatistics)
+            foreach (var s in path.CalculationStatistics)
             {
                 builder.Append($" {s.Key}:{s.Value} ms");
             }
-            builder.Append($" Mean: {_currentMap.Mean.Average()} ms");
+            builder.Append($" Mean: {CurrentMap.Mean.Average()} ms");
             label1.Text = builder.ToString();
-            OnPathFound(_currentMap.Data.Map, path.Path, graphPanel, "Path");
+            OnPathFound(path.Path, mapPanel);
             running = false;
         }
 
         private async void OnItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if(e.ClickedItem == loadMapButton)
+            if (e.ClickedItem == loadMapButton)
             {
                 LoadMap();
             }
-            if(e.ClickedItem == runButton)
+            if (e.ClickedItem == runButton)
             {
                 await Run();
             }
@@ -175,17 +168,59 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void LoadMap()
         {
-            using(var selectForm = new LoadMapForm())
+            using (var selectForm = new LoadMapForm())
             {
-                if(selectForm.ShowDialog() == DialogResult.OK)
+                if (selectForm.ShowDialog() == DialogResult.OK)
                 {
-                    if(!Maps.Any(m=>m.File == selectForm.LoadedMap.File))
+                    if (!Maps.Any(m => m.File == selectForm.LoadedMap.File))
                     {
                         Maps.Add(selectForm.LoadedMap);
-                        _currentMap = selectForm.LoadedMap;
+                        loadedMapsBox.Items.Add(selectForm.LoadedMap);
+                        loadedMapsBox.SelectedItem = selectForm.LoadedMap;
+                        runButton.Enabled = true;
                     }
                 }
             }
+        }
+
+        private void OnSelectedMapChanged(object sender, EventArgs e)
+        {
+            mapPanel.Size = CurrentMap.Image.Size;
+            mapPanel.Location = new System.Drawing.Point(0, 0);
+            mapPanel.BackgroundImage = CurrentMap.Image;
+            //using (var g = mapPanel.CreateGraphics())
+            //{
+            //    g.Clear(Color.Red);
+            //    g.DrawImageUnscaled(CurrentMap.Image, new System.Drawing.Point());
+            //    g.Flush();
+            //}
+            mapPanel.Invalidate();
+        }
+
+        bool _imgMouseDown = false;
+        System.Drawing.Point _mouseDownPoint;
+        private void OnImgMouseDown(object sender, MouseEventArgs e)
+        {
+            _imgMouseDown = true;
+            _mouseDownPoint = e.Location;
+        }
+
+        private void OnImgMouseUp(object sender, MouseEventArgs e)
+        {
+            _imgMouseDown = false;
+        }
+
+        private void OnImgMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_imgMouseDown) return;
+
+            var hor = _mouseDownPoint.X - e.Location.X;
+            var ver = _mouseDownPoint.Y - e.Location.Y ;
+            if (hor != 0)
+                panel1.HorizontalScroll.Value = System.Math.Min(panel1.HorizontalScroll.Maximum, System.Math.Max(panel1.HorizontalScroll.Value + hor, 0));
+
+            if (ver != 0)
+                panel1.VerticalScroll.Value = System.Math.Min(panel1.VerticalScroll.Maximum, System.Math.Max(panel1.VerticalScroll.Value + ver, 0));
         }
     }
 }

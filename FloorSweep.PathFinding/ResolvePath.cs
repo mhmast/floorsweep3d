@@ -43,7 +43,7 @@ namespace FloorSweep.PathFinding
                 }
                 s = s+it.Value;
                 state.Graph[0]._Set<double>(s.X, s.Y, double.PositiveInfinity);
-                path.Add(s);
+                path.Add(s*state.Scaling);
 
             }
             state.Path = path;

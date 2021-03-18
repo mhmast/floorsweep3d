@@ -9,10 +9,8 @@ namespace FloorSweep.PathFinding
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection UseFocussedDStar(this IServiceCollection collection)
-            => collection.UseFocussedDStar(_ => { });
-        public static IServiceCollection UseFocussedDStar(this IServiceCollection collection, Action<IReadOnlyDictionary<string, Mat>> debugDataRegistration)
         {
-            collection.AddTransient<IPathFindingAlgorithm>(s => new FocussedDStar(debugDataRegistration));
+            collection.AddTransient<IPathFindingAlgorithm,FocussedDStar>();
             return collection;
         }
     }

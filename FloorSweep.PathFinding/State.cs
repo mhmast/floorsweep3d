@@ -59,11 +59,11 @@ namespace FloorSweep.PathFinding
             yield return Tuple.Create(nameof(Map), Map,true);
             yield return Tuple.Create(nameof(Vis), Vis,true);
             yield return Tuple.Create(nameof(Template), Template,true);
-            yield return Tuple.Create(nameof(Image), Image,false);
             int i = 1;
             foreach(var g in Graph)
             {
                 yield return Tuple.Create($"Graph {i}", g,true);
+                i++;
             }
         }
 
