@@ -1,5 +1,6 @@
 ﻿
 using FloorSweep.Math;
+using FloorSweep.PathFinding.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,67 +33,7 @@ namespace FloorSweep.PathFinding.TestApp
                 var tmp = MapData.FromImage(path, new Point(74, 86), new Point(541, 469), scaling);
                 maps.Add(tmp);
             }
-            var mean = new List<long>();
-            var tsk = new Func<State, string>((state) =>
-             {
-                 var retStr = new StringBuilder("Elapsed time ms:");
-                 var @bool = false;
-
-                 var sw = Stopwatch.StartNew();
-                 state = FDSInit.DoFDSInit(maps[mapno], scaling, state);
-                 sw.Stop();
-                 var ms = sw.ElapsedMilliseconds;
-                 var total = ms;
-                 retStr.Append($"{nameof(FDSInit.DoFDSInit)} {ms}");
-
-                 sw = Stopwatch.StartNew();
-                 state = FDSComputePath.DoFdsComputePath(state);
-                 sw.Stop();
-                 ms = sw.ElapsedMilliseconds;
-                 total += ms;
-                 retStr.Append($"{nameof(FDSComputePath.DoFdsComputePath)} {ms}");
-                 @bool = true;
-                 var gah = state;
-                 state.KM = 50;
-
-                 if (@bool)
-                 {
-                     @bool = false;
-                     sw = Stopwatch.StartNew();
-                     state = FDSUpdateMap.DoFDSUpdateMap(state, maps[mapno].Map);
-                     sw.Stop();
-                     ms = sw.ElapsedMilliseconds;
-
-                     total += ms;
-                     retStr.Append($" {nameof(FDSUpdateMap.DoFDSUpdateMap)} {ms}");
-                     state.KM = 50;
-                 }
-                 else
-                 {
-
-                     sw = Stopwatch.StartNew();
-                     state = FDSComputePath.DoFdsComputePath(state);
-                     sw.Stop();
-                     ms = sw.ElapsedMilliseconds;
-
-                     total += ms;
-                     retStr.Append($" {nameof(FDSComputePath.DoFdsComputePath)} {ms}");
-                 }
-
-                 //%% resolve path, insert map name here if you want to get image in original size when map was downscalled
-                 sw = Stopwatch.StartNew();
-
-                 ResolvePath.DoResolvePath(state);
-                 sw.Stop();
-                 ms = sw.ElapsedMilliseconds;
-                 total += ms;
-                 retStr.Append($"{nameof(ResolvePath.DoResolvePath)} {ms}");
-                 mean.Add(total);
-                 retStr.Append($" total: {total} ms. Mean: {mean.Average()}");
-                 return retStr.ToString();
-                 //state.PlottedPath = PlotPath.DoPlotPath(state, state.Map,scaling);
-
-             });
+           
             //%% show A - star graph
             //  a = state.graph(:,:,1);
             //            a(a(:,:) == -1) = 0; % unvisited
@@ -116,9 +57,9 @@ namespace FloorSweep.PathFinding.TestApp
             //            b(state.graph(:,:, 2) == inf) = 0;
             //            b = b * 0.7;
             //            imshow(b + a, 'Border', 'tight')
-            var state = FDSInit.DoFDSInit(maps[mapno], scaling);
+           // var state = FDSInit.DoFDSInit(maps[mapno], scaling);
 
-            Application.Run(new Form1(state, tsk));
+            Application.Run(new Form1());
 
 
 

@@ -201,44 +201,13 @@ namespace FloorSweep.Math
         }
         public double this[int row, int col]
         {
-            get
-            {
-                //if (row == 0 || col == 0)
-                //{
-                //    throw new ArgumentException();
-                //}
-                //if (Rows < row)
-                //{
-                //    VConcat(Zeros(row - Rows, Cols));
-                //}
-                //if (Cols < col)
-                //{
-                //    HConcat(Zeros(Rows, col - Cols));
-                //}
-                return _data[row - 1][col - 1];
-            }
+            get => _data[row - 1][col - 1];
             set
             {
-                //if (row == 0 || col == 0)
-                //{
-                //    throw new ArgumentException();
-                //}
-                //if (Rows < row)
-                //{
-                //    VConcat(Zeros(row - Rows, Cols));
-                //}
-                //if (Cols < col)
-                //{
-                //    HConcat(Zeros(Rows, col - Cols));
-                //}
-                // var addr = GetArrAddr(row, col);
-
+                
                 _data[row - 1][col - 1] = value;
 #if DEBUG
-
-
                 MatChanged?.Invoke(row, col, value);
-
 #endif
             }
         }
@@ -291,7 +260,6 @@ namespace FloorSweep.Math
         {
             get
             {
-
                 var (row, col) = GetRowCol(pos);
                 return this[row, col];
             }
@@ -301,6 +269,14 @@ namespace FloorSweep.Math
                 this[row, col] = value;
             }
         }
+
+        public double this[Point pos]
+        {
+            get => this[pos.X, pos.Y];
+            set => this[pos.X, pos.Y] = value;
+        }
+
+
 
         public void SetAll(double val)
         {

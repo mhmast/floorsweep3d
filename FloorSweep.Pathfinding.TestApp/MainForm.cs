@@ -1,5 +1,7 @@
 ﻿
 using FloorSweep.Math;
+using FloorSweep.Pathfinding.TestApp;
+using FloorSweep.PathFinding.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,56 +17,38 @@ using System.Windows.Forms;
 
 namespace FloorSweep.PathFinding.TestApp
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        private readonly State _state;
-        private Func<State, string> _tsk;
+        private List<LoadedMap> Maps = new  List<LoadedMap>();
+        private LoadedMap _currentMap = null;
 
-        public Form1()
+        public MainForm(IPathFindingAlgorithm algorithm, IDictionary<string, Mat> matrices)
         {
             InitializeComponent();
-        }
-
-
-
-        internal Form1(State state, Func<State, string> tsk) : this()
-        {
-            _state = state;
-            _tsk = tsk;
-            InitState(_state);
+            InitState(matrices);
+            _algorithm = algorithm;
 #if !DEBUG
             splitContainer1.Panel1Collapsed = true;
             splitContainer2.Panel1Collapsed = true;
 #endif
         }
 
-        private void InitState(State state)
+      
+        private void InitState(IDictionary<string,Mat> matrices, IDictionary<string, bool> isBinary)
         {
 #if DEBUG
-
-            var i = 0;
-
-            foreach (var gr in state.Graph)
+            foreach (var gr in matrices)
             {
-                var stateLabel = i == 2 ? "nodestate" : "";
-                AddPicureBox(graphPanel, gr, true, $"graph{i}{stateLabel}");
-                i++;
+                AddPicureBox(graphPanel, gr.Value, isBinary[gr.Key], gr.Key);
             }
-            AddPicureBox(mapBox, state.Image, false, "Image");
-            AddPicureBox(mapBox, state.Vis, true, "Vis");
-            AddPicureBox(mapBox, state.Template, true, "Template");
-
-#endif
-            AddPicureBox(mapBox, state.Map, true, "map", false);
-            state.PathFound += () => State_PathFound(state, pathbox, "path");
-
+#endif   
         }
 
-        private void State_PathFound(State obj, Control panel, string name)
+        private void OnPathFound(Mat map,IEnumerable<Math.Point> points, Control panel, string name)
         {
             EndInvoke(BeginInvoke(new Action(() =>
             {
-                var bmp = DrawImage(obj.Map, true);
+                var bmp = DrawImage(map, true);
                 var gbox = new GroupBox { Text = name, Size = bmp.Size };
                 gbox.MinimumSize = gbox.MaximumSize = gbox.Size;
                 panel.Controls.Add(gbox);
@@ -72,12 +56,9 @@ namespace FloorSweep.PathFinding.TestApp
                 p.Click += P_Click;
                 gbox.Controls.Add(p);
                 var g = Graphics.FromImage(bmp);
-                g.DrawLines(Pens.Green, obj.Path.Select(p => (PointF)p).ToArray());
+                g.DrawLines(Pens.Green, points.Select(p => (PointF)p).ToArray());
                 p.BackgroundImage = bmp;
                 p.Refresh();
-
-
-
             }
                 )));
         }
@@ -109,16 +90,9 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void AddEventHandler(Control box, Mat g, bool onesandzeros, string name, Bitmap img)
         {
-            //if (g.Type() == MatType.CV_8UC1)
-            //{
-            //    g.RegisterMatChanged((x, y, n) => UpdatePictureBoxb(box, img, x, y, n, onesandzeros, name));
-            //}
-            //else
-            //{
-
-            g.RegisterMatChanged((int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros, name)); ;
-            //}
-
+#if DEBUG
+            g.MatChanged += (int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros, name); ;
+#endif
         }
 
         private Bitmap DrawImage(Mat m, bool onesandzeros)
@@ -129,7 +103,7 @@ namespace FloorSweep.PathFinding.TestApp
             {
                 for (var c = 1; c <= m.Cols; c++)
                 {
-                    var val = m._<double>(r, c);
+                    var val = m[r, c];
                     if (onesandzeros || double.IsInfinity(val))
                     {
                         g.FillRectangle(new SolidBrush(val == -1 ? Color.White : val == 0 ? Color.Gray : Color.Black), new Rectangle(r, c, 1, 1));
@@ -168,13 +142,50 @@ namespace FloorSweep.PathFinding.TestApp
 
 
         bool running;
-        private async void button1_Click(object sender, EventArgs e)
+        private readonly IPathFindingAlgorithm _algorithm;
+
+        private async Task Run()
         {
             if (running) return;
             running = true;
-            var ms = await Task.Run(() => _tsk(_state));
-            label1.Text = ms;
+            var path = await _algorithm.CreateSession(_currentMap.Data).FindPathAsync();
+            _currentMap.Mean.Add(path.CalculationStatistics.Total);
+            var builder = new StringBuilder("Results:");
+            foreach(var s in path.CalculationStatistics)
+            {
+                builder.Append($" {s.Key}:{s.Value} ms");
+            }
+            builder.Append($" Mean: {_currentMap.Mean.Average()} ms");
+            label1.Text = builder.ToString();
+            OnPathFound(_currentMap.Data.Map, path.Path, graphPanel, "Path");
             running = false;
+        }
+
+        private async void OnItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if(e.ClickedItem == loadMapButton)
+            {
+                LoadMap();
+            }
+            if(e.ClickedItem == runButton)
+            {
+                await Run();
+            }
+        }
+
+        private void LoadMap()
+        {
+            using(var selectForm = new LoadMapForm())
+            {
+                if(selectForm.ShowDialog() == DialogResult.OK)
+                {
+                    if(!Maps.Any(m=>m.File == selectForm.LoadedMap.File))
+                    {
+                        Maps.Add(selectForm.LoadedMap);
+                        _currentMap = selectForm.LoadedMap;
+                    }
+                }
+            }
         }
     }
 }

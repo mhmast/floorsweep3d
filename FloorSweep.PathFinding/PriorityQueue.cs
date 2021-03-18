@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using FloorSweep.PathFinding.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FloorSweep.PathFinding

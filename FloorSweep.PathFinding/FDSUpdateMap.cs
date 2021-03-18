@@ -78,18 +78,12 @@ namespace FloorSweep.PathFinding
             return outState;
         }
 
-        private static double t(Point s, Mat[] graph)
-        {
-            return graph[2]._<double>(s.X, s.Y);
-        }
-        private static double h(Point s, Mat[] graph)
-        {
-            return graph[0]._<double>(s.X, s.Y);
-        }
+        private static double t(Point s, Mat[] graph) => graph[2][s];
+        private static double h(Point s, Mat[] graph) => graph[0][s];
 
         private static double k(Point s, Mat[] graph)
         {
-            return graph[1]._<double>(s.X, s.Y);
+            return graph[1][s];
         }
 
         private static double g(Point s, Point startPos)
@@ -133,10 +127,7 @@ namespace FloorSweep.PathFinding
             }
         }
 
-        private static double inQ(Point s, Mat[] graph)
-        {
-            return graph[2]._<double>(s.X, s.Y);
-        }
+        private static double inQ(Point s, Mat[] graph) => graph[2][s];
 
         private static void setk(Point s, double val, Mat[] graph)
         {

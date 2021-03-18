@@ -1,4 +1,4 @@
-﻿namespace FloorSweep.PathFinding
+﻿namespace FloorSweep.PathFinding.Interfaces
 {
     internal interface IQueueKeyProvider
     {

@@ -67,11 +67,11 @@ namespace FloorSweep.PathFinding
                 map = SimplifyMap.DoSimplifyMap(map, scaling);
             }
             Map = Mat.Zeros(5, map.Cols);
-            Map.AddBottom(map);
-            Map.AddBottom(Mat.Zeros(6, map.Cols));
+            Map.VConcat(map);
+            Map.VConcat(Mat.Zeros(6, map.Cols));
             var m = Mat.Zeros(Map.Rows, 5);
-            m.AddColumn(Map);
-            m.AddColumn(Mat.Zeros(Map.Rows, 6));
+            m.HConcat(Map);
+            m.HConcat(Mat.Zeros(Map.Rows, 6));
             Map = m;
             Start = start / scaling + 5;
             Target = target / scaling + 5;

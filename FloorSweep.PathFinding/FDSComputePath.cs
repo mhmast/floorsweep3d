@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("FloorSweep.Pathfinding.TestApp")]
 namespace FloorSweep.PathFinding
 {
-    
+
     internal class FDSComputePath
     {
 
@@ -37,7 +36,7 @@ namespace FloorSweep.PathFinding
             state.StartPos = endPos;
             state.Graph = graph;
             state.Stack = stack;
-            state.Length = graph[1]._<double>(startPos.X, startPos.Y);
+            state.Length = graph[1][startPos];
             return state;
         }
 
@@ -125,7 +124,7 @@ namespace FloorSweep.PathFinding
                         {
                             var y = xXY + n;
 
-                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis.__(y.X, y.Y) != 1)
+                            if (t(y, graph) == OutcomeState.NEW || (h(y, graph) != h_val + 1) && vis[y] != 1)
                             {
                                 c3 = c3 + 1;
 
@@ -164,25 +163,16 @@ namespace FloorSweep.PathFinding
             return found;
         }
 
-        private static OutcomeState t(Point s, Mat[] graph)
-        {
-            return (OutcomeState)graph[2]._<double>(s.X, s.Y);
-        }
+        private static OutcomeState t(Point s, Mat[] graph) => (OutcomeState)graph[2][s];
 
-        private static double k(Point s, Mat[] graph)
-        {
-            return graph[1]._<double>(s.X, s.Y);
-        }
+        private static double k(Point s, Mat[] graph) => graph[1][s];
 
         private static void setk(Point s, double val, Mat[] graph)
         {
             graph[1]._Set<double>(s.X, s.Y, val);
         }
 
-        public static int h(Point s, Mat[] graph)
-        {
-            return graph[0].__(s.X, s.Y);
-        }
+        public static int h(Point s, Mat[] graph) => (int)graph[0][s];
         private static void seth(Point s, double val, Mat[] graph)
         {
             graph[0]._Set<double>(s.X, s.Y, val);
@@ -195,14 +185,14 @@ namespace FloorSweep.PathFinding
 
         private static bool testNode(Point s, Mat template, IEnumerable<Point> pattern, Mat map)
         {
-            if (template.__(s.X, s.Y) == 1)
+            if (template[s] == 1)
             {
                 return false;
             }
             foreach (var n in pattern)
             {
                 var y = n + s;
-                if (map.__(y.X, y.Y) == 0)
+                if (map[y] == 0)
                 {
                     template._Set<double>(y.X, y.Y, 1);
                     return false;
@@ -211,15 +201,9 @@ namespace FloorSweep.PathFinding
             return true;
         }
 
-        private static Point b(Point x, Mat[] graph)
-        {
-            return new Point(graph[5].__(x.X, x.Y), graph[6].__(x.X, x.Y)) + x;
-        }
+        private static Point b(Point x, Mat[] graph) => new Point((int)graph[5][x], (int)graph[6][x]) + x;
 
-        private static OutcomeState inQ(Point s, Mat[] graph)
-        {
-            return (OutcomeState)graph[2].__(s.X, s.Y);
-        }
+        private static OutcomeState inQ(Point s, Mat[] graph) => (OutcomeState)graph[2][s];
 
         private static void setb(Point x, Point y, Mat[] graph)
         {

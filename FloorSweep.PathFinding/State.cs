@@ -1,11 +1,12 @@
 ﻿
 using FloorSweep.Math;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace FloorSweep.PathFinding
 {
-    internal class State
+    internal class State : IEnumerable<Tuple<string,Mat,bool>>
     {
         private Mat _map;
         private List<Point> _path = new List<Point>();
@@ -50,5 +51,23 @@ namespace FloorSweep.PathFinding
         public Mat Template { get; internal set; }
         public Mat Image { get; internal set; }
 
+        public IEnumerator<Tuple<string, Mat,bool>> GetEnumerator()
+        => GetStateMats().GetEnumerator();
+
+        private IEnumerable<Tuple<string,Mat,bool>> GetStateMats()
+        {
+            yield return Tuple.Create(nameof(Map), Map,true);
+            yield return Tuple.Create(nameof(Vis), Vis,true);
+            yield return Tuple.Create(nameof(Template), Template,true);
+            yield return Tuple.Create(nameof(Image), Image,false);
+            int i = 1;
+            foreach(var g in Graph)
+            {
+                yield return Tuple.Create($"Graph {i}", g,true);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        => GetEnumerator();
     }
 }

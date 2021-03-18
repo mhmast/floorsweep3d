@@ -9,10 +9,7 @@ namespace FloorSweep.PathFinding
     internal class ResolvePath
     {
 
-        private static double g(Point s, Mat[] graph)
-        {
-            return graph[0]._<double>(s.X, s.Y);
-        }
+        private static double g(Point s, Mat[] graph) => graph[0][s];
 
         private static void resolve(State state)
         {
@@ -54,10 +51,6 @@ namespace FloorSweep.PathFinding
 
         }
 
-        private static Mat b(Mat x, Mat[] graph)
-        {
-            return x.Plus(MatExtensions.FromRows(new[] { graph[5]._<double>(x.__(1), x.__(2)) }, new[] { graph[6]._<double>(x.__(1), x.__(2)) }, new[] { 0.0 }, new[] { 0.0 }));
-        }
 
         public static void DoResolvePath(State state)
         => resolve(state);

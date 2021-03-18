@@ -1,4 +1,5 @@
 ﻿using FloorSweep.PathFinding;
+using FloorSweep.PathFinding.Interfaces;
 
 namespace FloorSweep.Math
 {
