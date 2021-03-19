@@ -128,7 +128,7 @@ namespace FloorSweep.PathFinding
                             {
                                 c3 = c3 + 1;
 
-                                vis._Set<double>(y.X, y.Y, 1);
+                                vis[y.X, y.Y] = 1;
                                 insert2(y, h_val + 1, graph, mindist, kM, stack, startPos);
                                 setb(y, xXY, graph);
                             }
@@ -169,18 +169,18 @@ namespace FloorSweep.PathFinding
 
         private static void setk(Point s, double val, Mat[] graph)
         {
-            graph[1]._Set<double>(s.X, s.Y, val);
+            graph[1][s.X, s.Y] = val;
         }
 
         public static int h(Point s, Mat[] graph) => (int)graph[0][s];
         private static void seth(Point s, double val, Mat[] graph)
         {
-            graph[0]._Set<double>(s.X, s.Y, val);
+            graph[0][s.X, s.Y] = val;
         }
 
         private static void rsetQ(Point s, Mat[] graph)
         {
-            graph[2]._Set<double>(s.X, s.Y, 0);
+            graph[2][s.X, s.Y] = 0;
         }
 
         private static bool testNode(Point s, Mat template, IEnumerable<Point> pattern, Mat map)
@@ -194,7 +194,7 @@ namespace FloorSweep.PathFinding
                 var y = n + s;
                 if (map[y] == 0)
                 {
-                    template._Set<double>(y.X, y.Y, 1);
+                    template[y.X, y.Y] = 1;
                     return false;
                 }
             }
@@ -208,8 +208,8 @@ namespace FloorSweep.PathFinding
         private static void setb(Point x, Point y, Mat[] graph)
         {
             var val = y - x;
-            graph[5]._Set<double>(x.X, x.Y, val.X);
-            graph[6]._Set<double>(x.X, x.Y, val.Y);
+            graph[5][x.X, x.Y] = val.X;
+            graph[6][x.X, x.Y] = val.Y;
         }
 
         private static PointD calculateKey(Point x, double kM, Mat[] graph)
@@ -227,7 +227,7 @@ namespace FloorSweep.PathFinding
 
         private static void sett(Point s, double val, Mat[] graph)
         {
-            graph[2]._Set<double>(s.X, s.Y, val);
+            graph[2][s.X, s.Y] = val;
         }
 
         private static PointD calculateKey2(Point x, Mat[] graph, double kM) => new PointD(k(x, graph) + kM, System.Math.Min(h(x, graph), k(x, graph)));

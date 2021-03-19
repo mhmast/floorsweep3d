@@ -15,7 +15,7 @@ namespace FloorSweep.PathFinding
         {
             var s = state.EndPos;
 
-            state.Graph[0]._Set<double>(s.X, s.Y, double.PositiveInfinity);
+            state.Graph[0][s.X, s.Y] = double.PositiveInfinity;
             //var uval = g(s, state.Graph);
             var margin = new Point(5, 5);
             double minval;
@@ -42,9 +42,9 @@ namespace FloorSweep.PathFinding
                     Console.WriteLine("there is no valid path");
                     return;
                 }
-                s = s+it.Value;
-                state.Graph[0]._Set<double>(s.X, s.Y, double.PositiveInfinity);
-                path.Add((s - margin)*state.Scaling);
+                s = s + it.Value;
+                state.Graph[0][s.X, s.Y] = double.PositiveInfinity;
+                path.Add((s - margin) * state.Scaling);
 
             }
             state.Path = path;

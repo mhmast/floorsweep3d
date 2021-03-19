@@ -94,12 +94,12 @@ namespace FloorSweep.PathFinding
 
         private static void sett(Point s, double val, Mat[] graph)
         {
-            graph[2]._Set<double>(s.X, s.Y, val);
+            graph[2][s.X,s.Y] = val;
         }
 
         private static void seth(Point s, double val, Mat[] graph)
         {
-            graph[0]._Set<double>(s.X, s.Y, val);
+            graph[0][s.X,s.Y] = val;
         }
 
         private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, PriorityQueue<Node> stack, Point endPos)
@@ -131,7 +131,7 @@ namespace FloorSweep.PathFinding
 
         private static void setk(Point s, double val, Mat[] graph)
         {
-            graph[1]._Set<double>(s.X, s.Y, val);
+            graph[1][s.X,s.Y] = val;
         }
 
 

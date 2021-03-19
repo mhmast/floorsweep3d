@@ -81,9 +81,9 @@ namespace FloorSweep.PathFinding
             @out.KM = 0.0;
             var SQRT2 = System.Math.Sqrt(2) - 1;
 
-            @out.Graph[1]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 0);
-            @out.Graph[0]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 0);
-            @out.Graph[2]._Set<double>(@out.EndPos.X, @out.EndPos.Y, 1);
+            @out.Graph[1][@out.EndPos.X, @out.EndPos.Y]= 0;
+            @out.Graph[0][@out.EndPos.X, @out.EndPos.Y]= 0;
+            @out.Graph[2][@out.EndPos.X, @out.EndPos.Y]= 1;
             var k = (startPos - @out.EndPos).Abs();
             var heur = SQRT2 * k.Min() + k.Max();
             @out.Stack = new PriorityQueue<Node>();
