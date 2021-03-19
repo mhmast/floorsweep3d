@@ -26,9 +26,7 @@ namespace FloorSweep.PathFinding.TestApp
         {
             InitializeComponent();
             _algorithm = algorithm;
-#if !DEBUG
-            splitContainer3.Panel2Collapsed = true;
-#endif
+
         }
 
 
@@ -37,6 +35,7 @@ namespace FloorSweep.PathFinding.TestApp
 #if DEBUG
             EndInvoke(BeginInvoke(new Action(() =>
             {
+                debugPanel.Controls.Clear();
                 foreach (var gr in matrices)
                 {
                     AddPicureBox(debugPanel, gr.Value, isBinary[gr.Key], gr.Key);
@@ -49,6 +48,10 @@ namespace FloorSweep.PathFinding.TestApp
         {
             EndInvoke(BeginInvoke(new Action(() =>
             {
+                if (!points.Any())
+                {
+                    MessageBox.Show("Path not found!");
+                }
                 var g = panel.CreateGraphics();
                 g.DrawLines(Pens.Green, points.Select(p => (PointF)p).ToArray());
             }
@@ -142,6 +145,7 @@ namespace FloorSweep.PathFinding.TestApp
             if (running) return;
             running = true;
             var path = await _algorithm.CreateSession(CurrentMap.Data).FindPathAsync(InitState);
+
             CurrentMap.Mean.Add(path.CalculationStatistics.Total);
             var builder = new StringBuilder("Results:");
             foreach (var s in path.CalculationStatistics)
@@ -215,7 +219,7 @@ namespace FloorSweep.PathFinding.TestApp
             if (!_imgMouseDown) return;
 
             var hor = _mouseDownPoint.X - e.Location.X;
-            var ver = _mouseDownPoint.Y - e.Location.Y ;
+            var ver = _mouseDownPoint.Y - e.Location.Y;
             if (hor != 0)
                 panel1.HorizontalScroll.Value = System.Math.Min(panel1.HorizontalScroll.Maximum, System.Math.Max(panel1.HorizontalScroll.Value + hor, 0));
 

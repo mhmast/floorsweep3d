@@ -7,7 +7,7 @@ namespace FloorSweep.PathFinding
 {
     public class MapData
     {
-        private MapData(Mat originalImage,Mat binaryMap, Point start, Point target, int scaling = 1)
+        private MapData(Mat originalImage, Mat binaryMap, Point start, Point target, int scaling = 1)
         {
             Start = start;
             Target = target;
@@ -20,7 +20,7 @@ namespace FloorSweep.PathFinding
         {
             var img = new Bitmap(Image.FromFile(path));
             var mat = Mat.ImageToGrayScale(img);
-            return new MapData(mat,mat.BinaryTresh(126), start, target, scaling);
+            return new MapData(mat, mat.BinaryTresh(126), start, target, scaling);
         }
 
         public static Bitmap MakeGrayscale(Bitmap original)
@@ -73,8 +73,8 @@ namespace FloorSweep.PathFinding
             m.HConcat(Map);
             m.HConcat(Mat.Zeros(Map.Rows, 6));
             Map = m;
-            Start = start / scaling + 5;
-            Target = target / scaling + 5;
+            Start = start + 5;
+            Target = target + 5;
         }
 
         public Mat Map { get; set; }

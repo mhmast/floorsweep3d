@@ -15,8 +15,8 @@ namespace FloorSweep.Math
         public Mat(int rows, int cols, double value)
         : this(rows, cols, GenerateData(rows, cols, value)) { }
 
-        public OpenCvSharp.Mat ToCvMat()
-         => new OpenCvSharp.Mat(rows: Rows, Cols, OpenCvSharp.MatType.CV_64FC1, _data);
+        //public OpenCvSharp.Mat ToCvMat()
+        // => new OpenCvSharp.Mat(rows: Rows, Cols, OpenCvSharp.MatType.CV_64FC1, _data);
 
 
         private static double[][] GenerateData(int rows, int cols, double value)
@@ -41,13 +41,14 @@ namespace FloorSweep.Math
 
         private static unsafe Mat ImageTo(Bitmap b, Func<byte, byte, byte, double> valueSelector)
         {
-            if (b.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+            
+            var newData = new double[b.Height][];
+            var bits = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            var pixelSize = bits.Stride / b.Width;
+            if(pixelSize != 3)
             {
                 throw new ArgumentException();
             }
-            const int pixelSize = 4;
-            var newData = new double[b.Height][];
-            var bits = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             for (int y = 0; y < b.Height; y++)
             {
                 //get the data from the original image
@@ -56,14 +57,14 @@ namespace FloorSweep.Math
 
                 for (int x = 0; x < b.Width; x++)
                 {
-                    row[x] = valueSelector(oRow[x * pixelSize + 1], oRow[x * pixelSize + 2], oRow[x * pixelSize + 3]);
+                    row[x] = valueSelector(*(oRow + (x * pixelSize)), *(oRow + ((x * pixelSize) + 1)), *(oRow + ((x * pixelSize) + 2)));
                 }
                 newData[y] = row;
             }
 
             //unlock the bitmaps
             b.UnlockBits(bits);
-            return new Mat(b.Height, b.Width, newData);
+            return new Mat(b.Height, b.Width, newData).T();
         }
 
         private static double[][] GenerateDataZero(int rows, int cols)
@@ -403,36 +404,36 @@ namespace FloorSweep.Math
             return (row, pos - ((row - 1) * Cols));
         }
 
-        public static Mat FromCV(OpenCvSharp.Mat cvMat)
-        {
-            return new Mat(cvMat.Rows, cvMat.Cols, ResolveCvData(cvMat));
-        }
+        //public static Mat FromCV(OpenCvSharp.Mat cvMat)
+        //{
+        //    return new Mat(cvMat.Rows, cvMat.Cols, ResolveCvData(cvMat));
+        //}
 
-        public static double[] ResolveCvData(OpenCvSharp.Mat m)
-            => m.ElemSize() switch
-            {
-                1 when m.Channels() == 1 => GetByteArray(m),
-                8 when m.Channels() == 1 => GetArray<double>(m),
-                _ => throw new ArgumentException()
-            };
+        //public static double[] ResolveCvData(OpenCvSharp.Mat m)
+        //    => m.ElemSize() switch
+        //    {
+        //        1 when m.Channels() == 1 => GetByteArray(m),
+        //        8 when m.Channels() == 1 => GetArray<double>(m),
+        //        _ => throw new ArgumentException()
+        //    };
 
-        private unsafe static double[] GetByteArray(OpenCvSharp.Mat m)
-        {
-            var bytes = GetArray<byte>(m);
-            return bytes.Select(Convert.ToDouble).ToArray();
-        }
-        private unsafe static double[] GetDoubleArray(OpenCvSharp.Mat m)
-        => GetArray<double>(m);
-        private unsafe static T[] GetArray<T>(OpenCvSharp.Mat m) where T : unmanaged
-        {
-            var buffer = new T[m.Rows * m.Cols];
-            fixed (void* dtaPtr = &buffer[0])
-            {
-                var len = buffer.Length * sizeof(T);
-                Buffer.MemoryCopy(m.DataPointer, dtaPtr, len, len);
-                return buffer;
-            }
-        }
+        //private unsafe static double[] GetByteArray(OpenCvSharp.Mat m)
+        //{
+        //    var bytes = GetArray<byte>(m);
+        //    return bytes.Select(Convert.ToDouble).ToArray();
+        //}
+        //private unsafe static double[] GetDoubleArray(OpenCvSharp.Mat m)
+        //=> GetArray<double>(m);
+        //private unsafe static T[] GetArray<T>(OpenCvSharp.Mat m) where T : unmanaged
+        //{
+        //    var buffer = new T[m.Rows * m.Cols];
+        //    fixed (void* dtaPtr = &buffer[0])
+        //    {
+        //        var len = buffer.Length * sizeof(T);
+        //        Buffer.MemoryCopy(m.DataPointer, dtaPtr, len, len);
+        //        return buffer;
+        //    }
+        //}
 
         public Size Size()
         => new Size(Cols, Rows);

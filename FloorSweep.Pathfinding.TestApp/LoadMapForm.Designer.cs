@@ -32,6 +32,7 @@ namespace FloorSweep.Pathfinding.TestApp
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadMapForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.loadImageButton = new System.Windows.Forms.ToolStripButton();
+            this.scaleBox = new System.Windows.Forms.ToolStripComboBox();
             this.setStartButton = new System.Windows.Forms.ToolStripButton();
             this.setEndButton = new System.Windows.Forms.ToolStripButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -51,11 +52,12 @@ namespace FloorSweep.Pathfinding.TestApp
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadImageButton,
+            this.scaleBox,
             this.setStartButton,
             this.setEndButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1009, 34);
+            this.toolStrip1.Size = new System.Drawing.Size(1516, 34);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnItemClicked);
             // 
@@ -67,6 +69,25 @@ namespace FloorSweep.Pathfinding.TestApp
             this.loadImageButton.Name = "loadImageButton";
             this.loadImageButton.Size = new System.Drawing.Size(110, 29);
             this.loadImageButton.Text = "Load Image";
+            // 
+            // scaleBox
+            // 
+            this.scaleBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.scaleBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.scaleBox.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+            this.scaleBox.Name = "scaleBox";
+            this.scaleBox.Size = new System.Drawing.Size(121, 34);
+            this.scaleBox.Text = "Scaling";
             // 
             // setStartButton
             // 
@@ -101,7 +122,7 @@ namespace FloorSweep.Pathfinding.TestApp
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 34);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1009, 550);
+            this.panel1.Size = new System.Drawing.Size(1516, 925);
             this.panel1.TabIndex = 2;
             // 
             // toolStrip2
@@ -116,9 +137,9 @@ namespace FloorSweep.Pathfinding.TestApp
             this.okButton,
             this.cancelButton});
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.toolStrip2.Location = new System.Drawing.Point(0, 584);
+            this.toolStrip2.Location = new System.Drawing.Point(0, 959);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(1009, 160);
+            this.toolStrip2.Size = new System.Drawing.Size(1516, 160);
             this.toolStrip2.TabIndex = 3;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnBottomItemClicked);
@@ -126,19 +147,19 @@ namespace FloorSweep.Pathfinding.TestApp
             // locationLabel
             // 
             this.locationLabel.Name = "locationLabel";
-            this.locationLabel.Size = new System.Drawing.Size(1006, 25);
+            this.locationLabel.Size = new System.Drawing.Size(1513, 25);
             this.locationLabel.Text = "Location:";
             // 
             // startLabel
             // 
             this.startLabel.Name = "startLabel";
-            this.startLabel.Size = new System.Drawing.Size(1006, 25);
+            this.startLabel.Size = new System.Drawing.Size(1513, 25);
             this.startLabel.Text = "Start:";
             // 
             // endLabel
             // 
             this.endLabel.Name = "endLabel";
-            this.endLabel.Size = new System.Drawing.Size(1006, 25);
+            this.endLabel.Size = new System.Drawing.Size(1513, 25);
             this.endLabel.Text = "Text";
             // 
             // okButton
@@ -147,7 +168,7 @@ namespace FloorSweep.Pathfinding.TestApp
             this.okButton.Image = ((System.Drawing.Image)(resources.GetObject("okButton.Image")));
             this.okButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(1006, 29);
+            this.okButton.Size = new System.Drawing.Size(1513, 29);
             this.okButton.Text = "OK";
             // 
             // cancelButton
@@ -156,7 +177,7 @@ namespace FloorSweep.Pathfinding.TestApp
             this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
             this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(1006, 29);
+            this.cancelButton.Size = new System.Drawing.Size(1513, 29);
             this.cancelButton.Text = "Cancel";
             // 
             // LoadMapForm
@@ -164,7 +185,7 @@ namespace FloorSweep.Pathfinding.TestApp
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1009, 744);
+            this.ClientSize = new System.Drawing.Size(1516, 1119);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip2);
             this.Controls.Add(this.toolStrip1);
@@ -196,5 +217,6 @@ namespace FloorSweep.Pathfinding.TestApp
         private System.Windows.Forms.ToolStripLabel endLabel;
         private System.Windows.Forms.ToolStripButton okButton;
         private System.Windows.Forms.ToolStripButton cancelButton;
+        private System.Windows.Forms.ToolStripComboBox scaleBox;
     }
 }

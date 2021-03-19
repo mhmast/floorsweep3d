@@ -7,19 +7,14 @@ namespace FloorSweep.PathFinding
     internal class FocussedDStarPath : IPath
     {
         public FocussedDStarPath(IReadOnlyCollection<Point> result
-#if DEBUG
-            ,ICalculationStatistics statistics)
-            #else
-            )
-#endif
+            , ICalculationStatistics statistics)
         {
             Path = result;
             CalculationStatistics = statistics;
         }
         public IReadOnlyCollection<Point> Path { get; }
 
-#if DEBUG
         public ICalculationStatistics CalculationStatistics { get; }
-#endif
+
     }
 }
