@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Floorsweep.Math\Floorsweep.Math.csproj" />
+    <ProjectReference Include="..\Floorsweep.Math\FloorSweep.Math.csproj" />
   </ItemGroup>
 
 </Project>
