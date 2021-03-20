@@ -27,6 +27,7 @@ namespace FloorSweep.PathFinding.Api.Controllers
             _monitorService = monitorService;
         }
 
+        [Authorize]
         [HttpPost()]
         [Scope("monitor")]
         public async Task<IActionResult> RegisterMonitor(string ip)

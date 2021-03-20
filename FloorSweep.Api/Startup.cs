@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NSwag.Generation.Processors.Security;
 using System;
 using System.Threading.Tasks;
 
@@ -31,37 +32,38 @@ namespace FloorSweep.PathFinding.Api
                 .AddJwtBearer(o => authSection.Bind(o));
             services.AddHttpContextAccessor();
             services.AddTransient<ISessionFactory, HttpSessionFactory>();
-            services.AddSwaggerGen(c =>
+            services.AddAuthorization();
+            services.AddControllers();
+            services.AddOpenApiDocument(c =>
             {
-                var flow = new OpenApiOAuthFlow();
-                authSection.Bind(flow);
-                var scheme = new OpenApiSecurityScheme {Flows = new OpenApiOAuthFlows { AuthorizationCode=flow} ,Type = SecuritySchemeType.OpenIdConnect};
-                authSection.Bind(scheme);
-                c.AddSecurityDefinition("oauth2", scheme);
-                c.OperationFilter<AuthorizeCheckOperationFilter>();
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FloorSweep.Api", Version = "v1" });
+                var section = Configuration.GetSection("Swagger");
+                var flow = new NSwag.OpenApiOAuthFlow();
+                section.Bind(flow);
+                var scheme = new NSwag.OpenApiSecurityScheme {Flows = new NSwag.OpenApiOAuthFlows { AuthorizationCode=flow} ,Type = NSwag.OpenApiSecuritySchemeType.OAuth2};
+                section.Bind(scheme);
+                c.AddSecurity("oauth2", scheme);
+                c.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
+                c.Title = "FloorSweep.Api";
+                c.Version = "v1";
             });
 
             services.UseFloorSweepEngine();
             services.UseFloorSweepRepositories();
-            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var authSection = Configuration.GetSection("Authentication");
+            var swaggerSection = Configuration.GetSection("Swagger");
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
+                app.UseOpenApi();
+                app.UseSwaggerUi3(options =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FloorSweep.PathFinding.Api v1");
-                    authSection.Bind(c.OAuthConfigObject);
-                    c.OAuthAppName("Demo API - Swagger");
-                    c.OAuthUsePkce();
+                    options.OAuth2Client = new NSwag.AspNetCore.OAuth2ClientSettings();
+                    swaggerSection.Bind(options.OAuth2Client); 
                 });
             }
 
