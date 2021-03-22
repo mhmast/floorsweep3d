@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace FloorSweep.Engine.Repositories
     {
         private Dictionary<string, List<IMonitorClient>> _clients = new Dictionary<string, List<IMonitorClient>>();
 
-        public Task AddMonitorClientAsync(ISession session,string clientIP)
+        public Task AddMonitorClientAsync(ISession session,IPAddress clientIP)
         {
             if(!_clients.ContainsKey(session.Id))
             {

@@ -1,10 +1,11 @@
 ﻿using FloorSweep.Engine.Interfaces;
+using System.Net;
 
 namespace FloorSweep.Engine.Repositories
 {
     internal class MonitorClient : IMonitorClient
     {
-        public MonitorClient(ISession session, string clientIp)
+        public MonitorClient(ISession session, IPAddress clientIp)
         {
             SessionId = session.Id;
             ClientIP = clientIp;
@@ -12,6 +13,6 @@ namespace FloorSweep.Engine.Repositories
 
         public string SessionId { get; }
 
-        public string ClientIP { get; }
+        public IPAddress ClientIP { get; }
     }
 }

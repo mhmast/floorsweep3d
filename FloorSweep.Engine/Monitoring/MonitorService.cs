@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Engine.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.Monitoring
@@ -12,7 +13,7 @@ namespace FloorSweep.Engine.Monitoring
             _monitorRepository = monitorRepository;
         }
 
-        public Task RegisterMonitorAsync(ISession session, string clientIP)
+        public Task RegisterMonitorAsync(ISession session, IPAddress clientIP)
         => _monitorRepository.AddMonitorClientAsync(session, clientIP);
     }
 }

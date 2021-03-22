@@ -3,6 +3,7 @@ using FloorSweep.Engine.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FloorSweep.PathFinding.Api.Controllers
@@ -32,8 +33,12 @@ namespace FloorSweep.PathFinding.Api.Controllers
         [Scope("monitor-view")]
         public async Task<IActionResult> RegisterMonitor(string ip)
         {
+            if(!IPAddress.TryParse(ip,out var addr))
+            {
+                return BadRequest("Ip is not a valid IP address");
+            }
             var ses = await _sessionFactory.GetSessionAsync();
-            await _monitorService.RegisterMonitorAsync(ses, ip);
+            await _monitorService.RegisterMonitorAsync(ses, addr);
             return Ok();
         }
     }
