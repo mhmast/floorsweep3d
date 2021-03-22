@@ -29,7 +29,7 @@ namespace FloorSweep.PathFinding.Api.Controllers
 
         [Authorize]
         [HttpPost()]
-        [Scope("monitor")]
+        [Scope("monitor-view")]
         public async Task<IActionResult> RegisterMonitor(string ip)
         {
             var ses = await _sessionFactory.GetSessionAsync();

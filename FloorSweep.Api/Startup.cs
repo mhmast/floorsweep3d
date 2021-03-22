@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NSwag.Generation.Processors.Security;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace FloorSweep.PathFinding.Api
@@ -29,7 +30,14 @@ namespace FloorSweep.PathFinding.Api
         {
             var authSection = Configuration.GetSection("Authentication");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(o => authSection.Bind(o));
+                .AddJwtBearer(o =>
+                {
+#if DEBUG
+                    o.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = (_, __, ___, ____) => true };
+#endif
+                    authSection.Bind(o);
+                    
+                });
             services.AddHttpContextAccessor();
             services.AddTransient<ISessionFactory, HttpSessionFactory>();
             services.AddAuthorization();
