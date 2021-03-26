@@ -1,22 +1,24 @@
 <script lang="ts">
-	import Nav from '../components/Nav.svelte';
-
-	export let segment: string;
+  import Nav from "../components/nav/Nav.svelte";
+  import { init } from "./_layout";
+  export let segment: string;
 </script>
 
-<style>
-	main {
-		position: relative;
-		max-width: 56em;
-		background-color: white;
-		padding: 2em;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
+{#await init}
+  <p>Loading..</p>
+{:then result}
+  <Nav {segment} />
+  {#if !result.error}
+    <main>
+      <slot />
+    </main>
+  {:else}
+    <p>{result.error}</p>
+  {/if}
+{:catch ex}
+  <p>{ex}</p>
+{/await}
+
+<style lang="scss" global>
+  @import "./style/global.scss";
 </style>
-
-<Nav {segment}/>
-
-<main>
-	<slot></slot>
-</main>

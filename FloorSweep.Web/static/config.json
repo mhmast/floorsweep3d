@@ -1,0 +1,5 @@
+{
+    "authentication":{
+        "openIdConfigurationEndpoint":"https://localhost:8443/auth/realms/master/.well-known/openid-configuration"
+    }
+}

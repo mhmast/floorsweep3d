@@ -20,7 +20,14 @@ const onwarn = (warning, onwarn) =>
 	(warning.code === 'CIRCULAR_DEPENDENCY' && /[/\\]@sapper[/\\]/.test(warning.message)) ||
 	(warning.code === 'THIS_IS_UNDEFINED') ||
 	onwarn(warning);
-
+const preprocess = sveltePreprocess(
+	{ sourceMap: dev ,
+	scss: {
+	includePaths: ['src']
+	},postcss: {
+		plugins: [require('autoprefixer')],
+	  }
+});
 export default {
 	client: {
 		input: config.client.input().replace(/\.js$/, '.ts'),
@@ -34,7 +41,8 @@ export default {
 				},
 			}),
 			svelte({
-				preprocess: sveltePreprocess({ sourceMap: dev }),
+				preprocess,
+				
 				compilerOptions: {
 					dev,
 					hydratable: true
@@ -52,7 +60,7 @@ export default {
 			typescript({ sourceMap: dev }),
 
 			legacy && babel({
-				extensions: ['.js', '.mjs', '.html', '.svelte'],
+				extensions: ['.js', '.mjs', '.html', '.svelte', '.scss'],
 				babelHelpers: 'runtime',
 				exclude: ['node_modules/@babel/**'],
 				presets: [
@@ -89,7 +97,7 @@ export default {
 				},
 			}),
 			svelte({
-				preprocess: sveltePreprocess({ sourceMap: dev }),
+				preprocess,
 				compilerOptions: {
 					dev,
 					generate: 'ssr',
