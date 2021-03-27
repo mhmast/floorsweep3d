@@ -1,9 +1,12 @@
 
 export interface Configuration{
+    baseUrl: string;
     authentication:AuthenticationConfiguration;
 }
 
 export interface AuthenticationConfiguration{
+    realm: string;
+    clientId: string;
     openIdConfigurationEndpoint:string;
     endpointConfiguration:TokenEndpointConfiguration;
 }

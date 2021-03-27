@@ -1,7 +1,11 @@
+<script>
+  import Authenticated from "../components/authenticated/authenticated.svelte";
+</script>
 
 <svelte:head>
-	<title>Floorsweep Monitor</title>
+  <title>Floorsweep Monitor</title>
 </svelte:head>
 
-<div >
-</div>
+<Authenticated>
+  <div />
+</Authenticated>

@@ -1,4 +1,4 @@
-import {loginUrl} from "../routes/routes";
+import {loginRedirect} from "../services/authenticationService";
 
 export default async function fetchSafe<T>(input:RequestInfo,init?:RequestInit): Promise<Result<T>>{
     try {
@@ -8,10 +8,7 @@ export default async function fetchSafe<T>(input:RequestInfo,init?:RequestInit):
           return {data,statusCode:response.status,error:null};  
         }
         else if(response.status == 401 || response.status == 403){
-            if(typeof window !== "undefined")
-            {
-            window.location.assign(loginUrl);
-            }
+            loginRedirect();           
         } 
         else{
             return {data:null,statusCode:response.status,error:response.statusText};         
