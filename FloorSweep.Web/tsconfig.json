@@ -6,17 +6,15 @@
 			"ES2017",
 			"WebWorker"
 		]
-	},
+		},
 	"include": [
 		"src/**/*",
+		"*.ts",
 		"src/node_modules/**/*"
 	],
 	"exclude": [
 		"node_modules/*",
 		"__sapper__/*",
 		"static/*"
-	],
-	"files": [
-		"src/**/*"
 	]
 }

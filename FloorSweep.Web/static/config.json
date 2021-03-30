@@ -1,8 +1,9 @@
 {
     "baseUrl":"http://floorsweep.com:3000",
     "authentication":{
-        "clientId" :"robot_client",
+        "clientId" :"robot-client",
+        "clientSecret":"9f3e6864-aca6-4c3b-930b-0d8267acc656",
         "realm" :"master",
-        "openIdConfigurationEndpoint":"https://floorsweep.com:8443/auth/realms/master/.well-known/openid-configuration"
+        "openIdConfigurationEndpoint":"http://floorsweep.com:8080/auth/realms/master/.well-known/openid-configuration"
     }
 }

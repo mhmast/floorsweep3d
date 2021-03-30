@@ -1,32 +1,40 @@
-import queryString from "query-string";
-import base64url from "base64url";
-import { Sha256 } from "../../services/cryptography"
-import { set as setTokenData } from "../../store/tokenData";
-import { get as getConfig } from "../../store/config";
-import { tokenCallbackUrl } from "../routes"
+import * as querystring from 'query-string';
+import { Base64 } from '../../services/base64';
+import ConfigStore from '../../store/configStore';
+import TokenStore from '../../store/tokenStore';
+import { sha256 } from '../../services/cryptography';
+import { tokenCallbackUrl } from '../routes';
+import { UTF8 } from '../../services/utf8';
 
-let parsedReturnUrl = "/";
+let parsedReturnUrl = '/';
 
 if (typeof window !== 'undefined') {
-  parsedReturnUrl = queryString.parse(window.location.search)["returnUrl"] as string;
+  parsedReturnUrl = querystring.parse(window.location.search).returnUrl as string;
 }
 
-export let init = (async () => {
-  const challenge = getRandomString(53);
-  setTokenData({ challenge, token: null });
-  const sha256 = Sha256.hash(challenge) as string;
-  var sha = base64url(sha256);
-  const config = getConfig();
-  const returnUrl = `${config.baseUrl}${tokenCallbackUrl}?returnUrl=${encodeURIComponent(parsedReturnUrl)}`;
-  var url = `${config.authentication.endpointConfiguration.authorization_endpoint}?response_type=code&client_id=${config.authentication.clientId}&redirect_uri=${returnUrl}&scope=openid&realm=${config.authentication.realm}&code_challenge=${sha}&code_challenge_method=S256`;
-  return url;
-})();
-
-function getRandomString(length) {
-  var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var result = '';
-  for (var i = 0; i < length; i++) {
+function getRandomString(length: number) {
+  const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
     result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
   }
   return result;
 }
+
+export const init = (async () => {
+  const configStore = ConfigStore.create();
+  const tokenStore = TokenStore.create();
+  const config = await configStore.await();
+  const challenge = getRandomString(53);
+  tokenStore.set({ challenge, token: null });
+  const sha256val = sha256(challenge);
+
+  const sha = Base64.urlEncode(sha256val);
+
+  const returnUrl = `${config.baseUrl}${tokenCallbackUrl}?returnUrl=${encodeURIComponent(parsedReturnUrl)}`;
+  const url = `${config.authentication.endpointConfiguration.authorization_endpoint}?response_type=code&client_id=${config.authentication.clientId}&redirect_uri=${returnUrl}&scope=openid&realm=${config.authentication.realm}&code_challenge=${sha}&code_challenge_method=S256`;
+  // console.log({ url });
+  if (typeof window !== 'undefined') {
+    window.location.assign(url);
+  }
+});

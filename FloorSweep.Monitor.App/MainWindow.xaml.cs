@@ -42,7 +42,8 @@ namespace FloorSweep.Monitor.App
                 dynamic json = JObject.Parse(await result.Content.ReadAsStringAsync());
                 var authUrl = (string)json.authorization_endpoint;
                 _tokenUrl = (string)json.token_endpoint;
-                var sha = Base64UrlEncoder.Encode(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(_challenge)));
+                var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("lJdJ9iyeNuVcoIgKp7tSYgpb7ipinqLJruKBUoVZkWjGTEOyFNzfB"));
+                var sha = Base64UrlEncoder.Encode(hash) ;
                 var url = $"{authUrl}?response_type=code&client_id=robot-client&redirect_uri=https%3A%2F%2Flocalhost%2FMonitorToken.html&scope=monitor-view%20openid&state=TW9uIE1hciAyMiAyMDIxIDE2OjE3OjM2IEdNVCswMTAwIChNaWRkZW4tRXVyb3Blc2Ugc3RhbmRhYXJkdGlqZCk%3D&realm=master&code_challenge={sha}&code_challenge_method=S256";
                 //var loginScreen = await client.GetAsync(url);
                 //webBrowser.Navigate(url);

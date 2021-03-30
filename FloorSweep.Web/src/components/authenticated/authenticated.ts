@@ -1,11 +1,12 @@
-import { get as getTokenData } from '../../store/tokenData'
-import { loginRedirect } from '../../services/authenticationService'
+import TokenStore from '../../store/tokenStore';
+import { loginRedirect } from '../../services/authenticationService';
 
-export const init = (async () => await ensureToken())()
-
-async function ensureToken () {
-  const tokenData = getTokenData()
-  if (!tokenData.token) {
-    loginRedirect()
+async function ensureToken() {
+  const tokenStore = TokenStore.create();
+  const tokenData = tokenStore.get();
+  if (!tokenData?.token) {
+    loginRedirect();
   }
 }
+
+export const init = (() => ensureToken())();
