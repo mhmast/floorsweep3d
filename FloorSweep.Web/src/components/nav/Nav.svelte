@@ -15,8 +15,8 @@
     <li>
       <a
         rel="prefetch"
-        aria-current={segment === "blog" ? "page" : undefined}
-        href="blog">blog</a
+        aria-current={segment === "logout" ? "page" : undefined}
+        href="logout">Logout</a
       >
     </li>
   </ul>

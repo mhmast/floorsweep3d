@@ -1,6 +1,7 @@
 import * as querystring from 'query-string';
 import ConfigStore from '../../store/configStore';
 import TokenStore from '../../store/tokenStore';
+import { tokenCallbackUrl } from '../routes';
 
 import fetchSafe, { formEncode } from '../../services/fetchSafe';
 
@@ -10,11 +11,10 @@ let parsedReturnUrl = '';
 if (typeof window !== 'undefined') {
   const parsed = querystring.parse(window.location.search);
   parsedCode = parsed.code as string;
-  console.log(parsedCode);
   parsedReturnUrl = parsed.returnUrl as string;
 }
 interface TokenResponse{
-  code:string;
+  access_token:string;
 }
 export const init = (async () => {
   const configStore = ConfigStore.create();
@@ -25,7 +25,7 @@ export const init = (async () => {
   const formData = {
     code_verifier: tokenData.challenge,
     code: parsedCode,
-    // redirect_uri","https://localhost/MonitorToken.html"},
+    redirect_uri: `${config.baseUrl}${tokenCallbackUrl}?returnUrl=${parsedReturnUrl}`,
     client_secret: config.authentication.clientSecret,
     client_id: config.authentication.clientId,
     grant_type: 'authorization_code',
@@ -36,9 +36,10 @@ export const init = (async () => {
   if (tokenObject.error) {
     throw tokenObject.error;
   }
-  tokenData.token = tokenObject.data.code;
+  tokenData.token = tokenObject.data.access_token;
   tokenStore.set(tokenData);
   if (typeof window !== 'undefined') {
-    window.location.assign(parsedReturnUrl);
+    console.log(parsedReturnUrl);
+    // window.location.assign(parsedReturnUrl);
   }
 });

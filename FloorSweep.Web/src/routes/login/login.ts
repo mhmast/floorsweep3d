@@ -4,7 +4,6 @@ import ConfigStore from '../../store/configStore';
 import TokenStore from '../../store/tokenStore';
 import { sha256 } from '../../services/cryptography';
 import { tokenCallbackUrl } from '../routes';
-import { UTF8 } from '../../services/utf8';
 
 let parsedReturnUrl = '/';
 
@@ -33,7 +32,6 @@ export const init = (async () => {
 
   const returnUrl = `${config.baseUrl}${tokenCallbackUrl}?returnUrl=${encodeURIComponent(parsedReturnUrl)}`;
   const url = `${config.authentication.endpointConfiguration.authorization_endpoint}?response_type=code&client_id=${config.authentication.clientId}&redirect_uri=${returnUrl}&scope=openid&realm=${config.authentication.realm}&code_challenge=${sha}&code_challenge_method=S256`;
-  // console.log({ url });
   if (typeof window !== 'undefined') {
     window.location.assign(url);
   }
