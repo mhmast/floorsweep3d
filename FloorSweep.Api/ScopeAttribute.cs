@@ -2,7 +2,7 @@
 
 namespace FloorSweep.Api
 {
-    [AttributeUsage(AttributeTargets.Method,AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method|AttributeTargets.Class,AllowMultiple = false)]
     public class ScopeAttribute : Attribute
     {
         public ScopeAttribute(params string[] scopes)

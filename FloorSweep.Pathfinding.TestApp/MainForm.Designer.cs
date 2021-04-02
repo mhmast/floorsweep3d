@@ -65,7 +65,7 @@
             this.runButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(2052, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(2052, 34);
             this.toolStrip1.TabIndex = 6;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnItemClicked);
@@ -76,7 +76,7 @@
             this.loadMapButton.Image = ((System.Drawing.Image)(resources.GetObject("loadMapButton.Image")));
             this.loadMapButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.loadMapButton.Name = "loadMapButton";
-            this.loadMapButton.Size = new System.Drawing.Size(64, 20);
+            this.loadMapButton.Size = new System.Drawing.Size(96, 29);
             this.loadMapButton.Text = "Load Map";
             // 
             // runButton
@@ -86,13 +86,13 @@
             this.runButton.Image = ((System.Drawing.Image)(resources.GetObject("runButton.Image")));
             this.runButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(34, 20);
+            this.runButton.Size = new System.Drawing.Size(47, 29);
             this.runButton.Text = "Run";
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer2.Location = new System.Drawing.Point(0, 34);
             this.splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -103,7 +103,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(2052, 728);
+            this.splitContainer2.Size = new System.Drawing.Size(2052, 719);
             this.splitContainer2.SplitterDistance = 1000;
             this.splitContainer2.TabIndex = 7;
             // 
@@ -123,8 +123,8 @@
             this.splitContainer3.Panel2.Controls.Add(this.debugDataBox);
             this.splitContainer3.Panel2.Controls.Add(this.label1);
             this.splitContainer3.Panel2MinSize = 200;
-            this.splitContainer3.Size = new System.Drawing.Size(1000, 728);
-            this.splitContainer3.SplitterDistance = 430;
+            this.splitContainer3.Size = new System.Drawing.Size(1000, 719);
+            this.splitContainer3.SplitterDistance = 424;
             this.splitContainer3.TabIndex = 6;
             // 
             // mapGroupBox
@@ -133,7 +133,7 @@
             this.mapGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapGroupBox.Location = new System.Drawing.Point(0, 0);
             this.mapGroupBox.Name = "mapGroupBox";
-            this.mapGroupBox.Size = new System.Drawing.Size(1000, 430);
+            this.mapGroupBox.Size = new System.Drawing.Size(1000, 424);
             this.mapGroupBox.TabIndex = 6;
             this.mapGroupBox.TabStop = false;
             this.mapGroupBox.Text = "Map";
@@ -145,7 +145,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(994, 400);
+            this.panel1.Size = new System.Drawing.Size(994, 394);
             this.panel1.TabIndex = 1;
             // 
             // mapPanel
@@ -165,7 +165,7 @@
             this.debugDataBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.debugDataBox.Location = new System.Drawing.Point(0, 25);
             this.debugDataBox.Name = "debugDataBox";
-            this.debugDataBox.Size = new System.Drawing.Size(1000, 269);
+            this.debugDataBox.Size = new System.Drawing.Size(1000, 266);
             this.debugDataBox.TabIndex = 7;
             this.debugDataBox.TabStop = false;
             this.debugDataBox.Text = "Debug data";
@@ -176,7 +176,7 @@
             this.debugPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.debugPanel.Location = new System.Drawing.Point(3, 27);
             this.debugPanel.Name = "debugPanel";
-            this.debugPanel.Size = new System.Drawing.Size(994, 239);
+            this.debugPanel.Size = new System.Drawing.Size(994, 236);
             this.debugPanel.TabIndex = 2;
             // 
             // label1
@@ -195,7 +195,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1048, 728);
+            this.groupBox1.Size = new System.Drawing.Size(1048, 719);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Loaded Maps";
@@ -208,7 +208,7 @@
             this.loadedMapsBox.ItemHeight = 25;
             this.loadedMapsBox.Location = new System.Drawing.Point(3, 27);
             this.loadedMapsBox.Name = "loadedMapsBox";
-            this.loadedMapsBox.Size = new System.Drawing.Size(1042, 698);
+            this.loadedMapsBox.Size = new System.Drawing.Size(1042, 689);
             this.loadedMapsBox.TabIndex = 0;
             this.loadedMapsBox.SelectedIndexChanged += new System.EventHandler(this.OnSelectedMapChanged);
             // 
@@ -223,6 +223,7 @@
             this.Name = "MainForm";
             this.Text = "TestApp";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);

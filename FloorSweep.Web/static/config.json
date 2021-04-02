@@ -1,5 +1,6 @@
 {
     "baseUrl":"http://floorsweep.com:3000",
+    "apiBaseUrl":"http://floorsweep.com:5000",
     "authentication":{
         "clientId" :"robot-client",
         "clientSecret":"9f3e6864-aca6-4c3b-930b-0d8267acc656",

@@ -23,19 +23,19 @@ namespace FloorSweep.Pathfinding.TestApp
             scaleBox.Enabled = false;
             scaleBox.SelectedIndexChanged += ScalingChanged;
             SetOk();
-            LoadImage(Scaling);
+            LoadImage();
         }
 
         private void ScalingChanged(object sender, EventArgs e)
         {
-            GeneratePictureBox(Img,Scaling);
+            GeneratePictureBox(Img);
         }
 
         private void OnItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem == loadImageButton)
             {
-                LoadImage(Scaling);
+                LoadImage();
             }
             if (e.ClickedItem == setEndButton)
             {
@@ -48,13 +48,13 @@ namespace FloorSweep.Pathfinding.TestApp
         }
 
 
-        private void LoadImage(int scaling)
+        private void LoadImage()
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Path = openFileDialog1.FileName;
                 Img = Image.FromFile(Path);
-                GeneratePictureBox(Img,scaling);
+                GeneratePictureBox(Img);
                 scaleBox.Enabled = true;
                 setStartButton.Checked = true;
                 setEndButton.Checked = false;
@@ -62,15 +62,15 @@ namespace FloorSweep.Pathfinding.TestApp
             SetOk();
         }
 
-        private void GeneratePictureBox(Image img, int scaling)
+        private void GeneratePictureBox(Image img)
         {
             var pictureBox = new PictureBox
             {
                 BackgroundImage = img,
-                Width = img.Width / scaling,
-                Height = img.Height / scaling,
-                Left = ((ClientSize.Width - img.Width) / scaling / 2),
-                Top = (ClientSize.Height - img.Height) / scaling / 2,
+                Width = img.Width ,
+                Height = img.Height ,
+                Left = ((ClientSize.Width - img.Width) / 2),
+                Top = (ClientSize.Height - img.Height) / 2,
                 BackgroundImageLayout = ImageLayout.Stretch
             };
 
@@ -114,7 +114,7 @@ namespace FloorSweep.Pathfinding.TestApp
         {
             if (e.ClickedItem == okButton)
             {
-                LoadedMap = new LoadedMap(MapData.FromImage(Path, Start.Value, End.Value, Scaling), Path,Img);
+                LoadedMap = new LoadedMap(Start.Value, End.Value, MapData.FromImage(Path, Scaling), Path,Img);
                 DialogResult = DialogResult.OK;
             }
             if (e.ClickedItem == cancelButton)

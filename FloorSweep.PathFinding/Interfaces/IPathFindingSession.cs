@@ -7,8 +7,6 @@ namespace FloorSweep.PathFinding.Interfaces
 {
     public interface IPathFindingSession
     {
-        IPath FindPath(Action<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>> debugCallback = null);
-      
-        Task<IPath> FindPathAsync(Action<IReadOnlyDictionary<string,Mat> , IReadOnlyDictionary<string, bool>> debugCallback = null);
+        Task<IPath> FindPathAsync(Point start,Point end, Func<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>, Task> debugCallback = null);
     }
 }

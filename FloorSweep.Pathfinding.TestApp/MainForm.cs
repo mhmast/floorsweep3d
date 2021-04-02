@@ -22,21 +22,21 @@ namespace FloorSweep.PathFinding.TestApp
         {
             InitializeComponent();
             _algorithm = algorithm;
-
         }
 
 
-        private void InitState(IReadOnlyDictionary<string, Mat> matrices, IReadOnlyDictionary<string, bool> isBinary)
+        private Task InitState(IReadOnlyDictionary<string, Mat> matrices, IReadOnlyDictionary<string, bool> isBinary)
         {
 #if DEBUG
-            EndInvoke(BeginInvoke(new Action(() =>
+            return new TaskFactory().FromAsync(
+            BeginInvoke(new Action(() =>
             {
                 debugPanel.Controls.Clear();
                 foreach (var gr in matrices)
                 {
                     AddPicureBox(debugPanel, gr.Value, isBinary[gr.Key], gr.Key);
                 }
-            })));
+            })), EndInvoke);
 #endif   
         }
 
@@ -47,6 +47,7 @@ namespace FloorSweep.PathFinding.TestApp
                 if (!points.Any())
                 {
                     MessageBox.Show("Path not found!");
+                    return;
                 }
                 var g = panel.CreateGraphics();
                 g.DrawLines(Pens.Green, points.Select(p => (PointF)p).ToArray());
@@ -140,7 +141,7 @@ namespace FloorSweep.PathFinding.TestApp
         {
             if (running) return;
             running = true;
-            var path = await _algorithm.CreateSession(CurrentMap.Data).FindPathAsync(InitState);
+            var path = await _algorithm.CreateSession(CurrentMap.Data).FindPathAsync(CurrentMap.Start, CurrentMap.End, InitState);
 
             CurrentMap.Mean.Add(path.CalculationStatistics.Total);
             var builder = new StringBuilder("Results:");
@@ -174,13 +175,18 @@ namespace FloorSweep.PathFinding.TestApp
                 {
                     if (!Maps.Any(m => m.File == selectForm.LoadedMap.File))
                     {
-                        Maps.Add(selectForm.LoadedMap);
-                        loadedMapsBox.Items.Add(selectForm.LoadedMap);
-                        loadedMapsBox.SelectedItem = selectForm.LoadedMap;
-                        runButton.Enabled = true;
+                        AddMap(selectForm.LoadedMap);
                     }
                 }
             }
+        }
+
+        private void AddMap(LoadedMap loadedMap)
+        {
+            Maps.Add(loadedMap);
+            loadedMapsBox.Items.Add(loadedMap);
+            loadedMapsBox.SelectedItem = loadedMap;
+            runButton.Enabled = true;
         }
 
         private void OnSelectedMapChanged(object sender, EventArgs e)
@@ -221,6 +227,12 @@ namespace FloorSweep.PathFinding.TestApp
 
             if (ver != 0)
                 panel1.VerticalScroll.Value = System.Math.Min(panel1.VerticalScroll.Maximum, System.Math.Max(panel1.VerticalScroll.Value + ver, 0));
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            var mapdata = MapData.Empty(4);
+            AddMap(new LoadedMap(new Math.Point(100, 100), new Math.Point(300, 300), mapdata, "Empty", new Bitmap(mapdata.OriginalImage.Rows, mapdata.OriginalImage.Cols)));
         }
     }
 }

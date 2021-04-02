@@ -12,24 +12,21 @@ namespace FloorSweep.PathFinding
     internal class FocussedDStarSession : IPathFindingSession
     {
         private readonly MapData _data;
-        
+
         public FocussedDStarSession(MapData data)
         {
             _data = data;
         }
-        public Task<IPath> FindPathAsync(Action<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>> debugCallback = null)
-            => Task.Run(()=>FindPath(debugCallback));
-
-        public IPath FindPath(Action<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>> debugCallback = null)
-        {
+        public async Task<IPath> FindPathAsync(Point start, Point end, Func<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>, Task> debugCallback = null)
+        { 
             var @bool = false;
 
             const string totalKey = "TOTAL";
             var statistics = new FocussedDStarStatistics(totalKey);
             var sw = Stopwatch.StartNew();
 
-            var state = FDSInit.DoFDSInit(_data, _data.Scaling);
-            debugCallback?.Invoke(
+            var state = FDSInit.DoFDSInit(start,end,_data, _data.Scaling);
+            await debugCallback?.Invoke(
                 new ReadOnlyDictionary<string, Mat>(state.ToDictionary(a => a.Item1, a => a.Item2)),
                 new ReadOnlyDictionary<string, bool>(state.ToDictionary(a => a.Item1, a => a.Item3)));
 

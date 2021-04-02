@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FloorSweep.Engine\FloorSweep.Engine.csproj" />
+    <ProjectReference Include="..\FloorSweep.PathFinding\FloorSweep.PathFinding.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,26 +1,31 @@
-﻿using Point = FloorSweep.Math.Point;
+﻿
 using System.Drawing;
 using System.Drawing.Imaging;
 using FloorSweep.Math;
+using System;
 
 namespace FloorSweep.PathFinding
 {
     public class MapData
     {
-        private MapData(Mat originalImage, Mat binaryMap, Point start, Point target, int scaling = 1)
+        private MapData(Mat originalImage, Mat binaryMap, int scaling = 1)
         {
-            Start = start;
-            Target = target;
             OriginalImage = originalImage;
             Scaling = scaling;
-            LoadMap(binaryMap, start, target, scaling);
+            LoadMap(binaryMap, scaling);
         }
 
-        public static MapData FromImage(string path, Point start, Point target, int scaling = 1)
+        public static MapData FromImage(string path, int scaling = 1)
         {
             var img = new Bitmap(Image.FromFile(path));
             var mat = Mat.ImageToGrayScale(img);
-            return new MapData(mat, mat.BinaryTresh(126), start, target, scaling);
+            return new MapData(mat, mat.BinaryTresh(126), scaling);
+        }
+
+        public static MapData Empty(int scaling = 1)
+        {
+            var original = Mat.Ones(600, 600);
+            return new MapData(original, original, scaling);
         }
 
         public static Bitmap MakeGrayscale(Bitmap original)
@@ -59,29 +64,25 @@ namespace FloorSweep.PathFinding
         }
 
 
-        private void LoadMap(Mat image, Point start, Point target, int scaling)
+        private void LoadMap(Mat image, int scaling)
         {
             var map = image;
             if (scaling != 1)
             {
                 map = SimplifyMap.DoSimplifyMap(map, scaling);
             }
-            Map = Mat.Zeros(5, map.Cols);
+            Map = Mat.Zeros(BorderThickness, map.Cols);
             Map.VConcat(map);
-            Map.VConcat(Mat.Zeros(6, map.Cols));
-            var m = Mat.Zeros(Map.Rows, 5);
+            Map.VConcat(Mat.Zeros(BorderThickness, map.Cols));
+            var m = Mat.Zeros(Map.Rows, BorderThickness);
             m.HConcat(Map);
-            m.HConcat(Mat.Zeros(Map.Rows, 6));
+            m.HConcat(Mat.Zeros(Map.Rows, BorderThickness));
             Map = m;
-            Start = start + 5;
-            Target = target + 5;
         }
 
         public Mat Map { get; set; }
-        public Point Start { get; set; }
-        public Point Target { get; set; }
-
         public Mat OriginalImage { get; set; }
         public int Scaling { get; }
+        public int BorderThickness { get; } = 5;
     }
 }

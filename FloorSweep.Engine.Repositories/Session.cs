@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Engine.Interfaces;
+using FloorSweep.PathFinding.Interfaces;
 
 namespace FloorSweep.Engine.Repositories
 {
@@ -6,9 +7,15 @@ namespace FloorSweep.Engine.Repositories
     {
         public string Id { get; }
 
-        public Session(string id)
+        public Session(string id, IPathFindingSession session)
         {
             Id = id;
+            PathFindingSession = session;
+        }
+
+        public IPathFindingSession PathFindingSession
+        {
+            get;
         }
     }
 }

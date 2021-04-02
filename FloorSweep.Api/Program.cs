@@ -18,6 +18,7 @@ namespace FloorSweep.PathFinding.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(c=>c.AddConsole().AddDebug())
                 .ConfigureWebHostDefaults(webBuilder =>
                     webBuilder.UseStartup<Startup>());
     }

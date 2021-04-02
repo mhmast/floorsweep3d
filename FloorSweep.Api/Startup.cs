@@ -1,8 +1,11 @@
 using FloorSweep.Api;
+using FloorSweep.Api.Hubs;
+using FloorSweep.Engine.Interfaces;
 using FloorSweep.Engine.Repositories;
 using FloorSweep.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +45,12 @@ namespace FloorSweep.PathFinding.Api
             services.AddTransient<ISessionFactory, HttpSessionFactory>();
             services.AddAuthorization();
             services.AddControllers();
+            services.AddCors(o =>
+            {
+                var policy = new CorsPolicy();
+                Configuration.GetSection("Cors").Bind(policy);
+                o.AddDefaultPolicy(policy);
+            });
             services.AddOpenApiDocument(c =>
             {
                 var section = Configuration.GetSection("Swagger");
@@ -54,16 +63,19 @@ namespace FloorSweep.PathFinding.Api
                 c.Title = "FloorSweep.Api";
                 c.Version = "v1";
             });
-
+            
             services.UseFloorSweepEngine();
             services.UseFloorSweepRepositories();
+            services.UseFocussedDStar();
+            services.AddSignalR();
+            services.AddTransient<IMonitorService, MonitorHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var swaggerSection = Configuration.GetSection("Swagger");
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,17 +86,19 @@ namespace FloorSweep.PathFinding.Api
                     swaggerSection.Bind(options.OAuth2Client); 
                 });
             }
-
-            app.UseHttpsRedirection();
-
+            if (!env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MonitorHub>("/monitor");
             });
         }
     }

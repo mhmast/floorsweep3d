@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-FloorSweep.Web-15969D0C-9B9E-42AE-956F-D37352BB911C</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TypeScriptToolsVersion>4.2</TypeScriptToolsVersion>
   </PropertyGroup>
 

@@ -3,7 +3,7 @@ import ConfigStore from '../../store/configStore';
 import TokenStore from '../../store/tokenStore';
 import { tokenCallbackUrl } from '../routes';
 
-import fetchSafe, { formEncode } from '../../services/fetchSafe';
+import { fetchSafe, formEncode } from '../../services/fetchSafe';
 
 let parsedCode = '';
 let parsedReturnUrl = '';
@@ -14,6 +14,7 @@ if (typeof window !== 'undefined') {
   parsedReturnUrl = parsed.returnUrl as string;
 }
 interface TokenResponse{
+  // eslint-disable-next-line camelcase
   access_token:string;
 }
 export const init = (async () => {
@@ -38,8 +39,8 @@ export const init = (async () => {
   }
   tokenData.token = tokenObject.data.access_token;
   tokenStore.set(tokenData);
+
   if (typeof window !== 'undefined') {
-    console.log(parsedReturnUrl);
-    // window.location.assign(parsedReturnUrl);
+    window.location.assign(parsedReturnUrl);
   }
 });

@@ -3,8 +3,8 @@
 </script>
 
 <authenticated>
-  {#await init}
-    <slot />
+  {#await init then A}
+    <slot></slot>
   {:catch error}
     <p>{error}</p>
   {/await}

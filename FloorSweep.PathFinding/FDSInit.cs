@@ -1,18 +1,15 @@
 ﻿using FloorSweep.Math;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FloorSweep.PathFinding
 {
     internal class FDSInit
     {
-        public static State DoFDSInit(MapData data, int scaling, State state = null)
+        public static State DoFDSInit(Point start, Point end, MapData data, int scaling, State state = null)
         {
             var map = data.Map;
-            var startPos = data.Start;
-            var endPos = data.Target;
+            var startPos = (start + data.BorderThickness)/scaling;
+            var endPos = (end + data.BorderThickness)/scaling;
             var radius = 10.0 / scaling;
             //var mat = Mat.Zeros((int)(radius * 2), (int)(radius * 2)).ToMat();
             double dista(double a, double b) => System.Math.Sqrt(a * a + b * b);
@@ -81,9 +78,9 @@ namespace FloorSweep.PathFinding
             @out.KM = 0.0;
             var SQRT2 = System.Math.Sqrt(2) - 1;
 
-            @out.Graph[1][@out.EndPos.X, @out.EndPos.Y]= 0;
-            @out.Graph[0][@out.EndPos.X, @out.EndPos.Y]= 0;
-            @out.Graph[2][@out.EndPos.X, @out.EndPos.Y]= 1;
+            @out.Graph[1][@out.EndPos.X, @out.EndPos.Y] = 0;
+            @out.Graph[0][@out.EndPos.X, @out.EndPos.Y] = 0;
+            @out.Graph[2][@out.EndPos.X, @out.EndPos.Y] = 1;
             var k = (startPos - @out.EndPos).Abs();
             var heur = SQRT2 * k.Min() + k.Max();
             @out.Stack = new PriorityQueue<Node>();

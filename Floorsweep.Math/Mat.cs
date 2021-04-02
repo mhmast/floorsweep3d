@@ -32,6 +32,9 @@ namespace FloorSweep.Math
             return data;
         }
 
+        public static Mat Ones(int rows, int cols)
+        => new Mat(rows, cols, 1);
+
         public unsafe static Mat ImageToBinary(Bitmap b, double tresh = 126) => ImageTo(b, (b, g, r) => GrayScale(b, g, r) <= tresh ? 0 : 1);
         public unsafe static Mat ImageToGrayScale(Bitmap b) => ImageTo(b, GrayScale);
 

@@ -1,5 +1,5 @@
 import ConfigStore from '../store/configStore';
-import fetchSafe from '../services/fetchSafe';
+import { fetchSafe } from '../services/fetchSafe';
 import type { Configuration, TokenEndpointConfiguration } from '../models/configuration';
 
 async function ensureTokenConfig(config:Configuration) {

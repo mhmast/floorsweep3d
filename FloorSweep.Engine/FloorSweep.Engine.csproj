@@ -8,4 +8,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Floorsweep.Math\FloorSweep.Math.csproj" />
+    <ProjectReference Include="..\FloorSweep.PathFinding\FloorSweep.PathFinding.csproj" />
+  </ItemGroup>
+
 </Project>

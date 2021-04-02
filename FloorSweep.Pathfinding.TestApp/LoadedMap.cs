@@ -1,4 +1,5 @@
-﻿using FloorSweep.PathFinding;
+﻿using FloorSweep.Math;
+using FloorSweep.PathFinding;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -6,12 +7,17 @@ namespace FloorSweep.Pathfinding.TestApp
 {
     public class LoadedMap
     {
-        public LoadedMap(MapData data,string path,Image image)
+        public LoadedMap(Math.Point start, Math.Point end, MapData data,string path,Image image)
         {
+            Start = start;
+            End = end;
             Data = data;
             File = path;
             Image = image;
         }
+
+        public Math.Point Start { get; }
+        public Math.Point End { get; }
         public MapData Data { get;}
         public List<long> Mean { get; } = new List<long>();
         public string File { get; }

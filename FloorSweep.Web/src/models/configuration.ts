@@ -19,5 +19,6 @@ export interface AuthenticationConfiguration{
 
 export interface Configuration{
     baseUrl: string;
+    apiBaseUrl:string;
     authentication:AuthenticationConfiguration;
 }

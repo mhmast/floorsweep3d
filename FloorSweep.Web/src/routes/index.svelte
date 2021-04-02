@@ -1,5 +1,6 @@
 <script>
   import Authenticated from "../components/authenticated/authenticated.svelte";
+import PathFindControlBar from "../components/pathFindControlBar/PathFindControlBar.svelte";
 </script>
 
 <svelte:head>
@@ -7,5 +8,8 @@
 </svelte:head>
 
 <Authenticated>
-  <div />
+  <div>
+    <PathFindControlBar/>
+
+  </div>
 </Authenticated>

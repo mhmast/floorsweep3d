@@ -1,9 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-restricted-properties */
 /* eslint-disable no-bitwise */
+
 export const sha256 = function sha256(ascii) {
   function rightRotate(value, amount) {
     return (value >>> amount) | (value << (32 - amount));
