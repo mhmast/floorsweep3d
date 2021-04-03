@@ -19,7 +19,7 @@ namespace FloorSweep.Engine.Repositories
 
             if (!_sessions.ContainsKey(id))
             {
-                var mapData = MapData.Empty(1);
+                var mapData = MapData.FromImage("a.png");
                 var session = new Session(id,_algoritm.CreateSession(mapData));
                 _sessions.Add(session.Id, session);
 
