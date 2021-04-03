@@ -1,5 +1,6 @@
 <script>
   import Authenticated from "../components/authenticated/authenticated.svelte";
+import MatrixMonitor from "../components/matrixMonitor/MatrixMonitor.svelte";
 import PathFindControlBar from "../components/pathFindControlBar/PathFindControlBar.svelte";
 </script>
 
@@ -10,6 +11,6 @@ import PathFindControlBar from "../components/pathFindControlBar/PathFindControl
 <Authenticated>
   <div>
     <PathFindControlBar/>
-
+<MatrixMonitor/>
   </div>
 </Authenticated>

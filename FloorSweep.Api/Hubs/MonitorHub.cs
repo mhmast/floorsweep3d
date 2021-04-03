@@ -13,24 +13,26 @@ namespace FloorSweep.Api.Hubs
     [Scope("monitor-view")]
     public class MonitorHub : Hub, IMonitorService
     {
+        private readonly IHubContext<MonitorHub> _context;
         private readonly ISessionFactory _sessionFactory;
 
-        public MonitorHub(ISessionFactory sessionFactory)
+        public MonitorHub(IHubContext<MonitorHub> context, ISessionFactory sessionFactory) 
         {
+            _context = context;
             _sessionFactory = sessionFactory;
         }
 
         private async Task<IClientProxy> GetUserAsync()
         {
             var sessionId = (await _sessionFactory.GetSessionAsync())?.Id;
-            return Clients?.User(sessionId);
+            return _context.Clients?.User(sessionId);
         }
         public async Task SendMatrixInitAsync(string name, Mat m, bool isBinary)
         {
             var user = await GetUserAsync();
             if (user != null)
             {
-                await user.SendAsync("OnMatrixInit", new MatrixInitDto(name, m, isBinary));
+                await user.SendCoreAsync("OnMatrixInit", new[] { new MatrixInitDto(name, m, isBinary) });
             }
         }
 
@@ -39,7 +41,7 @@ namespace FloorSweep.Api.Hubs
             var user = await GetUserAsync();
             if (user != null)
             {
-                await user.SendAsync("OnMatrixUpdate", new MatrixUpdateDto(name, row, col, value));
+                await user.SendCoreAsync("OnMatrixUpdate", new[] { new MatrixUpdateDto(name, row, col, value) });
             }
         }
     }

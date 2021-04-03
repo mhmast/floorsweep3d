@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,7 +40,23 @@ namespace FloorSweep.PathFinding.Api
                     o.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = (_, __, ___, ____) => true };
 #endif
                     authSection.Bind(o);
-                    
+                    o.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                path.StartsWithSegments("/hubs"))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+
                 });
             services.AddHttpContextAccessor();
             services.AddTransient<ISessionFactory, HttpSessionFactory>();
@@ -68,6 +85,7 @@ namespace FloorSweep.PathFinding.Api
             services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
             services.AddSignalR();
+            services.AddTransient<IUserIdProvider, UserIdProvider>();
             services.AddTransient<IMonitorService, MonitorHub>();
         }
 
@@ -98,7 +116,7 @@ namespace FloorSweep.PathFinding.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MonitorHub>("/monitor");
+                endpoints.MapHub<MonitorHub>("/hubs/monitor");
             });
         }
     }
