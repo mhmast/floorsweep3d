@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { matrixStore, init } from "./matrixMonitor";
+  import Authenticated from "../authenticated/authenticated.svelte";
+import Matrix from "../matrix/Matrix.svelte";
+import { matrixStore, init } from "./matrixMonitor";
   const initialize = (()=>init())();
 </script>
 
@@ -8,7 +10,7 @@
     <p>Loading...</p>
   {:then} 
     {#each $matrixStore as m}
-      <div>{m.name}</div>
+      <Matrix {...m}/>
     {/each}
   {/await}
 </matrixMonitor>
