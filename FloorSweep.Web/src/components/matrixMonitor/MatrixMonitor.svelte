@@ -8,9 +8,9 @@ import { matrixStore, init } from "./matrixMonitor";
 <matrixMonitor>
   {#await initialize}
     <p>Loading...</p>
-  {:then} 
+  {:then connection} 
     {#each $matrixStore as m}
-      <Matrix {...m}/>
+      <Matrix init={m} connection={connection}/>
     {/each}
   {/await}
 </matrixMonitor>

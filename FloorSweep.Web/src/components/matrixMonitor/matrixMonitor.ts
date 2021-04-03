@@ -1,13 +1,14 @@
 import * as signalR from '@microsoft/signalr';
 import { Writable, writable } from 'svelte/store';
 import ConfigStore from '../../store/configStore';
-import type MatrixInitMessage from '../../models/messages/MatrixInit';
+import type MatrixInitMessage from '../../models/messages/MatrixInitMessage';
 import TokenStore from '../../store/tokenStore';
 
 export const matrixStore = writable([] as MatrixInitMessage[]);
 let connection:signalR.HubConnection;
 
-export async function init():Promise<Writable<MatrixInitMessage[]>> {
+
+export async function init():Promise<signalR.HubConnection> {
   const matrixArray = [] as MatrixInitMessage[];
   const configStore = ConfigStore.create();
   const config = await configStore.await();
@@ -26,7 +27,6 @@ export async function init():Promise<Writable<MatrixInitMessage[]>> {
       .build();
   
       connection.on('OnMatrixInit', (message:MatrixInitMessage) => {
-        console.log(message);
         matrixArray[matrixArray.length] = message;
         matrixStore.set(matrixArray);
       });
@@ -35,8 +35,7 @@ export async function init():Promise<Writable<MatrixInitMessage[]>> {
     
     if(connection.state !== signalR.HubConnectionState.Connected)
     {
-      console.log(" startsrat")
       await connection.start();
     } 
-    return matrixStore;
+    return connection;
 }

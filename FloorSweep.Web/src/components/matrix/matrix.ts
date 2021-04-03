@@ -1,3 +1,7 @@
+import type { HubConnection } from "@microsoft/signalr";
+import type MatrixInitMessage from "../../models/messages/MatrixInitMessage";
+import type MatrixUpdateMessage from "../../models/messages/MatrixUpdateMessage";
+
 function createData(data: number[],isBinary:boolean,width:number,height:number): Uint8ClampedArray {
     const newData =[] as number[];
     
@@ -11,11 +15,12 @@ function createData(data: number[],isBinary:boolean,width:number,height:number):
         for(let x = 0;x<width;x++)
         {
             const pixelData = data[(y*x)+x];
-            const pixelValue = isBinary?binaryColors[pixelData]:pixelData;
+            const pixelValue = isNaN(pixelData) ||  isBinary?binaryColors[pixelData]:pixelData;
+            
+            newData.push(pixelValue);
+            newData.push(pixelValue);
+            newData.push(pixelValue);
             newData.push(255);
-            newData.push(pixelValue);
-            newData.push(pixelValue);
-            newData.push(pixelValue);
         } 
 
     }
@@ -23,14 +28,19 @@ function createData(data: number[],isBinary:boolean,width:number,height:number):
 }
 
 
-export function draw(width:number,height:number,data:number[],isBinary:boolean,canvas:HTMLCanvasElement)
+export function initializeCanvas(init:MatrixInitMessage,connection:HubConnection, canvas:HTMLCanvasElement)
 {
-    const src = createImageBitmap(new ImageData(createData(data,isBinary,width,height),width,height));
+    const src = createImageBitmap(new ImageData(createData(init.data,init.isBinary,init.width,init.height),init.width,init.height));
     Promise.all([src])
     .then(bmp=>{    
         const ctx = canvas.getContext("2d");
-        console.log(bmp[0])
         ctx.drawImage(bmp[0],0,0);
+        connection.on("OnMatrixUpdate",(message:MatrixUpdateMessage)=>{
+            if(message.name === init.name){
+            const newData =createData([message.value],init.isBinary,1,1);
+            ctx.putImageData(new ImageData(newData,1,1),message.col,message.row)
+        }});
+    
     });
     
 }
