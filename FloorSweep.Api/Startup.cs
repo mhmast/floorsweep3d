@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using NSwag.Generation.Processors.Security;
 using System;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FloorSweep.PathFinding.Api
@@ -61,7 +62,8 @@ namespace FloorSweep.PathFinding.Api
             services.AddHttpContextAccessor();
             services.AddTransient<ISessionFactory, HttpSessionFactory>();
             services.AddAuthorization();
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(o=>o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddCors(o =>
             {
                 var policy = new CorsPolicy();
@@ -84,9 +86,9 @@ namespace FloorSweep.PathFinding.Api
             services.UseFloorSweepEngine();
             services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
-            services.AddSignalR();
+            services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddTransient<IUserIdProvider, UserIdProvider>();
-            services.AddTransient<IMonitorService, MonitorHub>();
+            services.AddTransient<IMonitorService, MonitorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,7 +118,7 @@ namespace FloorSweep.PathFinding.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MonitorHub>("/hubs/monitor");
+                endpoints.MapHub<MonitorService>("/hubs/monitor");
             });
         }
     }

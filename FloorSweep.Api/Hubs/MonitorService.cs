@@ -11,12 +11,12 @@ namespace FloorSweep.Api.Hubs
     [Authorize]
     [AuthenticationFilter]
     [Scope("monitor-view")]
-    public class MonitorHub : Hub, IMonitorService
+    public class MonitorService : Hub, IMonitorService
     {
-        private readonly IHubContext<MonitorHub> _context;
+        private readonly IHubContext<MonitorService> _context;
         private readonly ISessionFactory _sessionFactory;
 
-        public MonitorHub(IHubContext<MonitorHub> context, ISessionFactory sessionFactory) 
+        public MonitorService(IHubContext<MonitorService> context, ISessionFactory sessionFactory) 
         {
             _context = context;
             _sessionFactory = sessionFactory;

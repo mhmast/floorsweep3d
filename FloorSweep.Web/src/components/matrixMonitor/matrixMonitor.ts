@@ -11,6 +11,7 @@ export async function init():Promise<Writable<MatrixInitMessage[]>> {
   const matrixArray = [] as MatrixInitMessage[];
   const configStore = ConfigStore.create();
   const config = await configStore.await();
+  
   if (!connection) {
     connection = new signalR.HubConnectionBuilder()
       .withUrl(`${config.apiBaseUrl}/hubs/monitor`, {
@@ -20,16 +21,22 @@ export async function init():Promise<Writable<MatrixInitMessage[]>> {
           return tokenData.token;
         },
       })
-      .configureLogging(signalR.LogLevel.Trace)
+      .configureLogging(signalR.LogLevel.Error)
       .withAutomaticReconnect()
       .build();
-  }
-  connection.on('OnMatrixInit', (message:MatrixInitMessage) => {
-    console.log(message);
-    matrixArray[matrixArray.length] = message;
-    matrixStore.set(matrixArray);
-  });
-
-  await connection.start();
-  return matrixStore;
+  
+      connection.on('OnMatrixInit', (message:MatrixInitMessage) => {
+        console.log(message);
+        matrixArray[matrixArray.length] = message;
+        matrixStore.set(matrixArray);
+      });
+    
+    }
+    
+    if(connection.state !== signalR.HubConnectionState.Connected)
+    {
+      console.log(" startsrat")
+      await connection.start();
+    } 
+    return matrixStore;
 }
