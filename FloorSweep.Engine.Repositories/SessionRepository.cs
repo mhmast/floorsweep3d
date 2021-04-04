@@ -22,7 +22,6 @@ namespace FloorSweep.Engine.Repositories
                 var mapData = MapData.FromImage("a.png");
                 var session = new Session(id,_algoritm.CreateSession(mapData));
                 _sessions.Add(session.Id, session);
-
             }
             return Task.FromResult(_sessions[id]);
         }
