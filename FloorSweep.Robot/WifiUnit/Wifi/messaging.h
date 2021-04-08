@@ -11,23 +11,20 @@ public:
 
 static inline void begin(){
     Serial.begin(MSG_BAUDRATE);
+    Serial.println();
 }
 
 static inline bool available(){return Serial.available()>0;}
 
-static inline void send(const uint8_t* buffer, size_t size){
-
-    Serial.write(buffer,size);
-}
 
 static inline void send(const char* message){
-    Serial.write(message);
+    Serial.println(message);
 }
 static inline void send(int message){
-    Serial.write(message);
+    Serial.println(message);
 }
 static inline void send(const Printable& message){
-    message.printTo(Serial);
+    Serial.println(message);
 }
 
 template<typename T>

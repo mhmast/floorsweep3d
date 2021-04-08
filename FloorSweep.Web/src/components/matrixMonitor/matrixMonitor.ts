@@ -12,13 +12,12 @@ export async function init():Promise<signalR.HubConnection> {
   const matrixArray = [] as MatrixInitMessage[];
   const configStore = ConfigStore.create();
   const config = await configStore.await();
-  
+  const tokenStore = TokenStore.create();
+          const tokenData = await tokenStore.await();
   if (!connection) {
     connection = new signalR.HubConnectionBuilder()
       .withUrl(`${config.apiBaseUrl}/hubs/monitor`, {
-        accessTokenFactory: async () => {
-          const tokenStore = TokenStore.create();
-          const tokenData = await tokenStore.await();
+        accessTokenFactory: () => {
           return tokenData.token;
         },
       })
@@ -27,6 +26,7 @@ export async function init():Promise<signalR.HubConnection> {
       .build();
   
       connection.on('OnMatrixInit', (message:MatrixInitMessage) => {
+        console.log(message)
         matrixArray[matrixArray.length] = message;
         matrixStore.set(matrixArray);
       });

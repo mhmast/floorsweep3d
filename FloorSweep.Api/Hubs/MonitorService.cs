@@ -32,7 +32,7 @@ namespace FloorSweep.Api.Hubs
             var user = await GetUserAsync();
             if (user != null)
             {
-                await user.SendCoreAsync("OnMatrixInit", new[] { new MatrixInitDto(name, m, isBinary) });
+                _ = user.SendCoreAsync("OnMatrixInit", new[] { new MatrixInitDto(name, m, isBinary) });
             }
         }
 
@@ -41,7 +41,7 @@ namespace FloorSweep.Api.Hubs
             var user = await GetUserAsync();
             if (user != null)
             {
-                await user.SendCoreAsync("OnMatrixUpdate", new[] { new MatrixUpdateDto(name, row, col, value) });
+                _ = user.SendCoreAsync("OnMatrixUpdate", new[] { new MatrixUpdateDto(name, row, col, value) });
             }
         }
     }
