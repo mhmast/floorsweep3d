@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "WifiUnit"
+    },
+    {
+      "path": "MainUnit"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {}
+}

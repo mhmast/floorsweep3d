@@ -1,0 +1,25 @@
+#######################################
+# Messaging library for floorsweep
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Messaging	KEYWORD1	FloorSweep	KEYWORD1	Robot	KEYWORD1	
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+available	KEYWORD2
+println	KEYWORD2
+print	KEYWORD2
+read	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+

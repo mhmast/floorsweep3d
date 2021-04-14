@@ -59,13 +59,13 @@ void LCD::setDisplayText(String text,bool isNewspaper )
 {
     if(!isNewspaper)
     {
-displayText = text;
+      displayText = text;
   
     }
   else{
       DoNewsPaper(text);
       }
-
+      liquidCrystal->clear();
       liquidCrystal->setCursor(0, 0);
   liquidCrystal->write(displayText.c_str());
   if (displayText.length() > TOTALCHARLEN)
