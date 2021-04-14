@@ -1,29 +1,25 @@
 ﻿using FloorSweep.Api;
-using FloorSweep.Api.Controllers.Models;
 using FloorSweep.Engine.Interfaces;
-using FloorSweep.Math;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace FloorSweep.PathFinding.Api.Controllers
 
 {
-    [Route("/path")]
+    [Route("/robot")]
     [ApiController]
     [Authorize]
     [AuthenticationFilter]
-    public class PathController : Controller
+    public class RobotController : Controller
     {
        
-        private readonly ILogger<PathController> _logger;
+        private readonly ILogger _logger;
         private readonly ISessionFactory _sessionFactory;
         private readonly IFloorSweepService _floorSweepService;
 
-        public PathController(ILogger<PathController> logger
+        public RobotController(ILogger<RobotController> logger
             ,ISessionFactory sessionFactory
             ,IFloorSweepService floorSweepService)
         {
@@ -35,13 +31,11 @@ namespace FloorSweep.PathFinding.Api.Controllers
 
 
         [Authorize]
-        [HttpPost()]
-        [Scope("path_search")]
-        public async Task<IActionResult> RegisterMonitor([FromBody] PathParametersDto pathParams)
+        [HttpPut("/vision/distance/{distance:int}")]
+        [Scope("vision_update")]
+        public async Task<IActionResult> UpdateRobotVision([FromRoute] int distance)
         {
-            var ses = await _sessionFactory.GetSessionAsync();
-            var path = await _floorSweepService.FindPathAsync(ses, pathParams);
-            return Ok(new PathDto(path));
+            return Ok();
         }
     }
 }
