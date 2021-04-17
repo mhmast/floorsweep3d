@@ -1,20 +1,16 @@
-using FloorSweep.Api;
 using FloorSweep.Api.Hubs;
-using FloorSweep.Engine.Interfaces;
-using FloorSweep.Engine.Repositories;
+using FloorSweep.Api.Interfaces;
+using FloorSweep.Api.Repositories;
 using FloorSweep.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using NSwag.Generation.Processors.Security;
-using System;
 using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -60,7 +56,7 @@ namespace FloorSweep.PathFinding.Api
 
                 });
             services.AddHttpContextAccessor();
-            services.AddTransient<ISessionFactory, HttpSessionFactory>();
+            services.AddTransient<ISessionRepository, SessionRepository>();
             services.AddAuthorization();
             services.AddControllers()
                 .AddJsonOptions(o=>o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
@@ -84,7 +80,7 @@ namespace FloorSweep.PathFinding.Api
             });
             
             services.UseFloorSweepEngine();
-            services.UseFloorSweepRepositories();
+            //services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
             services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddTransient<IUserIdProvider, UserIdProvider>();

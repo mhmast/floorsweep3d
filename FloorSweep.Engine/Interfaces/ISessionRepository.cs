@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 
-namespace FloorSweep.Engine.Interfaces
+namespace FloorSweep.Api.Interfaces
 {
     public interface ISessionRepository
     {
-        Task<ISession> EnsureSessionAsync(string id);
+        Task<ISession> GetSessionAsync();
+        Task UpdateStatusAsync(IRobotStatus status);
     }
 }

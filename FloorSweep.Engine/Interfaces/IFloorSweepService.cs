@@ -1,10 +1,10 @@
 ﻿using FloorSweep.PathFinding.Interfaces;
 using System.Threading.Tasks;
 
-namespace FloorSweep.Engine.Interfaces
+namespace FloorSweep.Api.Interfaces
 {
     public interface IFloorSweepService
     {
-        Task<IPath> FindPathAsync(ISession session, IPathFindingParameters path);
+        Task<IPath> FindPathAsync(IPathFindingParameters path);
     }
 }

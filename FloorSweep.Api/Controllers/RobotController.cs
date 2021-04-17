@@ -1,8 +1,8 @@
 ﻿using FloorSweep.Api;
-using FloorSweep.Engine.Interfaces;
+using FloorSweep.Api.Controllers.Models;
+using FloorSweep.Api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FloorSweep.PathFinding.Api.Controllers
@@ -14,27 +14,21 @@ namespace FloorSweep.PathFinding.Api.Controllers
     [AuthenticationFilter]
     public class RobotController : Controller
     {
-       
-        private readonly ILogger _logger;
-        private readonly ISessionFactory _sessionFactory;
-        private readonly IFloorSweepService _floorSweepService;
+        private readonly IStatusService _statusService;
 
-        public RobotController(ILogger<RobotController> logger
-            ,ISessionFactory sessionFactory
-            ,IFloorSweepService floorSweepService)
+        public RobotController(IStatusService statusService)
         {
-            _logger = logger;
-            _sessionFactory = sessionFactory;
-            _floorSweepService = floorSweepService;
+            _statusService = statusService;
         }
 
 
 
         [Authorize]
-        [HttpPut("/vision/distance/{distance:int}")]
-        [Scope("vision_update")]
-        public async Task<IActionResult> UpdateRobotVision([FromRoute] int distance)
+        [HttpPut("/status")]
+        [Scope("status_update")]
+        public async Task<IActionResult> UpdateRobotStatus([FromBody] RobotStatusDto status)
         {
+            await _statusService.UpdateRobotStatusAsync(status);
             return Ok();
         }
     }

@@ -1,5 +1,5 @@
 ﻿using FloorSweep.Api.Hubs.Dtos;
-using FloorSweep.Engine.Interfaces;
+using FloorSweep.Api.Interfaces;
 using FloorSweep.Math;
 using FloorSweep.PathFinding.Api;
 using Microsoft.AspNetCore.Authorization;
@@ -14,17 +14,17 @@ namespace FloorSweep.Api.Hubs
     public class MonitorService : Hub, IMonitorService
     {
         private readonly IHubContext<MonitorService> _context;
-        private readonly ISessionFactory _sessionFactory;
+        private readonly ISessionRepository _sessionRepository;
 
-        public MonitorService(IHubContext<MonitorService> context, ISessionFactory sessionFactory) 
+        public MonitorService(IHubContext<MonitorService> context, ISessionRepository sessionRepository) 
         {
             _context = context;
-            _sessionFactory = sessionFactory;
+            _sessionRepository = sessionRepository;
         }
 
         private async Task<IClientProxy> GetUserAsync()
         {
-            var sessionId = (await _sessionFactory.GetSessionAsync())?.Id;
+            var sessionId = (await _sessionRepository.GetSessionAsync())?.Id;
             return _context.Clients?.User(sessionId);
         }
         public async Task SendMatrixInitAsync(string name, Mat m, bool isBinary)
@@ -42,6 +42,15 @@ namespace FloorSweep.Api.Hubs
             if (user != null)
             {
                 _ = user.SendCoreAsync("OnMatrixUpdate", new[] { new MatrixUpdateDto(name, row, col, value) });
+            }
+        }
+
+        public async Task SendStatusChangedAsync(IRobotStatus status)
+        {
+            var user = await GetUserAsync();
+            if (user != null)
+            {
+                _ = user.SendCoreAsync("OnStatusUpdated", new[] { new StatusUpdateDto(status) });
             }
         }
     }

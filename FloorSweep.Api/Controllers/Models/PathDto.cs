@@ -1,5 +1,4 @@
-﻿using FloorSweep.Engine.Interfaces;
-using FloorSweep.Math;
+﻿using FloorSweep.Math;
 using FloorSweep.PathFinding.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

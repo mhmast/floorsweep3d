@@ -1,6 +1,6 @@
 ﻿using FloorSweep.PathFinding.Interfaces;
 
-namespace FloorSweep.Engine.Interfaces
+namespace FloorSweep.Api.Interfaces
 {
     public interface ISession
     {
@@ -9,5 +9,6 @@ namespace FloorSweep.Engine.Interfaces
         {
             get;
         }
+        IRobotStatus CurrentStatus { get; }
     }
 }

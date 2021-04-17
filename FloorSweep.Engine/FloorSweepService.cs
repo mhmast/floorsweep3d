@@ -1,23 +1,27 @@
-﻿using FloorSweep.Engine.Interfaces;
+﻿using FloorSweep.Api.Interfaces;
 using FloorSweep.Math;
 using FloorSweep.PathFinding.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FloorSweep.Engine
+namespace FloorSweep.Api
 {
     internal class FloorSweepService : IFloorSweepService
     {
         private readonly IMonitorService _monitorService;
+        private readonly ISessionRepository _sessionRepository;
 
-        public FloorSweepService(IMonitorService monitorService)
+        public FloorSweepService(IMonitorService monitorService, ISessionRepository sessionRepository)
         {
             _monitorService = monitorService;
+            _sessionRepository = sessionRepository;
         }
-        public Task<IPath> FindPathAsync(ISession session, IPathFindingParameters parameters)
-
-            => session.PathFindingSession.FindPathAsync(parameters.Start, parameters.Target,SendInitToMonitor);
+        public async Task<IPath> FindPathAsync(IPathFindingParameters parameters)
+        {
+            var session = await _sessionRepository.GetSessionAsync();
+            return await session.PathFindingSession.FindPathAsync(parameters.Start, parameters.Target, SendInitToMonitor);
+        }
 
         private async Task SendInitToMonitor(IReadOnlyDictionary<string, Mat> matrices, IReadOnlyDictionary<string, bool> matrixBitness)
         {

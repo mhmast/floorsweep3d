@@ -1,6 +1,6 @@
 ﻿using FloorSweep.Math;
 
-namespace FloorSweep.Engine.Interfaces
+namespace FloorSweep.Api.Interfaces
 {
     public interface IPathFindingParameters
     {

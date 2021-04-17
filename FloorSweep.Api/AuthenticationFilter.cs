@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Identity.Web.Resource;
 using System.Linq;
 
 namespace FloorSweep.PathFinding.Api
