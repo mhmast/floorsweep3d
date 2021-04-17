@@ -26,9 +26,11 @@ export async function init():Promise<signalR.HubConnection> {
       .build();
   
       connection.on('OnMatrixInit', (message:MatrixInitMessage) => {
-        console.log(message)
-        matrixArray[matrixArray.length] = message;
-        matrixStore.set(matrixArray);
+        if(!matrixArray.find(m=>m.name === message.name))
+        {
+          matrixArray[matrixArray.length] = message;
+          matrixStore.set(matrixArray);
+        }
       });
     
     }

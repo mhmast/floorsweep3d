@@ -6,6 +6,7 @@ import { matrixStore, init } from "./matrixMonitor";
 </script>
 
 <matrixMonitor>
+  <h2>Matrices</h2>
   {#await initialize}
     <p>Loading...</p>
   {:then connection} 

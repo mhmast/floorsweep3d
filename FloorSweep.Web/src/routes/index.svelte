@@ -2,6 +2,7 @@
   import Authenticated from "../components/authenticated/authenticated.svelte";
 import MatrixMonitor from "../components/matrixMonitor/MatrixMonitor.svelte";
 import PathFindControlBar from "../components/pathFindControlBar/PathFindControlBar.svelte";
+import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
 </script>
 
 <svelte:head>
@@ -10,7 +11,7 @@ import PathFindControlBar from "../components/pathFindControlBar/PathFindControl
 
 <Authenticated>
   <div>
-    <PathFindControlBar/>
-<MatrixMonitor/>
+    <StatusMonitor/>
+    <MatrixMonitor/>
   </div>
 </Authenticated>
