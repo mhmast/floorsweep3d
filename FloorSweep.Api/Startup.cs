@@ -84,7 +84,7 @@ namespace FloorSweep.PathFinding.Api
             services.UseFocussedDStar();
             services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddTransient<IUserIdProvider, UserIdProvider>();
-            services.AddTransient<IMonitorService, MonitorService>();
+            services.AddTransient<IEventService, EventService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,7 +114,7 @@ namespace FloorSweep.PathFinding.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MonitorService>("/hubs/monitor");
+                endpoints.MapHub<EventService>("/hubs/monitor");
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using FloorSweep.PathFinding.Interfaces;
+﻿using FloorSweep.Engine.Interfaces;
+using FloorSweep.PathFinding.Interfaces;
 
 namespace FloorSweep.Api.Interfaces
 {
@@ -9,6 +10,8 @@ namespace FloorSweep.Api.Interfaces
         {
             get;
         }
-        IRobotStatus CurrentStatus { get; }
+        IRobotStatus RobotStatus { get; }
+
+        ILocationStatus LocationStatus { get; }
     }
 }

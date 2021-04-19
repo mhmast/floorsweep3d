@@ -2,9 +2,9 @@
 
 namespace FloorSweep.Api.Hubs.Dtos
 {
-    public class StatusUpdateDto
+    public class RobotStatusUpdateDto
     {
-        public StatusUpdateDto(IRobotStatus status)
+        public RobotStatusUpdateDto(IRobotStatus status)
         {
             DistanceToObject = status.DistanceToObject;
             CurrentAction = new StatusUpdateActionDto(status.CurrentAction);

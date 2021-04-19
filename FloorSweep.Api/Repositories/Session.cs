@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Api.Interfaces;
+using FloorSweep.Engine.Interfaces;
 using FloorSweep.PathFinding.Interfaces;
 using System.Threading.Tasks;
 
@@ -8,18 +9,18 @@ namespace FloorSweep.Api.Repositories
     {
         public string Id { get; }
 
-        public Session(string id, IPathFindingSession session)
+        public Session(string id)
         {
             Id = id;
-            PathFindingSession = session;
         }
 
         public IPathFindingSession PathFindingSession
         {
-            get;
+            get; set;
         }
 
-        public IRobotStatus CurrentStatus { get; set; }
+        public IRobotStatus RobotStatus { get; set; }
 
+        public ILocationStatus LocationStatus { get; set; }
     }
 }

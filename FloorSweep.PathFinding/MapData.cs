@@ -80,8 +80,8 @@ namespace FloorSweep.PathFinding
             Map = m;
         }
 
-        public Mat Map { get; set; }
-        public Mat OriginalImage { get; set; }
+        public Mat Map { get; private set; }
+        public Mat OriginalImage { get; private set; }
         public int Scaling { get; }
         public int BorderThickness { get; } = 5;
     }

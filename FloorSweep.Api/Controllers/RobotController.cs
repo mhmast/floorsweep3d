@@ -14,11 +14,11 @@ namespace FloorSweep.PathFinding.Api.Controllers
     [AuthenticationFilter]
     public class RobotController : Controller
     {
-        private readonly IStatusService _statusService;
+        private readonly IEventService _eventService;
 
-        public RobotController(IStatusService statusService)
+        public RobotController(IEventService eventService)
         {
-            _statusService = statusService;
+            _eventService = eventService;
         }
 
 
@@ -28,7 +28,7 @@ namespace FloorSweep.PathFinding.Api.Controllers
         [Scope("status_update")]
         public async Task<IActionResult> UpdateRobotStatus([FromBody] RobotStatusDto status)
         {
-            await _statusService.UpdateRobotStatusAsync(status);
+            await _eventService.SendRobotStatusUpdatedAsync(status);
             return Ok();
         }
     }

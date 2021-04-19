@@ -1,7 +1,6 @@
 <script>
   import Authenticated from "../components/authenticated/authenticated.svelte";
 import MatrixMonitor from "../components/matrixMonitor/MatrixMonitor.svelte";
-import PathFindControlBar from "../components/pathFindControlBar/PathFindControlBar.svelte";
 import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
 </script>
 

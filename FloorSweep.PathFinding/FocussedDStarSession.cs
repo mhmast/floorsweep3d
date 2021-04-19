@@ -11,11 +11,11 @@ namespace FloorSweep.PathFinding
 {
     internal class FocussedDStarSession : IPathFindingSession
     {
-        private readonly MapData _data;
+        public MapData MapData { get; }
 
         public FocussedDStarSession(MapData data)
         {
-            _data = data;
+            MapData = data;
         }
         public async Task<IPath> FindPathAsync(Point start, Point end, Func<IReadOnlyDictionary<string, Mat>, IReadOnlyDictionary<string, bool>, Task> debugCallback = null)
         { 
@@ -25,7 +25,7 @@ namespace FloorSweep.PathFinding
             var statistics = new FocussedDStarStatistics(totalKey);
             var sw = Stopwatch.StartNew();
 
-            var state = FDSInit.DoFDSInit(start,end,_data, _data.Scaling);
+            var state = FDSInit.DoFDSInit(start,end,MapData, MapData.Scaling);
             await debugCallback?.Invoke(
                 new ReadOnlyDictionary<string, Mat>(state.ToDictionary(a => a.Item1, a => a.Item2)),
                 new ReadOnlyDictionary<string, bool>(state.ToDictionary(a => a.Item1, a => a.Item3)));
@@ -54,7 +54,7 @@ namespace FloorSweep.PathFinding
 
                 sw = Stopwatch.StartNew();
 
-                state = FDSUpdateMap.DoFDSUpdateMap(state, _data.Map);
+                state = FDSUpdateMap.DoFDSUpdateMap(state, MapData.Map);
 
                 sw.Stop();
                 ms = sw.ElapsedMilliseconds;

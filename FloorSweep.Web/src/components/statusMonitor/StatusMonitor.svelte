@@ -1,6 +1,7 @@
 <script lang="ts">
-import Status from "./Status.svelte";
-import { statusStore, init } from "./statusMonitor";
+import RobotStatus from "./RobotStatus.svelte";
+import LocationStatus from "./LocationStatus.svelte";
+import { locationStatusStore, robotStatusStore, init } from "./statusMonitor";
   const initialize = (()=>init())();
 </script>
 
@@ -8,6 +9,7 @@ import { statusStore, init } from "./statusMonitor";
   {#await initialize}
     <p>Loading...</p>
   {:then} 
-    <Status status={$statusStore}/>
+    <RobotStatus status={$robotStatusStore}/>
+    <LocationStatus status={$locationStatusStore}/>
   {/await}
 </statusMonitor>

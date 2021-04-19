@@ -6,7 +6,7 @@ namespace FloorSweep.PathFinding
 {
     internal class PriorityQueue<T> : SortedSet<T> where T : IQueueKeyProvider 
     {
-        public PriorityQueue() : base(new Comparer())
+        public PriorityQueue() : base(new IQueueKeyProviderComparer())
         {
 
         }
@@ -22,7 +22,7 @@ namespace FloorSweep.PathFinding
             return i;
         }
 
-        class Comparer : IComparer<T>
+        class IQueueKeyProviderComparer : IComparer<T>
         {
             public int Compare(T x, T y)
             => x.Key.CompareTo(y.Key);

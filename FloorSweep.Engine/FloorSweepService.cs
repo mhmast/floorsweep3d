@@ -9,10 +9,10 @@ namespace FloorSweep.Api
 {
     internal class FloorSweepService : IFloorSweepService
     {
-        private readonly IMonitorService _monitorService;
+        private readonly IEventService _monitorService;
         private readonly ISessionRepository _sessionRepository;
 
-        public FloorSweepService(IMonitorService monitorService, ISessionRepository sessionRepository)
+        public FloorSweepService(IEventService monitorService, ISessionRepository sessionRepository)
         {
             _monitorService = monitorService;
             _sessionRepository = sessionRepository;

@@ -6,8 +6,8 @@ import type RobotStatusMessage from "../../models/messages/RobotStatusMessage";
   export let status: RobotStatusMessage;
 </script>
 
-<status>  
-  <h2>Status</h2>
+<robotStatus class="status">  
+  <h2>Robot Status</h2>
   <article>
     <h3>Data</h3>
   <p><span>Distance to Object: </span><span>{status.distanceToObject}</span></p>
@@ -17,7 +17,7 @@ import type RobotStatusMessage from "../../models/messages/RobotStatusMessage";
     <p><span>Type: </span><span>{status.currentAction.type}</span></p>
     <p><span>Data: </span><span>{status.currentAction.data}</span></p>
     </article>
-</status>
+</robotStatus>
 
 
 

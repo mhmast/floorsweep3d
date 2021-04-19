@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using ISession = FloorSweep.Api.Interfaces.ISession;
+using FloorSweep.Engine.Interfaces;
 
 namespace FloorSweep.Api.Repositories
 {
     public class SessionRepository : ISessionRepository
     {
         private readonly IHttpContextAccessor _accessor;
-        private readonly IPathFindingAlgorithm _algoritm;
         private readonly Dictionary<string, Session> _sessions = new();
-        public SessionRepository(IHttpContextAccessor accessor, IPathFindingAlgorithm algoritm)
+        public SessionRepository(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
-            _algoritm = algoritm;
         }
+
         public Task<ISession> GetSessionAsync()
         {
             Session session = GetSessionInternal();
@@ -29,18 +29,25 @@ namespace FloorSweep.Api.Repositories
             var id = _accessor.HttpContext.User.Identity.Name;
             if (!_sessions.ContainsKey(id))
             {
-                var mapData = MapData.FromImage("a.png");
-                _sessions.Add(id, new Session(id, _algoritm.CreateSession(mapData)));
+               // var mapData = MapData.FromImage("a.png");
+                _sessions.Add(id, new Session(id));
             }
             var session = _sessions[id];
             return session;
         }
 
-        public Task UpdateStatusAsync(IRobotStatus status)
+        public Task<bool> OnStatusUpdatedAsync(IRobotStatus status)
         {
             var session = GetSessionInternal();
-            session.CurrentStatus = status;
-            return Task.CompletedTask;
+            session.RobotStatus = status;
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> OnStatusUpdatedAsync(ILocationStatus status)
+        {
+            var session = GetSessionInternal();
+            session.LocationStatus = status;
+            return Task.FromResult(false);
         }
     }
 }

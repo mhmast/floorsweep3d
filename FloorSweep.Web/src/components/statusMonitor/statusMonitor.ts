@@ -1,10 +1,13 @@
 import * as signalR from '@microsoft/signalr';
-import { Writable, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import ConfigStore from '../../store/configStore';
+import {loginRedirect} from '../../services/authenticationService';
 import type RobotStatusMessage from '../../models/messages/RobotStatusMessage';
+import type LocationStatusMessage from '../../models/messages/LocationStatusMessage';
 import TokenStore from '../../store/tokenStore';
 
-export const statusStore = writable({currentAction:{}} as RobotStatusMessage);
+export const robotStatusStore = writable({currentAction:{}} as RobotStatusMessage);
+export const locationStatusStore = writable({} as LocationStatusMessage);
 let connection:signalR.HubConnection;
 
 
@@ -24,16 +27,19 @@ export async function init():Promise<signalR.HubConnection> {
       .withAutomaticReconnect()
       .build();
   
-      connection.on('OnStatusUpdate', (message:RobotStatusMessage) => {
-        
-          statusStore.set(message);
-      });
+      connection.on('OnRobotStatusUpdate', (message:RobotStatusMessage) => robotStatusStore.set(message));
+      connection.on('OnLocationStatusUpdate', (message:LocationStatusMessage) => locationStatusStore.set(message));
     
     }
     
     if(connection.state !== signalR.HubConnectionState.Connected)
     {
-      await connection.start();
+      await connection.start().catch(reason=>{
+        if(reason.statusCode === 401 ||reason.statusCode === 403)
+        {
+          loginRedirect(config);
+        }
+      });
     } 
     return connection;
 }
