@@ -9,8 +9,10 @@ import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
 </svelte:head>
 
 <Authenticated>
-  <div>
-    <StatusMonitor/>
-    <MatrixMonitor/>
+  <div class='grid grid-rows-2'>
+    
+      <StatusMonitor/>
+      <MatrixMonitor/>
+    
   </div>
 </Authenticated>

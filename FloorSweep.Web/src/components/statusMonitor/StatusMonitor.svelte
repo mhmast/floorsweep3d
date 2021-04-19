@@ -9,7 +9,9 @@ import { locationStatusStore, robotStatusStore, init } from "./statusMonitor";
   {#await initialize}
     <p>Loading...</p>
   {:then} 
+  <div class="grid grid-columns-2">
     <RobotStatus status={$robotStatusStore}/>
     <LocationStatus status={$locationStatusStore}/>
+  </div>
   {/await}
 </statusMonitor>
