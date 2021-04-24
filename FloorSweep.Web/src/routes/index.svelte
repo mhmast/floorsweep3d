@@ -1,7 +1,8 @@
 <script>
   import Authenticated from "../components/authenticated/authenticated.svelte";
-import MatrixMonitor from "../components/matrixMonitor/MatrixMonitor.svelte";
-import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
+  import MapMonitor from "../components/mapMonitor/MapMonitor.svelte";
+  import MapSimulator from "../components/mapSimulator/MapSimulator.svelte";
+  import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
 </script>
 
 <svelte:head>
@@ -9,10 +10,11 @@ import StatusMonitor from "../components/statusMonitor/StatusMonitor.svelte";
 </svelte:head>
 
 <Authenticated>
-  <div class='grid grid-rows-2'>
-    
-      <StatusMonitor/>
-      <MatrixMonitor/>
-    
+  <div class="grid grid-rows-2">
+    <StatusMonitor />
+    <div class="grid grid-columns-2">
+      <MapSimulator />
+      <MapMonitor />
+    </div>
   </div>
 </Authenticated>

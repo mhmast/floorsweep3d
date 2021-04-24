@@ -4,7 +4,7 @@
 
 <authenticated>
   {#await init then A}
-    <slot></slot>
+    <slot />
   {:catch error}
     <p>{error}</p>
   {/await}
