@@ -6,7 +6,7 @@
   <ul>
     <li>
       <a aria-current={segment === undefined ? "page" : undefined} href="."
-        >home</a
+        >Home</a
       >
     </li>
 

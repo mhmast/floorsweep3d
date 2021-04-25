@@ -1,49 +1,49 @@
 main {
-
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
-html{
-    width: 100%;
-    height: 100%;   
+html {
+  width: 100%;
+  height: 100%;
 }
 
-body{
-    width: 100%;
-    height: 100%;
+body {
+  width: 100%;
+  height: 100%;
 }
 
 div {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
-.grid{
-    display: grid;
+.grid {
+  display: grid;
 }
 
-@mixin gridColumns($number,$perc) {  
-     $cols: ();
-    @for $i from 1 through $number {        
-        $cols: append($cols ,50% , space);
-    }
-    .grid-columns-#{$number}{
-        grid-template-columns: #{$cols} 
-    }
+@mixin gridColumns($number, $perc) {
+  $cols: ();
+  @for $i from 1 through $number {
+    $cols: append($cols, $perc, space);
+  }
+  .grid-columns-#{$number} {
+    grid-template-columns: #{$cols};
+  }
 }
 
-@mixin gridRows($number,$perc) {  
-     $rows: ();
-    @for $i from 1 through $number {        
-        $rows: append($rows ,50% , space);
-    }
-    .grid-rows-#{$number}{
-        grid-template-rows: #{$rows} 
-    }
+@mixin gridRows($number, $perc) {
+  $rows: ();
+  @for $i from 1 through $number {
+    $rows: append($rows, $perc, space);
+  }
+  .grid-rows-#{$number} {
+    grid-template-rows: #{$rows};
+  }
 }
 
-@for $i from 1 through 3{
- @include gridColumns($i,50%);
- @include gridRows($i,50%);
+@for $i from 1 through 3 {
+  $perc: 100 / $i;
+  @include gridColumns($i, "#{$perc}%");
+  @include gridRows($i, "#{$perc}%");
 }

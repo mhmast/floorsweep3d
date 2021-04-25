@@ -1,6 +1,6 @@
 <script lang="ts">
   import ImageUpload from "../imageUpload/ImageUpload.svelte";
-  import { initializeCanvas } from "./mapSimulator";
+  import { initializeCanvas, error } from "./mapSimulator";
   let mapData;
   let robotInited = false;
   const canvas = (e: HTMLCanvasElement) => {
@@ -10,6 +10,9 @@
 
 <mapSimulator>
   <h2>Map Simulator</h2>
+  {#if $error}
+    <p class="error">{$error}</p>
+  {/if}
   {#if !mapData}
     <ImageUpload clickHandler={(d) => (mapData = d)} />
   {:else}

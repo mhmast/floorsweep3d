@@ -1,7 +1,10 @@
 export enum RobotActionType {
-  Driving = 0,
-  Turning = 1,
-  Stopped = 2,
+  Stopped = -1,
+  Stop = 0,
+  Drive = 1,
+  Driving = 2,
+  Turn = 3,
+  Turned = 4,
 }
 
 export interface RobotAction {
@@ -9,7 +12,7 @@ export interface RobotAction {
   data: number;
 }
 
-export default interface RobotStatusMessage {
+export interface RobotStatusMessage {
   distanceToObject: number;
   currentAction: RobotAction;
 }
