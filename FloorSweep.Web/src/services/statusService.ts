@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import type LocationStatusMessage from "../models/messages/LocationStatusMessage";
 import type {
   RobotAction,
+  RobotCommandMessage,
   RobotStatusMessage,
 } from "../models/messages/RobotStatusMessage";
 import { put } from "./baseApi";
@@ -13,19 +14,19 @@ export const robotStatusStore = writable({
 } as RobotStatusMessage);
 
 export async function subscribeRobotActionUpdatedAsync(
-  handler: (message: RobotAction) => void
+  handler: (message: RobotCommandMessage) => void
 ): Promise<void> {
-  await subscribe<RobotAction>("OnRobotAction", handler);
+  await subscribe<RobotCommandMessage>("OnRobotStatusUpdated", handler);
 }
 export async function subscribeLocationStatusAsync(
   handler: (message: LocationStatusMessage) => void
 ): Promise<void> {
-  await subscribe<LocationStatusMessage>("OnLocationStatusUpdate", handler);
+  await subscribe<LocationStatusMessage>("OnLocationStatusUpdated", handler);
 }
 
 export const updateStatusAsync = async (
   status: RobotStatusMessage
 ): Promise<Result<void>> => {
   robotStatusStore.set(status);
-  return await put<void>("/robotStatus", status);
+  return await put<void>("/robot/status", status);
 };

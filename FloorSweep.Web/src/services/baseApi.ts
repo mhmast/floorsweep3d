@@ -29,6 +29,7 @@ export async function put<T>(url: string, data: any): Promise<Result<T>> {
   const baseUrl = await getBaseUrl();
   return await fetchAuthenticated<T>(`${baseUrl}${url}`, {
     method: "PUT",
-    body: data,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });
 }

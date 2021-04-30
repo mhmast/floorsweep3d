@@ -1,7 +1,7 @@
 ﻿using FloorSweep.Engine.Interfaces;
 using System.Threading.Tasks;
 
-namespace FloorSweep.Engine
+namespace FloorSweep.Engine.Factories
 {
     internal class CompositeStatusHandler<TArg> : IStatusUpdateHandler<TArg>
     {

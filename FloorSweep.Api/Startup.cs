@@ -78,7 +78,7 @@ namespace FloorSweep.PathFinding.Api
                 c.Title = "FloorSweep.Api";
                 c.Version = "v1";
             });
-            
+
             services.UseFloorSweepEngine();
             //services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
@@ -94,6 +94,7 @@ namespace FloorSweep.PathFinding.Api
             
             if (env.IsDevelopment())
             {
+                
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi();
                 app.UseSwaggerUi3(options =>

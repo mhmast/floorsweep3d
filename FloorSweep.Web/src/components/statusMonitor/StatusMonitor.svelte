@@ -1,8 +1,12 @@
 <script lang="ts">
   import RobotStatus from "./RobotStatus.svelte";
-  import RobotAction from "./RobotAction.svelte";
+  import RobotCommand from "./RobotCommand.svelte";
   import LocationStatus from "./LocationStatus.svelte";
-  import { locationStatusStore, robotActionStore, init } from "./statusMonitor";
+  import {
+    locationStatusStore,
+    robotCommandStore,
+    init,
+  } from "./statusMonitor";
   import { robotStatusStore } from "../../services/statusService";
   const initialize = (() => init())();
 </script>
@@ -18,7 +22,7 @@
       </div>
       <div>
         <h2>Robot (Server)</h2>
-        <RobotAction action={$robotActionStore} />
+        <RobotCommand action={$robotCommandStore} />
       </div>
       <div>
         <h2>Location Status(Server)</h2>

@@ -30,6 +30,8 @@ export async function subscribe<T>(
     await connection.start().catch((reason) => {
       if (reason.statusCode === 401 || reason.statusCode === 403) {
         loginRedirect(config);
+      } else if (reason.statusCode === 500) {
+        throw new Error(reason.statusText);
       }
     });
   }

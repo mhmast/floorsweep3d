@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FloorSweep.Engine
 {
-    internal class MapService : IStatusUpdateHandler<IRobotStatus>
+    internal class MapService : IMapService
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IEventService _eventService;

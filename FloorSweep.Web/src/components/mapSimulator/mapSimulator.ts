@@ -12,7 +12,9 @@ import type Point from "../../models/point";
 import {
   RobotStatusMessage,
   RobotAction,
-  RobotActionType,
+  RobotCommandType,
+  RobotStatusType,
+  RobotCommandMessage,
 } from "../../models/messages/RobotStatusMessage";
 import {
   updateStatusAsync,
@@ -22,14 +24,16 @@ import { Writable, writable } from "svelte/store";
 
 let backgroundImage: ImageData;
 let robotImage: HTMLImageElement;
-let initHandler: () => void;
+
 let canvasElement: HTMLCanvasElement;
 let robotLocation: Point;
 let robotRotation: number;
-let robotAction: RobotAction = {
-  type: RobotActionType.Stopped,
+let robotUpdateMessage: RobotCommandMessage = undefined;
+let currentAction: RobotAction = {
   data: undefined,
+  type: RobotStatusType.Stopped,
 };
+
 let started: boolean = false;
 const maxDist = 200;
 const robotWidth = 20;
@@ -39,13 +43,29 @@ const halfRobotHeight = robotHeight / 2;
 
 export const error: Writable<string> = writable(undefined);
 
-function prepareBackground(
+const prepareBackground = (
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement
-): ImageData {
-  drawImage(ctx, img, 0, 0);
-  let imgdta = ctx.createImageData(img.width, img.height);
+): ImageData => {
+  const imgdta = drawImage(ctx, img, 0, 0);
   return convertBlackAndWhite(imgdta);
+};
+function drawBackground(ctx: CanvasRenderingContext2D) {
+  ctx.putImageData(backgroundImage, 0, 0);
+}
+
+function drawRobot(ctx: CanvasRenderingContext2D) {
+  const scalex = robotWidth / robotImage.width;
+  const scaley = robotHeight / robotImage.height;
+  drawImage(
+    ctx,
+    robotImage,
+    robotLocation.x - halfRobotWidth,
+    robotLocation.y - halfRobotHeight,
+    robotRotation,
+    scalex,
+    scaley
+  );
 }
 
 function redrawScene() {
@@ -54,11 +74,11 @@ function redrawScene() {
   drawRobot(ctx);
 }
 
-export function initializeCanvas(
+export async function initializeCanvasAsync(
   canvas: HTMLCanvasElement,
   data: string,
   inited: () => void
-) {
+): Promise<void> {
   robotImage = new Image();
   robotImage.src = "/robot.png";
 
@@ -70,12 +90,11 @@ export function initializeCanvas(
   backgroundImage = prepareBackground(ctx, bgim);
   drawBackground(ctx);
   canvasElement = canvas;
-  canvasElement.addEventListener("click", (e: MouseEvent) => {
+  canvasElement.addEventListener("click", async (e: MouseEvent) => {
     if (!robotLocation) {
-      initRobotAsync(getClientCoordinates(e));
+      await initRobotAsync(getClientCoordinates(e), inited);
     }
   });
-  initHandler = inited;
 }
 
 function timeOut(timeout: number): Promise<void> {
@@ -86,7 +105,7 @@ const direction = rotatePoint({ x: 0, y: 1 }, robotRotation);
 function getDistanceToObject(): number {
   const rot = d2r(robotRotation);
   let loc = robotLocation;
-  let dir = rotatePoint({ x: 0, y: 1 }, robotRotation);
+  let dir = rotatePoint({ x: 0, y: 1 }, rot);
   const isWhite = (color: Color) => color.r + color.g + color.b === 255 * 3;
   let dist = 0;
   for (let i = 1; i < maxDist; i++) {
@@ -102,50 +121,47 @@ function getDistanceToObject(): number {
 
 function getRobotStatusData(distanceToObject: number): RobotStatusMessage {
   return {
-    currentAction: robotAction,
+    currentAction,
     distanceToObject,
   };
 }
 
 async function sendRobotStatusUpdateAsync(data: RobotStatusMessage) {
   var result = await updateStatusAsync(data);
-  if (result.error) {
-    error.set(result.error);
+  error.set(result.error);
+}
+
+function updateStatus() {
+  if (robotUpdateMessage) {
+    switch (robotUpdateMessage.type) {
+      case RobotCommandType.Drive:
+        currentAction.type = RobotStatusType.Driving;
+
+        break;
+      case RobotCommandType.Stop:
+        currentAction.type = RobotStatusType.Stopped;
+        break;
+      case RobotCommandType.Turn:
+        currentAction.type = RobotStatusType.Turned;
+        robotRotation += robotUpdateMessage.data;
+        break;
+    }
+    currentAction.data = robotUpdateMessage.data;
+    robotUpdateMessage = undefined;
   }
 }
 
 async function robotLoopAsync() {
   while (started) {
-    switch (robotAction.type) {
-      case RobotActionType.Stopped:
-        break;
-      case RobotActionType.Stop:
-        robotAction.data = undefined;
-        robotAction.type = RobotActionType.Stopped;
-        break;
-
-      case RobotActionType.Turn:
-        robotRotation += robotAction.data;
-        if (robotRotation > 360) {
-          robotRotation -= 360;
-        }
-        robotAction.type = RobotActionType.Turned;
-        robotAction.data = undefined;
-        break;
-      case RobotActionType.Turned:
-        break;
-      case RobotActionType.Driving:
-        robotLocation = addPoint(robotLocation, direction);
-        robotAction.type = RobotActionType.Driving;
-        robotAction.data = undefined;
-        break;
-      case RobotActionType.Drive:
+    updateStatus();
+    switch (currentAction.type) {
+      case RobotStatusType.Driving:
         robotLocation = addPoint(robotLocation, direction);
         break;
     }
     const distance = getDistanceToObject();
     if (distance < 5) {
-      robotAction.type = RobotActionType.Stopped;
+      currentAction.type = RobotStatusType.Stopped;
     }
     const data = getRobotStatusData(distance);
     redrawScene();
@@ -169,29 +185,11 @@ export function stopRobot() {
   started = false;
 }
 
-function drawBackground(ctx: CanvasRenderingContext2D) {
-  ctx.putImageData(backgroundImage, 0, 0);
+function onRobotUpdated(message: RobotCommandMessage) {
+  robotUpdateMessage = message;
 }
 
-function drawRobot(ctx: CanvasRenderingContext2D) {
-  const scalex = robotWidth / robotImage.width;
-  const scaley = robotHeight / robotImage.height;
-  drawImage(
-    ctx,
-    robotImage,
-    robotLocation.x - halfRobotWidth,
-    robotLocation.y - halfRobotHeight,
-    robotRotation,
-    scalex,
-    scaley
-  );
-}
-
-function onRobotUpdated(message: RobotAction) {
-  robotAction = message;
-}
-
-async function initRobotAsync(p: Point) {
+async function initRobotAsync(p: Point, initHandler: () => void) {
   robotLocation = p;
   robotRotation = 0;
   redrawScene();

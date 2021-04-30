@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace FloorSweep.PathFinding.Api.Controllers
 
 {
-    [Route("/robot")]
+    
     [ApiController]
     [Authorize]
     [AuthenticationFilter]
@@ -24,11 +24,11 @@ namespace FloorSweep.PathFinding.Api.Controllers
 
 
         [Authorize]
-        [HttpPut("/status")]
+        [HttpPut("/robot/status")]
         [Scope("status_update")]
         public async Task<IActionResult> UpdateRobotStatus([FromBody] RobotStatusDto status)
         {
-            await _eventService.SendRobotStatusUpdatedAsync(status);
+            await _eventService.SendRobotStatusUpdateAsync(status);
             return Ok();
         }
     }

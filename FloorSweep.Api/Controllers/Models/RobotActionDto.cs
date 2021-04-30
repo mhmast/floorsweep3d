@@ -9,14 +9,14 @@ namespace FloorSweep.Api.Controllers.Models
 
         public int Data { get; set; }
 
-        Api.Interfaces.RobotActionType IRobotAction.Type => ConvertToDomainType(Type);
+        Interfaces.RobotActionType IRobotAction.Type => ConvertToDomainType(Type);
 
         private static Api.Interfaces.RobotActionType ConvertToDomainType(RobotActionType type)
         => type switch
         {
-            RobotActionType.Drive => Api.Interfaces.RobotActionType.Drive,
-            RobotActionType.Turn => Api.Interfaces.RobotActionType.Turn,
-            RobotActionType.Stop => Api.Interfaces.RobotActionType.Stop,
+            RobotActionType.Driving => Interfaces.RobotActionType.Driving,
+            RobotActionType.Turned => Interfaces.RobotActionType.Turned,
+            RobotActionType.Stopped => Interfaces.RobotActionType.Stopped,
             _ => throw new NotImplementedException()
         };
 

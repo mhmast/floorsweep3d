@@ -1,14 +1,20 @@
-export enum RobotActionType {
-  Stopped = -1,
+export enum RobotCommandType {
   Stop = 0,
   Drive = 1,
-  Driving = 2,
-  Turn = 3,
-  Turned = 4,
+  Turn = 2,
+}
+export enum RobotStatusType {
+  Stopped = 0,
+  Driving = 1,
+  Turned = 2,
+}
+export interface RobotCommandMessage {
+  type: RobotCommandType;
+  data: number;
 }
 
 export interface RobotAction {
-  type: RobotActionType;
+  type: RobotStatusType;
   data: number;
 }
 

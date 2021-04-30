@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { RobotStatusMessage } from "../../models/messages/RobotStatusMessage";
-  import RobotAction from "./RobotAction.svelte";
+  import { RobotStatusType } from "../../models/messages/RobotStatusMessage";
+
   export let status: RobotStatusMessage;
 </script>
 
@@ -12,7 +13,10 @@
       <span>Distance to Object: </span><span>{status.distanceToObject}</span>
     </p>
   </article>
-  <RobotAction action={status.currentAction} />
+  <p>
+    <span>Type: </span><span>{RobotStatusType[status.currentAction.type]}</span>
+  </p>
+  <p><span>Data: </span><span>{status.currentAction.data}</span></p>
 </robotStatus>
 
 <style lang="scss">

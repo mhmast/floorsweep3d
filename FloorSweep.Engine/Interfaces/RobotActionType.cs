@@ -2,8 +2,8 @@
 {
     public enum RobotActionType
     {
-        Drive=0,
-        Turn=1,
-        Stop=2
+        Driving=0,
+        Turned=1,
+        Stopped=2
     }
 }

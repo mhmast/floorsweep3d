@@ -1,10 +1,16 @@
 <script lang="ts">
   import ImageUpload from "../imageUpload/ImageUpload.svelte";
-  import { initializeCanvas, error } from "./mapSimulator";
+  import {
+    initializeCanvasAsync,
+    error,
+    startRobotAsync,
+    stopRobot,
+  } from "./mapSimulator";
   let mapData;
   let robotInited = false;
   const canvas = (e: HTMLCanvasElement) => {
-    initializeCanvas(e, mapData, () => (robotInited = true));
+    console.log("place robot");
+    initializeCanvasAsync(e, mapData, () => (robotInited = true));
   };
 </script>
 
@@ -20,6 +26,14 @@
       <h3>Place the robot</h3>
     {/if}
     <div class="map">
+      <p>
+        <button disabled={!robotInited} on:click={(e) => startRobotAsync()}
+          >Start</button
+        >
+        <button disabled={!robotInited} on:click={(e) => stopRobot()}
+          >Stop</button
+        >
+      </p>
       <canvas use:canvas class:robotPlace={!robotInited} />
     </div>
   {/if}

@@ -27,7 +27,7 @@ export const setPixel = (l: Point, data: ImageData, color: Color) => {
   data.data[index(l, data.width) + 3] = color.a;
 };
 
-export const d2r = (d) => (Math.PI / 180) * d;
+export const d2r = (d: number): number => (Math.PI / 180) * d;
 
 export function drawImage(
   context: CanvasRenderingContext2D,
@@ -37,16 +37,26 @@ export function drawImage(
   rotation?: number,
   scalex?: number,
   scaley?: number
-) {
+): ImageData {
+  if (!scalex) scalex = 1;
+  if (!scaley) scaley = 1;
   context.save();
   context.translate(x, y);
 
   context.scale(scalex, scaley);
-  context.rotate(d2r(rotation));
+  if (rotation) {
+    context.rotate(d2r(rotation));
+  }
   context.translate(-x, -y);
 
   context.drawImage(image, x, y);
+  const w = image.width as number;
+  const h = image.height as number;
+
+  const imageDta = context.getImageData(0, 0, w, h);
+
   context.restore();
+  return imageDta;
 }
 
 export const rotatePoint = (l: Point, rot: number): Point => {
@@ -65,11 +75,12 @@ export const convertBlackAndWhite = (imgdta: ImageData): ImageData => {
       const color = getPixel({ x, y }, imgdta);
       const rgb = color.r + color.g + color.b;
       if (rgb <= (255 * 3) / 2) {
-        setPixel({ x, y }, imgdta, { a: color.a, r: 0, g: 0, b: 0 });
+        setPixel({ x, y }, imgdta, { r: 0, g: 0, b: 0, a: color.a });
       } else {
-        setPixel({ x, y }, imgdta, { a: color.a, r: 255, g: 255, b: 255 });
+        setPixel({ x, y }, imgdta, { r: 255, g: 255, b: 255, a: color.a });
       }
     }
   }
+
   return imgdta;
 };
