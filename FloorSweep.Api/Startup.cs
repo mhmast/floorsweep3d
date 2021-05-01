@@ -56,7 +56,7 @@ namespace FloorSweep.PathFinding.Api
 
                 });
             services.AddHttpContextAccessor();
-            services.AddTransient<ISessionRepository, SessionRepository>();
+            services.AddSingleton<ISessionRepository, SessionRepository>();
             services.AddAuthorization();
             services.AddControllers()
                 .AddJsonOptions(o=>o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);

@@ -12,12 +12,13 @@ namespace FloorSweep.Api.Hubs.Dtos
             Data = action.Data;
         }
 
-        private RobotActionType ConvertToRobotActionType(Interfaces.RobotActionType type)
+        private static RobotActionType ConvertToRobotActionType(Interfaces.RobotActionType type)
         => type switch
         {
             Interfaces.RobotActionType.Driving => RobotActionType.Driving,
             Interfaces.RobotActionType.Turned => RobotActionType.Turned,
             Interfaces.RobotActionType.Stopped => RobotActionType.Stopped,
+            _ => throw new NotImplementedException(),
         };
 
         public RobotActionType Type { get; set; }

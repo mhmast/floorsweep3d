@@ -15,6 +15,8 @@ namespace FloorSweep.Service
         =>
             collection.AddTransient<IFloorSweepService, FloorSweepService>()
             .AddScoped<IMapService,MapService>()
+            .AddScoped<IRobotCommandFactory,RobotCommandFactory>()
+            .AddTransient<IDateTimeProvider,DateTimeProvider>()
             .AddTransient<IStatusUpdateHandlerFactory<IRobotStatus>>(s=>new RobotStatusUpdateHandlerFactory(s.GetRequiredService<ISessionRepository>,s.GetRequiredService<IMapService>))
             .AddTransient<IStatusUpdateHandlerFactory<ILocationStatus>>(s=>new LocationStatusUpdateHandlerFactory(s.GetRequiredService<ISessionRepository>))
             .AddTransient<IStatusUpdateHandlerFactory<IRobotCommand>,RobotCommandStatusUpdateHandlerFactory>();

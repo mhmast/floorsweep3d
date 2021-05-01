@@ -16,12 +16,18 @@ export const robotStatusStore = writable({
 export async function subscribeRobotActionUpdatedAsync(
   handler: (message: RobotCommandMessage) => void
 ): Promise<void> {
-  await subscribe<RobotCommandMessage>("OnRobotStatusUpdated", handler);
+  await subscribe<RobotCommandMessage>("OnRobotCommand", (m) => {
+    console.log(m);
+    handler(m);
+  });
 }
 export async function subscribeLocationStatusAsync(
   handler: (message: LocationStatusMessage) => void
 ): Promise<void> {
-  await subscribe<LocationStatusMessage>("OnLocationStatusUpdated", handler);
+  await subscribe<LocationStatusMessage>("OnLocationStatusUpdated", (m) => {
+    console.log(m);
+    handler(m);
+  });
 }
 
 export const updateStatusAsync = async (

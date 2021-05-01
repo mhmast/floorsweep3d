@@ -6,6 +6,7 @@ namespace FloorSweep.Engine.Interfaces
     {
         LocationDeterminationStatus LocationDeterminationStatus { get; }
         double AvgSpeedPixelsPerSecond { get; }
+        object Data { get; }
         DateTime LastUpdateReceived { get; }
     }
 }

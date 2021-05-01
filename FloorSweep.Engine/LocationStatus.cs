@@ -17,6 +17,7 @@ namespace FloorSweep.Engine
             LocationDeterminationStatus = status.LocationDeterminationStatus;
             AvgSpeedPixelsPerSecond = status.AvgSpeedPixelsPerSecond;
             LastUpdateReceived = status.LastUpdateReceived;
+            Data = status.Data;
         }
 
         public LocationDeterminationStatus LocationDeterminationStatus { get; set; }
@@ -24,5 +25,7 @@ namespace FloorSweep.Engine
         public double AvgSpeedPixelsPerSecond { get; set; }
 
         public DateTime LastUpdateReceived { get; set; }
+
+        public object Data { get; set; }
     }
 }

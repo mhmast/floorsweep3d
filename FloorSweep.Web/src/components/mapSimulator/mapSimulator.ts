@@ -18,7 +18,7 @@ import {
 } from "../../models/messages/RobotStatusMessage";
 import {
   updateStatusAsync,
-  subscribeRobotActionUpdatedAsync,
+  subscribeRobotActionUpdatedAsync as subscribeRobotCommandUpdatedAsync,
 } from "../../services/statusService";
 import { Writable, writable } from "svelte/store";
 
@@ -193,6 +193,6 @@ async function initRobotAsync(p: Point, initHandler: () => void) {
   robotLocation = p;
   robotRotation = 0;
   redrawScene();
-  await subscribeRobotActionUpdatedAsync(onRobotUpdated);
+  await subscribeRobotCommandUpdatedAsync(onRobotUpdated);
   initHandler();
 }
