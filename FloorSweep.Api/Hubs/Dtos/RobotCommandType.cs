@@ -2,7 +2,7 @@
 {
     public enum RobotCommandType
     {
-        Drive =0,
+        Drive = 0,
         Turn = 1,
         Stop = 2
     }

@@ -1,12 +1,12 @@
 export enum RobotCommandType {
-  Stop = 0,
-  Drive = 1,
-  Turn = 2,
+  Drive = 0,
+  Turn = 1,
+  Stop = 2,
 }
 export enum RobotStatusType {
-  Stopped = 0,
-  Driving = 1,
-  Turned = 2,
+  Driving = 0,
+  Turned = 1,
+  Stopped = 2,
 }
 export interface RobotCommandMessage {
   type: RobotCommandType;

@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import type { RobotCommandMessage } from "../../models/messages/RobotStatusMessage";
-import type LocationStatusMessage from "../../models/messages/LocationStatusMessage";
+import type { LocationStatusMessage } from "../../models/messages/LocationStatusMessage";
 import {
   subscribeRobotActionUpdatedAsync,
   subscribeLocationStatusAsync,

@@ -17,11 +17,11 @@
   {:then}
     <div class="grid grid-columns-3">
       <div>
-        <h2>Robot (Local)</h2>
+        <h2>Robot Status(Local => Server)</h2>
         <RobotStatus status={$robotStatusStore} />
       </div>
       <div>
-        <h2>Robot (Server)</h2>
+        <h2>Robot Command (Server => Robot)</h2>
         <RobotCommand action={$robotCommandStore} />
       </div>
       <div>

@@ -6,7 +6,6 @@
 </script>
 
 <robotStatus class="status">
-  <h2>Local Robot Status</h2>
   <article>
     <h3>Data</h3>
     <p>

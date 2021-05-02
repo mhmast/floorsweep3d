@@ -11,6 +11,7 @@ namespace FloorSweep.Api.Interfaces
         Task SendMatrixUpdateAsync(string key, int row, int col, double value);
         Task SendRobotCommandAsync(IRobotCommand command);
         Task SendRobotStatusUpdateAsync(IRobotStatus status);
+
         Task SendLocationStatusUpdatedAsync(ILocationStatus locationStatus);
     }
 }

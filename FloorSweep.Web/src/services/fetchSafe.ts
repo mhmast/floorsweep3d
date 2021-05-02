@@ -16,7 +16,7 @@ export async function fetchSafe<T>(
     if (response.ok) {
       let data;
       const len = response.headers.get("Content-Length");
-      console.log(len);
+
       if (!len || Number.parseInt(len) > 0) {
         data = (await response.json()) as T;
       }
@@ -38,7 +38,6 @@ export async function fetchSafe<T>(
       error: response.statusText,
     };
   } catch (e) {
-    console.log(e);
     return { data: null, statusCode: 500, error: e };
   }
 }

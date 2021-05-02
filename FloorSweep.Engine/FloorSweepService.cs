@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Api.Interfaces;
+using FloorSweep.Engine.Interfaces;
 using FloorSweep.Math;
 using FloorSweep.PathFinding.Interfaces;
 using System;
@@ -9,13 +10,17 @@ namespace FloorSweep.Api
 {
     internal class FloorSweepService : IFloorSweepService
     {
-        private readonly IEventService _monitorService;
+        private readonly IEventService _eventService;
         private readonly ISessionRepository _sessionRepository;
+        private readonly IMapService _mapService;
 
-        public FloorSweepService(IEventService monitorService, ISessionRepository sessionRepository)
+        public FloorSweepService(IEventService eventService, 
+            ISessionRepository sessionRepository,
+            IMapService mapService)
         {
-            _monitorService = monitorService;
+            _eventService = eventService;
             _sessionRepository = sessionRepository;
+            _mapService = mapService;
         }
         public async Task<IPath> FindPathAsync(IPathFindingParameters parameters)
         {
@@ -23,15 +28,25 @@ namespace FloorSweep.Api
             return await session.PathFindingSession.FindPathAsync(parameters.Start, parameters.Target, SendInitToMonitor);
         }
 
+        public async Task OnRobotStatusResetAsync(IRobotStatus status)
+        {
+            await _mapService.ResetStatusAsync();
+            await _eventService.SendRobotStatusUpdateAsync(status);
+        }
+        public Task OnRobotStatusUpdatedAsync(IRobotStatus status)
+        =>
+            _eventService.SendRobotStatusUpdateAsync(status);
+
+
         private async Task SendInitToMonitor(IReadOnlyDictionary<string, Mat> matrices, IReadOnlyDictionary<string, bool> matrixBitness)
         {
-            foreach(var mat in matrices)
+            foreach (var mat in matrices)
             {
-                mat.Value.MatChanged += (row, col, value) => _monitorService.SendMatrixUpdateAsync(mat.Key, row, col, value);
-                await _monitorService.SendMatrixInitAsync(mat.Key, mat.Value, matrixBitness[mat.Key]);
+                mat.Value.MatChanged += (row, col, value) => _eventService.SendMatrixUpdateAsync(mat.Key, row, col, value);
+                await _eventService.SendMatrixInitAsync(mat.Key, mat.Value, matrixBitness[mat.Key]);
             }
         }
 
-       
+
     }
 }

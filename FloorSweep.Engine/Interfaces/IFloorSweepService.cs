@@ -6,5 +6,7 @@ namespace FloorSweep.Api.Interfaces
     public interface IFloorSweepService
     {
         Task<IPath> FindPathAsync(IPathFindingParameters path);
+        Task OnRobotStatusUpdatedAsync(IRobotStatus status);
+        Task OnRobotStatusResetAsync(IRobotStatus status);
     }
 }

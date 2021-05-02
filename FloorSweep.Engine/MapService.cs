@@ -5,6 +5,7 @@ using FloorSweep.PathFinding.Interfaces;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace FloorSweep.Engine
 {
@@ -47,13 +48,17 @@ namespace FloorSweep.Engine
             var newStatus = new LocationStatus(locationStatus);
             if (status.CurrentAction.Type == RobotActionType.Turned)
             {
-                await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateTurnCommand(180));
+                await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateDriveCommand());
                 return newStatus;
             }
             if (status.CurrentAction.Type == RobotActionType.Stopped)
             {
-                var speedAvgs = newStatus.Data as List<int>;
-                if(speedAvgs.Count == MaxSamplesForSpeedTest)
+                if (newStatus.Data is not List<int> speedAvgs)
+                {
+                    speedAvgs = new List<int>();
+                    newStatus.Data = speedAvgs;
+                }
+                if (speedAvgs.Count == MaxSamplesForSpeedTest)
                 {
                     newStatus.AvgSpeedPixelsPerSecond = speedAvgs.Average();
                     newStatus.Data = null;
@@ -64,6 +69,7 @@ namespace FloorSweep.Engine
                 var time = (utcNow - newStatus.LastUpdateReceived).Seconds;
                 speedAvgs.Add(time);
                 newStatus.LastUpdateReceived = utcNow;
+                await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateTurnCommand(180));
                 return newStatus;
             }
             return locationStatus;
@@ -114,5 +120,7 @@ namespace FloorSweep.Engine
                 return new LocationStatus(session.LocationStatus);
             }
         }
+
+        public async Task ResetStatusAsync() => await  _eventService.SendLocationStatusUpdatedAsync(new LocationStatus());
     }
 }

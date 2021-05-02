@@ -2,13 +2,14 @@ import {
   addPoint,
   Color,
   convertBlackAndWhite,
-  d2r,
   drawImage,
   getClientCoordinates,
   getPixel,
+  Point,
   rotatePoint,
+  drawLine,
+  Line,
 } from "../../utils/utils";
-import type Point from "../../models/point";
 import {
   RobotStatusMessage,
   RobotAction,
@@ -33,15 +34,34 @@ let currentAction: RobotAction = {
   data: undefined,
   type: RobotStatusType.Stopped,
 };
-
+let distanceDebugLine: Line;
 let started: boolean = false;
+let nextLoopStep: boolean = true;
+const loopSpeed = 100;
 const maxDist = 200;
 const robotWidth = 20;
 const robotHeight = 20;
-const halfRobotWidth = robotWidth / 2;
-const halfRobotHeight = robotHeight / 2;
+let autoNextStep = false;
 
 export const error: Writable<string> = writable(undefined);
+export const location: Writable<Point> = writable(robotLocation);
+export const rotation: Writable<number> = writable(robotRotation);
+export const action: Writable<RobotAction> = writable(currentAction);
+export const autoContinue: Writable<boolean> = writable(false);
+autoContinue.subscribe(
+  (a) => {
+    autoNextStep = a;
+    if (a && !nextLoopStep) {
+      nextLoopStep = true;
+    }
+  },
+  (a) => {
+    autoNextStep = a;
+    if (a && !nextLoopStep) {
+      nextLoopStep = true;
+    }
+  }
+);
 
 const prepareBackground = (
   ctx: CanvasRenderingContext2D,
@@ -60,11 +80,12 @@ function drawRobot(ctx: CanvasRenderingContext2D) {
   drawImage(
     ctx,
     robotImage,
-    robotLocation.x - halfRobotWidth,
-    robotLocation.y - halfRobotHeight,
+    robotLocation.x,
+    robotLocation.y,
     robotRotation,
     scalex,
-    scaley
+    scaley,
+    true
   );
 }
 
@@ -72,7 +93,11 @@ function redrawScene() {
   const ctx = canvasElement.getContext("2d");
   drawBackground(ctx);
   drawRobot(ctx);
+  if (distanceDebugLine) {
+    drawLine(ctx, distanceDebugLine);
+  }
 }
+export const doNextStep = () => (nextLoopStep = true);
 
 export async function initializeCanvasAsync(
   canvas: HTMLCanvasElement,
@@ -100,13 +125,18 @@ export async function initializeCanvasAsync(
 function timeOut(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout));
 }
-const direction = rotatePoint({ x: 0, y: 1 }, robotRotation);
+const direction = (speed?: number) =>
+  rotatePoint({ x: 0, y: -(speed ? speed : 1) }, robotRotation);
 
-function getDistanceToObject(): number {
-  const rot = d2r(robotRotation);
-  let loc = robotLocation;
-  let dir = rotatePoint({ x: 0, y: 1 }, rot);
+function getDistanceToObject(debug: boolean = false): number {
+  let loc = addPoint(robotLocation, direction(robotHeight / 2));
+
   const isWhite = (color: Color) => color.r + color.g + color.b === 255 * 3;
+  if (!debug) {
+    distanceDebugLine = undefined;
+  } else {
+    distanceDebugLine = { start: loc, end: null };
+  }
   let dist = 0;
   for (let i = 1; i < maxDist; i++) {
     const color = getPixel(loc, backgroundImage);
@@ -114,7 +144,10 @@ function getDistanceToObject(): number {
       break;
     }
     dist++;
-    loc = addPoint(loc, dir);
+    loc = addPoint(loc, direction());
+  }
+  if (distanceDebugLine) {
+    distanceDebugLine.end = loc;
   }
   return dist;
 }
@@ -144,29 +177,41 @@ function updateStatus() {
       case RobotCommandType.Turn:
         currentAction.type = RobotStatusType.Turned;
         robotRotation += robotUpdateMessage.data;
+        if (robotRotation > 360) {
+          robotRotation -= 360;
+        }
+        rotation.set(robotRotation);
         break;
     }
     currentAction.data = robotUpdateMessage.data;
+    action.set(currentAction);
     robotUpdateMessage = undefined;
   }
 }
 
 async function robotLoopAsync() {
   while (started) {
-    updateStatus();
-    switch (currentAction.type) {
-      case RobotStatusType.Driving:
-        robotLocation = addPoint(robotLocation, direction);
-        break;
+    if (nextLoopStep) {
+      if (!autoNextStep) {
+        nextLoopStep = false;
+      }
+      updateStatus();
+      switch (currentAction.type) {
+        case RobotStatusType.Driving:
+          robotLocation = addPoint(robotLocation, direction(2));
+          location.set(robotLocation);
+          break;
+      }
+      const distance = getDistanceToObject(true);
+      if (distance < 5) {
+        currentAction.type = RobotStatusType.Stopped;
+        action.set(currentAction);
+      }
+      const data = getRobotStatusData(distance);
+      redrawScene();
+      await sendRobotStatusUpdateAsync(data);
     }
-    const distance = getDistanceToObject();
-    if (distance < 5) {
-      currentAction.type = RobotStatusType.Stopped;
-    }
-    const data = getRobotStatusData(distance);
-    redrawScene();
-    await sendRobotStatusUpdateAsync(data);
-    await timeOut(1000);
+    await timeOut(loopSpeed);
   }
 }
 
@@ -174,7 +219,9 @@ export async function startRobotAsync() {
   if (started) {
     return;
   }
-  await sendRobotStatusUpdateAsync(getRobotStatusData(getDistanceToObject()));
+  await sendRobotStatusUpdateAsync(
+    getRobotStatusData(getDistanceToObject(true))
+  );
   started = true;
   await robotLoopAsync();
 }
@@ -191,7 +238,9 @@ function onRobotUpdated(message: RobotCommandMessage) {
 
 async function initRobotAsync(p: Point, initHandler: () => void) {
   robotLocation = p;
-  robotRotation = 0;
+  location.set(robotLocation);
+  robotRotation = 180;
+  rotation.set(robotRotation);
   redrawScene();
   await subscribeRobotCommandUpdatedAsync(onRobotUpdated);
   initHandler();

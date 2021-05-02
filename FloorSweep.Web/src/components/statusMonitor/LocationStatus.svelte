@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type LocationStatusMessage from "../../models/messages/LocationStatusMessage";
+  import type { LocationStatusMessage } from "../../models/messages/LocationStatusMessage";
+  import { LocationDeterminationStatus } from "../../models/messages/LocationStatusMessage";
 
   export let status: LocationStatusMessage;
 </script>
@@ -14,7 +15,9 @@
     <span>LastUpdate Received: </span><span>{status.lastUpdateReceived}</span>
   </p>
   <p>
-    <span>Status: </span><span>{status.locationDeterminationStatus}</span>
+    <span>Status: </span><span
+      >{LocationDeterminationStatus[status.locationDeterminationStatus]}</span
+    >
   </p>
 </locationStatus>
 

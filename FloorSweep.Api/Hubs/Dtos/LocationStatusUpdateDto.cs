@@ -15,7 +15,7 @@ namespace FloorSweep.Api.Hubs.Dtos
             LocationDeterminationStatus = ConvertToDtoStatus(status.LocationDeterminationStatus);
         }
 
-        private LocationDeterminationStatus ConvertToDtoStatus(Engine.Interfaces.LocationDeterminationStatus locationDeterminationStatus)
+        private static LocationDeterminationStatus ConvertToDtoStatus(Engine.Interfaces.LocationDeterminationStatus locationDeterminationStatus)
         => locationDeterminationStatus switch
         {
             Engine.Interfaces.LocationDeterminationStatus.LocationInSync => LocationDeterminationStatus.LocationInSync,
