@@ -2,10 +2,12 @@
 using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
 using FloorSweep.PathFinding.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace FloorSweep.Api.Repositories
 {
-    internal class Session : ISession
+    internal class Session : Dictionary<Type, object>, ISession
     {
         public string Id { get; }
 
@@ -14,13 +16,19 @@ namespace FloorSweep.Api.Repositories
             Id = id;
         }
 
-        public IPathFindingSession PathFindingSession
+        public T GetObject<T>() where T : class
+        => (ContainsKey(typeof(T)) ? this[typeof(T)] : default(T)) as T;
+
+        public void SetObject<T>(T obj) where T : class
         {
-            get; set;
+            if (!ContainsKey(typeof(T)))
+            {
+                Add(typeof(T), obj);
+            }
+            else
+            {
+                this[typeof(T)] = obj;
+            }
         }
-
-        public IRobotStatus RobotStatus { get; set; }
-
-        public ILocationStatus LocationStatus { get; set; }
     }
 }

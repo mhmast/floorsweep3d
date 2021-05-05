@@ -1,9 +1,9 @@
-﻿using FloorSweep.Engine.Models;
-using FloorSweep.Engine.StatusHandlers;
+﻿using FloorSweep.Engine.EventHandlers;
+using FloorSweep.Engine.Models;
 
 namespace FloorSweep.Engine.Diagnostics
 {
-    public interface IDiagnosticsService : IStatusUpdateHandler<IRobotStatus>
+    public interface IDiagnosticsService : IEventHandler<IRobotStatus>
     {
     }
 }

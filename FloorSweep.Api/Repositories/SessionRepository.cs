@@ -34,7 +34,7 @@ namespace FloorSweep.Api.Repositories
             return session;
         }
 
-        public Task<bool> OnStatusUpdatedAsync(IRobotStatus status)
+        public Task<bool> SaveObjectAsync<T>(T @event)
         {
             var session = GetSessionInternal();
             session.RobotStatus = status;

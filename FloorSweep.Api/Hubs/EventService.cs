@@ -1,10 +1,10 @@
 ﻿using FloorSweep.Api.Hubs.Dtos;
 using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.EventHandlers;
 using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Map;
 using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
-using FloorSweep.Engine.StatusHandlers;
 using FloorSweep.Math;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -19,16 +19,16 @@ namespace FloorSweep.Api.Hubs
     {
         private readonly IHubContext<EventService> _context;
         private readonly ISessionRepository _sessionRepository;
-        private readonly IStatusUpdateHandlerFactory<IRobotCommand> _robotCommandHandlerFactory;
-        private readonly IStatusUpdateHandlerFactory<IRobotStatus> _robotStatusUpdateHandlerFactory;
-        private readonly IStatusUpdateHandlerFactory<ILocationStatus> _locationStatusHandlerFactory;
+        private readonly IEventHandlerFactory<IRobotCommand> _robotCommandHandlerFactory;
+        private readonly IEventHandlerFactory<IRobotStatus> _robotStatusUpdateHandlerFactory;
+        private readonly IEventHandlerFactory<ILocationStatus> _locationStatusHandlerFactory;
 
         public EventService(
             IHubContext<EventService> context, 
             ISessionRepository sessionRepository, 
-            IStatusUpdateHandlerFactory<IRobotCommand> robotCommandHandlerFactory,
-            IStatusUpdateHandlerFactory<IRobotStatus> robotStatusUpdateHandlerFactory,
-            IStatusUpdateHandlerFactory<ILocationStatus> locationStatusHandlerFactory)
+            IEventHandlerFactory<IRobotCommand> robotCommandHandlerFactory,
+            IEventHandlerFactory<IRobotStatus> robotStatusUpdateHandlerFactory,
+            IEventHandlerFactory<ILocationStatus> locationStatusHandlerFactory)
         {
             _context = context;
             _sessionRepository = sessionRepository;
@@ -59,19 +59,19 @@ namespace FloorSweep.Api.Hubs
 
         public Task SendRobotCommandAsync(IRobotCommand command)
         => Task.WhenAll(
-            _robotCommandHandlerFactory.GetStatusUpdateHandler().OnStatusUpdatedAsync(command),
+            _robotCommandHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(command),
             NotifyRegisteredSignalRUsersAsync("OnRobotCommand", new[] { new RobotCommandDto(command) })
             );
 
         public Task SendLocationStatusUpdatedAsync(ILocationStatus locationStatus)
         => Task.WhenAll(
-            _locationStatusHandlerFactory.GetStatusUpdateHandler().OnStatusUpdatedAsync(locationStatus),
+            _locationStatusHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(locationStatus),
             NotifyRegisteredSignalRUsersAsync("OnLocationStatusUpdated", new[] { new LocationStatusUpdateDto(locationStatus) })
             );
 
         public Task SendRobotStatusUpdateAsync(IRobotStatus status)
         => Task.WhenAll(
-            _robotStatusUpdateHandlerFactory.GetStatusUpdateHandler().OnStatusUpdatedAsync(status),
+            _robotStatusUpdateHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(status),
             NotifyRegisteredSignalRUsersAsync("OnRobotStatusUpdated", new[] { new RobotStatusUpdateDto(status) })
             );
     }

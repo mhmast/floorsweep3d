@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace FloorSweep.Engine.StatusHandlers
+namespace FloorSweep.Engine.EventHandlers
 {
-    public interface IStatusUpdateHandler<T>
+    public interface IEventHandler<T>
     {
         Task<bool> OnStatusUpdatedAsync(T status);
     }

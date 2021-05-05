@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 
-namespace FloorSweep.Engine.StatusHandlers
+namespace FloorSweep.Engine.EventHandlers
 {
-    internal class CompositeStatusHandler<TArg> : IStatusUpdateHandler<TArg>
+    internal class CompositeEventHandler<TArg> : IEventHandler<TArg>
     {
-        private readonly IStatusUpdateHandler<TArg> _thisHandler;
-        private readonly IStatusUpdateHandler<TArg> _next;
+        private readonly IEventHandler<TArg> _thisHandler;
+        private readonly IEventHandler<TArg> _next;
 
-        public CompositeStatusHandler(IStatusUpdateHandler<TArg> thisHandler, IStatusUpdateHandler<TArg> next = null)
+        public CompositeEventHandler(IEventHandler<TArg> thisHandler, IEventHandler<TArg> next = null)
         {
             _thisHandler = thisHandler;
             _next = next;

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace FloorSweep.Engine.StatusHandlers
+namespace FloorSweep.Engine.EventHandlers
 {
-    internal class EmptyStatusHandler<TArg> : IStatusUpdateHandler<TArg>
+    internal class EmptyEventHandler<TArg> : IEventHandler<TArg>
     {
 
         public Task<bool> OnStatusUpdatedAsync(TArg status)
