@@ -1,11 +1,10 @@
-﻿using FloorSweep.Api;
-using FloorSweep.Api.Controllers.Models;
-using FloorSweep.Api.Interfaces;
+﻿using FloorSweep.Api.Controllers.Models;
+using FloorSweep.Engine.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace FloorSweep.PathFinding.Api.Controllers
+namespace FloorSweep.Api.Controllers
 
 {
     [Route("/path")]

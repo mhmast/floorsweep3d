@@ -1,8 +1,4 @@
-﻿using FloorSweep.Api.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FloorSweep.Engine.Models;
 
 namespace FloorSweep.Api.Hubs.Dtos
 {

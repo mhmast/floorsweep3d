@@ -205,8 +205,7 @@ namespace FloorSweep.Pathfinding.TestApp
 
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton loadImageButton;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        
         private System.Windows.Forms.ToolStripButton setStartButton;
         private System.Windows.Forms.ToolStripButton setEndButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;

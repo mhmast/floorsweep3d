@@ -1,4 +1,5 @@
 ﻿using FloorSweep.PathFinding;
+using FloorSweep.PathFinding.TestApp;
 using System;
 using System.Drawing;
 using System.Windows.Forms;

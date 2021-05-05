@@ -15,7 +15,7 @@ namespace FloorSweep.PathFinding.TestApp
 {
     public partial class MainForm : Form
     {
-        private List<LoadedMap> Maps = new List<LoadedMap>();
+        private readonly List<LoadedMap> _maps = new();
         private LoadedMap CurrentMap => loadedMapsBox?.SelectedItem as LoadedMap;
 
         public MainForm(IPathFindingAlgorithm algorithm)
@@ -71,7 +71,7 @@ namespace FloorSweep.PathFinding.TestApp
 
             if (autoUpdate)
             {
-                AddEventHandler(p, g, onesAndZeros, name, img);
+                AddEventHandler(p, g, onesAndZeros, img);
             }
         }
 
@@ -81,16 +81,16 @@ namespace FloorSweep.PathFinding.TestApp
             new Form { BackgroundImage = panel.BackgroundImage, BackgroundImageLayout = ImageLayout.Stretch }.Show();
         }
 
-        private void AddEventHandler(Control box, Mat g, bool onesandzeros, string name, Bitmap img)
+        private void AddEventHandler(Control box, Mat g, bool onesandzeros, Bitmap img)
         {
 #if DEBUG
-            g.MatChanged += (int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros, name); ;
+            g.MatChanged += (int x, int y, double n) => UpdatePictureBox(box, img, x, y, n, onesandzeros); ;
 #endif
         }
 
-        private Bitmap DrawImage(Mat m, bool onesandzeros)
+        private static Bitmap DrawImage(Mat m, bool onesandzeros)
         {
-            Bitmap bmp = new Bitmap(m.Cols, m.Rows);
+            Bitmap bmp = new(m.Cols, m.Rows);
             using var g = Graphics.FromImage(bmp);
             for (var r = 1; r <= m.Rows; r++)
             {
@@ -112,12 +112,12 @@ namespace FloorSweep.PathFinding.TestApp
 
         }
 
-        private void UpdatePictureBoxb(Control box, Bitmap i, int x, int y, int n, bool onesandzeros, string name)
+        private void UpdatePictureBoxb(Control box, Bitmap i, int x, int y, int n, bool onesandzeros)
         {
 
             if (x < 0 || y < 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Invalid pixel location");
             }
             EndInvoke(BeginInvoke(new Action(() =>
             {
@@ -128,19 +128,19 @@ namespace FloorSweep.PathFinding.TestApp
             })));
         }
 
-        private void UpdatePictureBox(Control box, Bitmap i, int x, int y, double n, bool onesandzeros, string name)
+        private void UpdatePictureBox(Control box, Bitmap i, int x, int y, double n, bool onesandzeros)
         {
-            UpdatePictureBoxb(box, i, x, y, (int)n, onesandzeros, name);
+            UpdatePictureBoxb(box, i, x, y, (int)n, onesandzeros);
         }
 
 
-        bool running;
+        bool _running;
         private readonly IPathFindingAlgorithm _algorithm;
 
         private async Task Run()
         {
-            if (running) return;
-            running = true;
+            if (_running) return;
+            _running = true;
             var path = await _algorithm.CreateSession(CurrentMap.Data).FindPathAsync(CurrentMap.Start, CurrentMap.End, InitState);
 
             CurrentMap.Mean.Add(path.CalculationStatistics.Total);
@@ -152,7 +152,7 @@ namespace FloorSweep.PathFinding.TestApp
             builder.Append($" Mean: {CurrentMap.Mean.Average()} ms");
             label1.Text = builder.ToString();
             OnPathFound(path.Path, mapPanel);
-            running = false;
+            _running = false;
         }
 
         private async void OnItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -169,21 +169,19 @@ namespace FloorSweep.PathFinding.TestApp
 
         private void LoadMap()
         {
-            using (var selectForm = new LoadMapForm())
+            using var selectForm = new LoadMapForm();
+            if (selectForm.ShowDialog() == DialogResult.OK)
             {
-                if (selectForm.ShowDialog() == DialogResult.OK)
+                if (!_maps.Any(m => m.File == selectForm.LoadedMap.File))
                 {
-                    if (!Maps.Any(m => m.File == selectForm.LoadedMap.File))
-                    {
-                        AddMap(selectForm.LoadedMap);
-                    }
+                    AddMap(selectForm.LoadedMap);
                 }
             }
         }
 
         private void AddMap(LoadedMap loadedMap)
         {
-            Maps.Add(loadedMap);
+            _maps.Add(loadedMap);
             loadedMapsBox.Items.Add(loadedMap);
             loadedMapsBox.SelectedItem = loadedMap;
             runButton.Enabled = true;

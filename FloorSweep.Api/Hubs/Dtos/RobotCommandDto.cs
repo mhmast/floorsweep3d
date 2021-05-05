@@ -1,4 +1,5 @@
-﻿using FloorSweep.Engine.Interfaces;
+﻿using FloorSweep.Engine.Commands;
+using RobotCommandType2 = FloorSweep.Engine.Commands.RobotCommandType;
 using System;
 
 namespace FloorSweep.Api.Hubs.Dtos
@@ -11,12 +12,12 @@ namespace FloorSweep.Api.Hubs.Dtos
             Type = ConvertToDtoType(command.Type);
         }
 
-        private static RobotCommandType ConvertToDtoType(Engine.Interfaces.RobotCommandType type)
+        private static RobotCommandType ConvertToDtoType(RobotCommandType2 type)
         => type switch
         {
-            Engine.Interfaces.RobotCommandType.Drive => RobotCommandType.Drive,
-            Engine.Interfaces.RobotCommandType.Turn => RobotCommandType.Turn,
-            Engine.Interfaces.RobotCommandType.Stop => RobotCommandType.Stop,
+            RobotCommandType2.Drive => RobotCommandType.Drive,
+            RobotCommandType2.Turn => RobotCommandType.Turn,
+            RobotCommandType2.Stop => RobotCommandType.Stop,
             _ => throw new NotImplementedException()
         };
 

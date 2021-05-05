@@ -1,7 +1,6 @@
 ﻿using FloorSweep.Math;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace FloorSweep.PathFinding
 {

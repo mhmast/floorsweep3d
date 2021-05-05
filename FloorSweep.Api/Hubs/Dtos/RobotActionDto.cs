@@ -1,4 +1,5 @@
-﻿using FloorSweep.Api.Interfaces;
+﻿using FloorSweep.Engine.Models;
+using RobotActionType2 = FloorSweep.Engine.Models.RobotActionType;
 using System;
 
 namespace FloorSweep.Api.Hubs.Dtos
@@ -12,12 +13,12 @@ namespace FloorSweep.Api.Hubs.Dtos
             Data = action.Data;
         }
 
-        private static RobotActionType ConvertToRobotActionType(Interfaces.RobotActionType type)
+        private static RobotActionType ConvertToRobotActionType(RobotActionType2 type)
         => type switch
         {
-            Interfaces.RobotActionType.Driving => RobotActionType.Driving,
-            Interfaces.RobotActionType.Turned => RobotActionType.Turned,
-            Interfaces.RobotActionType.Stopped => RobotActionType.Stopped,
+            RobotActionType2.Driving => RobotActionType.Driving,
+            RobotActionType2.Turned => RobotActionType.Turned,
+            RobotActionType2.Stopped => RobotActionType.Stopped,
             _ => throw new NotImplementedException(),
         };
 

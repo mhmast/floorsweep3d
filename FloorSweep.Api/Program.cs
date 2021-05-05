@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace FloorSweep.PathFinding.Api
+namespace FloorSweep.Api
 {
     public class Program
     {

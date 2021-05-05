@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using FloorSweep.Math;
-using System;
 
 namespace FloorSweep.PathFinding
 {

@@ -1,7 +1,7 @@
-﻿using FloorSweep.PathFinding;
+﻿using FloorSweep.Math;
 using FloorSweep.PathFinding.Interfaces;
 
-namespace FloorSweep.Math
+namespace FloorSweep.PathFinding
 {
     internal class Node : IQueueKeyProvider
     {

@@ -1,7 +1,9 @@
 using FloorSweep.Api.Hubs;
-using FloorSweep.Api.Interfaces;
 using FloorSweep.Api.Repositories;
-using FloorSweep.Service;
+using FloorSweep.Engine;
+using FloorSweep.Engine.Events;
+using FloorSweep.Engine.Session;
+using FloorSweep.PathFinding;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -15,7 +17,7 @@ using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FloorSweep.PathFinding.Api
+namespace FloorSweep.Api
 {
     public class Startup
     {

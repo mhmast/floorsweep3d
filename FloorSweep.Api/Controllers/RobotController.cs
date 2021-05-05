@@ -1,14 +1,13 @@
-﻿using FloorSweep.Api;
-using FloorSweep.Api.Controllers.Models;
-using FloorSweep.Api.Interfaces;
+﻿using FloorSweep.Api.Controllers.Models;
+using FloorSweep.Engine.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace FloorSweep.PathFinding.Api.Controllers
+namespace FloorSweep.Api.Controllers
 
 {
-    
+
     [ApiController]
     [Authorize]
     [AuthenticationFilter]
@@ -35,7 +34,7 @@ namespace FloorSweep.PathFinding.Api.Controllers
         [Authorize]
         [HttpPost("/robot/status")]
         [Scope("status_update")]
-        public async Task<IActionResult> ResetRobotStatus([FromBody] RobotStatusDto status)
+        public async Task<IActionResult> StartNewRobotStatus([FromBody] RobotStatusDto status)
         {
             await _floorSweepService.OnRobotStatusResetAsync(status);
             return Ok();

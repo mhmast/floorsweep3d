@@ -1,8 +1,6 @@
-﻿using FloorSweep.Engine.Interfaces;
+﻿using FloorSweep.Engine.Map;
+using LocationDeterminationStatus2 = FloorSweep.Engine.Map.LocationDeterminationStatus;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FloorSweep.Api.Hubs.Dtos
 {
@@ -15,13 +13,13 @@ namespace FloorSweep.Api.Hubs.Dtos
             LocationDeterminationStatus = ConvertToDtoStatus(status.LocationDeterminationStatus);
         }
 
-        private static LocationDeterminationStatus ConvertToDtoStatus(Engine.Interfaces.LocationDeterminationStatus locationDeterminationStatus)
+        private static LocationDeterminationStatus ConvertToDtoStatus(LocationDeterminationStatus2 locationDeterminationStatus)
         => locationDeterminationStatus switch
         {
-            Engine.Interfaces.LocationDeterminationStatus.LocationInSync => LocationDeterminationStatus.LocationInSync,
-            Engine.Interfaces.LocationDeterminationStatus.Unknown => LocationDeterminationStatus.Unknown,
-            Engine.Interfaces.LocationDeterminationStatus.SpeedTesting => LocationDeterminationStatus.SpeedTesting,
-            Engine.Interfaces.LocationDeterminationStatus.Orienting => LocationDeterminationStatus.Orienting,
+            LocationDeterminationStatus2.LocationInSync => LocationDeterminationStatus.LocationInSync,
+            LocationDeterminationStatus2.Unknown => LocationDeterminationStatus.Unknown,
+            LocationDeterminationStatus2.SpeedTesting => LocationDeterminationStatus.SpeedTesting,
+            LocationDeterminationStatus2.Orienting => LocationDeterminationStatus.Orienting,
             _ => throw new NotImplementedException(),
         };
 

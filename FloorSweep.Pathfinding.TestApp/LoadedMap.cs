@@ -1,9 +1,7 @@
-﻿using FloorSweep.Math;
-using FloorSweep.PathFinding;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace FloorSweep.Pathfinding.TestApp
+namespace FloorSweep.PathFinding.TestApp
 {
     public class LoadedMap
     {

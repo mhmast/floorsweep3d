@@ -1,11 +1,9 @@
-﻿using FloorSweep.Api.Interfaces;
-using FloorSweep.PathFinding;
-using FloorSweep.PathFinding.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using FloorSweep.Engine.Map;
+using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Session;
 using Microsoft.AspNetCore.Http;
-using ISession = FloorSweep.Api.Interfaces.ISession;
-using FloorSweep.Engine.Interfaces;
 
 namespace FloorSweep.Api.Repositories
 {
@@ -18,10 +16,10 @@ namespace FloorSweep.Api.Repositories
             _accessor = accessor;
         }
 
-        public Task<ISession> GetSessionAsync()
+        public Task<Engine.Session.ISession> GetSessionAsync()
         {
             Session session = GetSessionInternal();
-            return Task.FromResult((ISession)session);
+            return Task.FromResult((Engine.Session.ISession)session);
         }
 
         private Session GetSessionInternal()

@@ -1,13 +1,12 @@
-﻿using FloorSweep.Api;
-using FloorSweep.Api.Interfaces;
-using FloorSweep.Engine;
-using FloorSweep.Engine.Factories;
-using FloorSweep.Engine.Interfaces;
+﻿using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.Core;
+using FloorSweep.Engine.Map;
+using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Session;
+using FloorSweep.Engine.StatusHandlers;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
-namespace FloorSweep.Service
+namespace FloorSweep.Engine
 {
     public static class ServiceExtensions
     {

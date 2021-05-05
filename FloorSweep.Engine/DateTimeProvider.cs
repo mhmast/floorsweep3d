@@ -1,5 +1,4 @@
-﻿using FloorSweep.Engine.Interfaces;
-using System;
+﻿using System;
 
 namespace FloorSweep.Engine
 {

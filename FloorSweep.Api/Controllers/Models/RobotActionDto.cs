@@ -1,4 +1,5 @@
-﻿using FloorSweep.Api.Interfaces;
+﻿using FloorSweep.Engine.Models;
+using RobotActionType2 = FloorSweep.Engine.Models.RobotActionType;
 using System;
 
 namespace FloorSweep.Api.Controllers.Models
@@ -9,14 +10,14 @@ namespace FloorSweep.Api.Controllers.Models
 
         public int Data { get; set; }
 
-        Interfaces.RobotActionType IRobotAction.Type => ConvertToDomainType(Type);
+        RobotActionType2 IRobotAction.Type => ConvertToDomainType(Type);
 
-        private static Api.Interfaces.RobotActionType ConvertToDomainType(RobotActionType type)
+        private static RobotActionType2 ConvertToDomainType(RobotActionType type)
         => type switch
         {
-            RobotActionType.Driving => Interfaces.RobotActionType.Driving,
-            RobotActionType.Turned => Interfaces.RobotActionType.Turned,
-            RobotActionType.Stopped => Interfaces.RobotActionType.Stopped,
+            RobotActionType.Driving => RobotActionType2.Driving,
+            RobotActionType.Turned => RobotActionType2.Turned,
+            RobotActionType.Stopped => RobotActionType2.Stopped,
             _ => throw new NotImplementedException()
         };
 

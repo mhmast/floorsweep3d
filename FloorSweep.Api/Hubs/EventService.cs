@@ -1,8 +1,11 @@
 ﻿using FloorSweep.Api.Hubs.Dtos;
-using FloorSweep.Api.Interfaces;
-using FloorSweep.Engine.Interfaces;
+using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.Events;
+using FloorSweep.Engine.Map;
+using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Session;
+using FloorSweep.Engine.StatusHandlers;
 using FloorSweep.Math;
-using FloorSweep.PathFinding.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;

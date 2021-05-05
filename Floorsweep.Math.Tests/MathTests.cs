@@ -1,9 +1,8 @@
-using FloorSweep.Math;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Floorsweep.Math.Tests
+namespace FloorSweep.Math.Tests
 {
     public class MathTests
     {
