@@ -34,18 +34,16 @@ namespace FloorSweep.Api.Repositories
             return session;
         }
 
-        public Task<bool> SaveObjectAsync<T>(T @event)
+        public Task SaveObjectAsync<T>(T @object)
         {
             var session = GetSessionInternal();
-            session.RobotStatus = status;
-            return Task.FromResult(false);
+            session.SetObject(@object);
+            return Task.CompletedTask;
         }
 
-        public Task<bool> OnStatusUpdatedAsync(ILocationStatus status)
+        public Task<T> GetObjectAsync<T>()
         {
-            var session = GetSessionInternal();
-            session.LocationStatus = status;
-            return Task.FromResult(false);
+            return Task.FromResult(GetSessionInternal().GetObject<T>());
         }
     }
 }

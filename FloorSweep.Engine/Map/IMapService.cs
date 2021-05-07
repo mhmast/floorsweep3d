@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.Map
 {
-    public interface IMapService : IEventHandler<IRobotStatus>
+    public interface IMapService : IEventHandlerDecorator<IRobotStatus>
     {
         Task ResetStatusAsync();
     }

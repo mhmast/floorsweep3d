@@ -26,7 +26,7 @@ namespace FloorSweep.Engine.Core
         public async Task<IPath> FindPathAsync(IPathFindingParameters parameters)
         {
             var session = await _sessionRepository.GetSessionAsync();
-            return await session.PathFindingSession.FindPathAsync(parameters.Start, parameters.Target, SendInitToMonitor);
+            return await session.GetObject<IPathFindingSession>().FindPathAsync(parameters.Start, parameters.Target, SendInitToMonitor);
         }
 
         public async Task OnRobotStatusResetAsync(IRobotStatus status)

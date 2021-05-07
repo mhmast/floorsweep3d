@@ -16,10 +16,10 @@ namespace FloorSweep.Api.Repositories
             Id = id;
         }
 
-        public T GetObject<T>() where T : class
-        => (ContainsKey(typeof(T)) ? this[typeof(T)] : default(T)) as T;
+        public T GetObject<T>()
+        => (T)(ContainsKey(typeof(T)) ? this[typeof(T)] : default(T));
 
-        public void SetObject<T>(T obj) where T : class
+        public void SetObject<T>(T obj)
         {
             if (!ContainsKey(typeof(T)))
             {

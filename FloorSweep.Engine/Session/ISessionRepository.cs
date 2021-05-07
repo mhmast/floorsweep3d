@@ -2,10 +2,9 @@
 
 namespace FloorSweep.Engine.Session
 {
-    public interface ISessionRepository 
+    public interface ISessionRepository
     {
-        Task<bool> SaveObjectAsync<T>(T status);
-
-        Task<ISession> GetSessionAsync();
+        Task<T> GetObjectAsync<T>();
+        Task SaveObjectAsync<T>(T @object);
     }
 }

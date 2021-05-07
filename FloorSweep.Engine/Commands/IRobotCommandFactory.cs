@@ -3,6 +3,7 @@
     public interface IRobotCommandFactory
     {
         IRobotCommand CreateDriveCommand();
-        IRobotCommand CreateTurnCommand(int v);
+        IRobotCommand CreateStopCommand();
+        IRobotCommand CreateTurnCommand(int degrees);
     }
 }

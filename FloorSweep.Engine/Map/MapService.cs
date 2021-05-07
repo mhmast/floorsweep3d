@@ -84,7 +84,7 @@ namespace FloorSweep.Engine.Map
 
         private async Task<MapData> EnsureMapData(ISession session)
         {
-            var pathFindingSession = session.PathFindingSession;
+            var pathFindingSession = session.GetObject<IPathFindingSession>();
             if (pathFindingSession == null)
             {
                 pathFindingSession = await StartNewPathfindingSessionAsync();
@@ -110,7 +110,8 @@ namespace FloorSweep.Engine.Map
 
         private async Task<LocationStatus> EnsureLocationStatusAsync(ISession session)
         {
-            if (session.LocationStatus == null)
+            var sessionStatus = session.GetObject<ILocationStatus>();
+            if (sessionStatus == null)
             {
                 var locationStatus = new LocationStatus();
                 await _eventService.SendLocationStatusUpdatedAsync(locationStatus);
@@ -118,7 +119,7 @@ namespace FloorSweep.Engine.Map
             }
             else
             {
-                return new LocationStatus(session.LocationStatus);
+                return new LocationStatus(sessionStatus);
             }
         }
 

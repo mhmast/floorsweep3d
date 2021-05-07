@@ -3,7 +3,7 @@ using FloorSweep.Engine.Models;
 
 namespace FloorSweep.Engine.Diagnostics
 {
-    public interface IDiagnosticsService : IEventHandler<IRobotStatus>
+    public interface IDiagnosticService : IEventHandlerDecorator<IRobotStatus>
     {
     }
 }

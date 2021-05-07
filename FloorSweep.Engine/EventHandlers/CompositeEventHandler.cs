@@ -2,7 +2,7 @@
 
 namespace FloorSweep.Engine.EventHandlers
 {
-    internal class CompositeEventHandler<TArg> : IEventHandler<TArg>
+    internal class CompositeEventHandler<TArg> : IEventHandler<TArg> 
     {
         private readonly IEventHandler<TArg> _thisHandler;
         private readonly IEventHandler<TArg> _next;
@@ -14,14 +14,11 @@ namespace FloorSweep.Engine.EventHandlers
         }
 
 
-        public async Task<bool> OnStatusUpdatedAsync(TArg status)
+        async Task IEventHandler<TArg>.OnStatusUpdatedAsync(TArg status)
         {
-            var result = await _thisHandler.OnStatusUpdatedAsync(status);
-            if (_next != null && !result)
-            {
-                return await _next.OnStatusUpdatedAsync(status);
-            }
-            return result;
+            await _thisHandler.OnStatusUpdatedAsync(status);
+            await _next?.OnStatusUpdatedAsync(status);
         }
+
     }
 }

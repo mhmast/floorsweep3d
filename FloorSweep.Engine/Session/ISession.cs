@@ -4,8 +4,8 @@
     {
         string Id { get; }
 
-        T GetObject<T>() where T : class;
+        T GetObject<T>();
 
-        void SetObject<T>(T obj) where T : class;
+        void SetObject<T>(T obj);
     }
 }
