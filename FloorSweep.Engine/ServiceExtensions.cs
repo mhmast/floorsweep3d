@@ -19,7 +19,7 @@ namespace FloorSweep.Engine
             .AddScoped<IRobotCommandFactory, RobotCommandFactory>()
             .AddTransient<IDateTimeProvider, DateTimeProvider>()
             .AddTransient(s => EventHandlerFactory<IRobotStatus>.Builder
-                .WithInterceptors(s.GetRequiredService<ISessionRepository>().SaveObjectAsync)
+                .WithInterceptors(status=>s.GetRequiredService<ISessionRepository>().SaveObjectAsync("RobotStatus",status))
                 .WithDecorators(
                     status => s.GetRequiredService<IDiagnosticService>().OnStatusUpdatedAsync(status),
                     status => s.GetRequiredService<IMapService>().OnStatusUpdatedAsync(status)

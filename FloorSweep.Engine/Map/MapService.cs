@@ -17,9 +17,9 @@ namespace FloorSweep.Engine.Map
         private readonly IPathFindingAlgorithm _pathFindingAlgorithm;
         private readonly IRobotCommandFactory _robotCommandFactory;
         private readonly IDateTimeProvider _dateTimeProvider;
-
+        private const string PathfindingSessionKey = "PathfindingSession";
         public MapService(
-            ISessionRepository sessionRepository, 
+            ISessionRepository sessionRepository,
             IEventService eventService,
             IPathFindingAlgorithm pathFindingAlgorithm,
             IRobotCommandFactory robotCommandFactory,
@@ -33,12 +33,12 @@ namespace FloorSweep.Engine.Map
         }
 
 
-        private Task<ILocationStatus> DetermineNextLocationStatusAsync(IRobotStatus status,ILocationStatus locationStatus)
+        private Task<ILocationStatus> DetermineNextLocationStatusAsync(IRobotStatus status, ILocationStatus locationStatus)
         {
             return locationStatus.LocationDeterminationStatus switch
             {
                 LocationDeterminationStatus.Unknown => InitSpeedTestAsync(locationStatus),
-                LocationDeterminationStatus.SpeedTesting => DoSpeedTestAsync(status,locationStatus),
+                LocationDeterminationStatus.SpeedTesting => DoSpeedTestAsync(status, locationStatus),
                 _ => Task.FromResult(locationStatus)
             };
         }
@@ -79,16 +79,16 @@ namespace FloorSweep.Engine.Map
         private async Task<ILocationStatus> InitSpeedTestAsync(ILocationStatus locationStatus)
         {
             await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateDriveCommand());
-            return new LocationStatus(locationStatus) { LocationDeterminationStatus = LocationDeterminationStatus.SpeedTesting ,LastUpdateReceived = _dateTimeProvider.UtcNow};
+            return new LocationStatus(locationStatus) { LocationDeterminationStatus = LocationDeterminationStatus.SpeedTesting, LastUpdateReceived = _dateTimeProvider.UtcNow };
         }
 
         private async Task<MapData> EnsureMapData()
         {
-            var pathFindingSession = await _sessionRepository.GetObjectAsync<IPathFindingSession>();
+            var pathFindingSession = await _sessionRepository.GetObjectAsync<IPathFindingSession>(PathfindingSessionKey);
             if (pathFindingSession == null)
             {
                 pathFindingSession = await StartNewPathfindingSessionAsync();
-                await _sessionRepository.SaveObjectAsync(pathFindingSession);
+                await _sessionRepository.SaveObjectAsync(PathfindingSessionKey, pathFindingSession);
             }
             return pathFindingSession.MapData;
         }
@@ -103,7 +103,7 @@ namespace FloorSweep.Engine.Map
         {
             var mapData = await EnsureMapData();
             var locationStatus = await EnsureLocationStatusAsync();
-            var nextStatus = await DetermineNextLocationStatusAsync(status,locationStatus);
+            var nextStatus = await DetermineNextLocationStatusAsync(status, locationStatus);
             await _sessionRepository.SaveObjectAsync(nextStatus);
             await _eventService.SendLocationStatusUpdatedAsync(nextStatus);
             return nextStatus.LocationDeterminationStatus != LocationDeterminationStatus.LocationInSync;
@@ -111,11 +111,11 @@ namespace FloorSweep.Engine.Map
 
         private async Task<LocationStatus> EnsureLocationStatusAsync()
         {
-            var sessionStatus = await  _sessionRepository.GetObjectAsync<ILocationStatus>();
+            var sessionStatus = await _sessionRepository.GetObjectAsync<ILocationStatus>(LocationStatus.KEY);
             if (sessionStatus == null)
             {
                 var locationStatus = new LocationStatus();
-                await _sessionRepository.SaveObjectAsync<ILocationStatus>(locationStatus);
+                await _sessionRepository.SaveObjectAsync(locationStatus);
                 return locationStatus;
             }
             else
@@ -124,6 +124,6 @@ namespace FloorSweep.Engine.Map
             }
         }
 
-        public async Task ResetStatusAsync() => await  _eventService.SendLocationStatusUpdatedAsync(new LocationStatus());
+        public async Task ResetStatusAsync() => await _eventService.SendLocationStatusUpdatedAsync(new LocationStatus());
     }
 }

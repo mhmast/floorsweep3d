@@ -1,13 +1,9 @@
-﻿using FloorSweep.Engine.Map;
-using FloorSweep.Engine.Models;
-using FloorSweep.Engine.Session;
-using FloorSweep.PathFinding.Interfaces;
-using System;
+﻿using FloorSweep.Engine.Session;
 using System.Collections.Generic;
 
 namespace FloorSweep.Api.Repositories
 {
-    internal class Session : Dictionary<Type, object>, ISession
+    internal class Session : Dictionary<string, object>, ISession
     {
         public string Id { get; }
 
@@ -16,18 +12,18 @@ namespace FloorSweep.Api.Repositories
             Id = id;
         }
 
-        public T GetObject<T>()
-        => (T)(ContainsKey(typeof(T)) ? this[typeof(T)] : default(T));
+        public T GetObject<T>(string key) 
+        => (T)(ContainsKey(key) ? this[key] : default(T));
 
-        public void SetObject<T>(T obj)
+        public void SetObject(string key,object obj)
         {
-            if (!ContainsKey(typeof(T)))
+            if (!ContainsKey(key))
             {
-                Add(typeof(T), obj);
+                Add(key, obj);
             }
             else
             {
-                this[typeof(T)] = obj;
+                this[key] = obj;
             }
         }
     }

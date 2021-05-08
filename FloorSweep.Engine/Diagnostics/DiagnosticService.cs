@@ -24,7 +24,7 @@ namespace FloorSweep.Engine.Diagnostics
         {
             var diagnosticStatus = await EnsureDiagnosticStatusData();
             await DetermineNextStatusAsync(diagnosticStatus, status);
-            await _sessionRepository.SaveObjectAsync<IDiagnosticStatusData>(diagnosticStatus);
+            await _sessionRepository.SaveObjectAsync(diagnosticStatus);
             await _eventService.SendDiagnosticStatusUpdatedAsync(diagnosticStatus);
             return diagnosticStatus.Status != DiagnosticStatus.Done;
         }
@@ -42,7 +42,7 @@ namespace FloorSweep.Engine.Diagnostics
 
         private static Task VerifyResultAndTestDoneAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
         {
-            if (status.CurrentAction.Type != RobotActionType.Stopped)
+            if (status.CurrentAction.Type == RobotActionType.Stopped)
             {
                 diagnosticStatus.Status = DiagnosticStatus.Done;
             }
@@ -83,11 +83,11 @@ namespace FloorSweep.Engine.Diagnostics
 
         private async Task<DiagnosticStatusData> EnsureDiagnosticStatusData()
         {
-            var sessionStatus = await _sessionRepository.GetObjectAsync<IDiagnosticStatusData>();
+            var sessionStatus = await _sessionRepository.GetObjectAsync<IDiagnosticStatusData>(DiagnosticStatusData.KEY);
             if (sessionStatus == null)
             {
                 var status = new DiagnosticStatusData();
-                await _sessionRepository.SaveObjectAsync<IDiagnosticStatusData>(status);
+                await _sessionRepository.SaveObjectAsync(status);
                 await _eventService.SendDiagnosticStatusUpdatedAsync(status);
                 return status;
             }

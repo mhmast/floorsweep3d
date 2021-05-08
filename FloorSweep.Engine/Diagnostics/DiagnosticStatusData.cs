@@ -2,7 +2,7 @@
 {
     internal class DiagnosticStatusData : IDiagnosticStatusData
     {
-        
+
         public DiagnosticStatusData()
         {
 
@@ -14,5 +14,8 @@
         }
         public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
+
+        public static string KEY = "DiagnosticStatusData";
+        public string Key => KEY;
     }
 }

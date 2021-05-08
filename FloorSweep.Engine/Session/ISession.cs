@@ -4,8 +4,8 @@
     {
         string Id { get; }
 
-        T GetObject<T>();
+        T GetObject<T>(string key);
 
-        void SetObject<T>(T obj);
+        void SetObject(string key,object obj);
     }
 }

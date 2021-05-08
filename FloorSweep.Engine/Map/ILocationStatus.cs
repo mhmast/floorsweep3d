@@ -1,8 +1,9 @@
-﻿using System;
+﻿using FloorSweep.Engine.Session;
+using System;
 
 namespace FloorSweep.Engine.Map
 {
-    public interface ILocationStatus
+    public interface ILocationStatus : IKeyable
     {
         LocationDeterminationStatus LocationDeterminationStatus { get; }
         double AvgSpeedPixelsPerSecond { get; }

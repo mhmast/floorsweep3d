@@ -32,16 +32,18 @@ namespace FloorSweep.Api.Repositories
             return session;
         }
 
-        public Task SaveObjectAsync<T>(T @object)
+        public Task SaveObjectAsync<T>(T @object) where T : IKeyable
+        => SaveObjectAsync(@object.Key, @object);
+        public Task SaveObjectAsync(string key, object @object)
         {
             var session = GetSessionInternal();
-            session.SetObject(@object);
+            session.SetObject(key, @object);
             return Task.CompletedTask;
         }
 
-        public Task<T> GetObjectAsync<T>()
+        public Task<T> GetObjectAsync<T>(string key) 
         {
-            return Task.FromResult(GetSessionInternal().GetObject<T>());
+            return Task.FromResult(GetSessionInternal().GetObject<T>(key));
         }
 
     }
