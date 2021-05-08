@@ -10,8 +10,9 @@
         public DiagnosticStatusData(IDiagnosticStatusData sessionStatus)
         {
             Status = sessionStatus.Status;
+            Error = sessionStatus.Error;
         }
-
+        public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
     }
 }

@@ -6,5 +6,6 @@ namespace FloorSweep.Engine.Session
     {
         Task<T> GetObjectAsync<T>();
         Task SaveObjectAsync<T>(T @object);
+        Task<ISession> GetSessionAsync();
     }
 }

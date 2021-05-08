@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.Diagnostics;
 using FloorSweep.Engine.Map;
 using FloorSweep.Engine.Models;
 using FloorSweep.Math;
@@ -14,5 +15,6 @@ namespace FloorSweep.Engine.Events
         Task SendRobotStatusUpdateAsync(IRobotStatus status);
 
         Task SendLocationStatusUpdatedAsync(ILocationStatus locationStatus);
+        Task SendDiagnosticStatusUpdatedAsync(IDiagnosticStatusData status);
     }
 }

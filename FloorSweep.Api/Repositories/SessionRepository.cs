@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FloorSweep.Engine.Map;
-using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
 using Microsoft.AspNetCore.Http;
 
@@ -45,5 +43,6 @@ namespace FloorSweep.Api.Repositories
         {
             return Task.FromResult(GetSessionInternal().GetObject<T>());
         }
+
     }
 }

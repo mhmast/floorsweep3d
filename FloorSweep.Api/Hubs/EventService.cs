@@ -1,5 +1,6 @@
 ﻿using FloorSweep.Api.Hubs.Dtos;
 using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.Diagnostics;
 using FloorSweep.Engine.EventHandlers;
 using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Map;
@@ -22,19 +23,22 @@ namespace FloorSweep.Api.Hubs
         private readonly IEventHandlerFactory<IRobotCommand> _robotCommandHandlerFactory;
         private readonly IEventHandlerFactory<IRobotStatus> _robotStatusUpdateHandlerFactory;
         private readonly IEventHandlerFactory<ILocationStatus> _locationStatusHandlerFactory;
+        private readonly IEventHandlerFactory<IDiagnosticStatusData> _diagnosticStatusHandlerFactory;
 
         public EventService(
             IHubContext<EventService> context, 
             ISessionRepository sessionRepository, 
             IEventHandlerFactory<IRobotCommand> robotCommandHandlerFactory,
             IEventHandlerFactory<IRobotStatus> robotStatusUpdateHandlerFactory,
-            IEventHandlerFactory<ILocationStatus> locationStatusHandlerFactory)
+            IEventHandlerFactory<ILocationStatus> locationStatusHandlerFactory,
+            IEventHandlerFactory<IDiagnosticStatusData> diagnosticStatusHandlerFactory)
         {
             _context = context;
             _sessionRepository = sessionRepository;
             _robotCommandHandlerFactory = robotCommandHandlerFactory;
             _robotStatusUpdateHandlerFactory = robotStatusUpdateHandlerFactory;
             _locationStatusHandlerFactory = locationStatusHandlerFactory;
+            _diagnosticStatusHandlerFactory = diagnosticStatusHandlerFactory;
         }
 
         private async Task<IClientProxy> GetUserAsync()
@@ -67,6 +71,12 @@ namespace FloorSweep.Api.Hubs
         => Task.WhenAll(
             _locationStatusHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(locationStatus),
             NotifyRegisteredSignalRUsersAsync("OnLocationStatusUpdated", new[] { new LocationStatusUpdateDto(locationStatus) })
+            );
+        
+        public Task SendDiagnosticStatusUpdatedAsync(IDiagnosticStatusData diagnosticStatus)
+        => Task.WhenAll(
+            _diagnosticStatusHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(diagnosticStatus),
+            NotifyRegisteredSignalRUsersAsync("OnDiagnosticStatusUpdated", new[] { new DiagnosticStatusUpdateDto(diagnosticStatus) })
             );
 
         public Task SendRobotStatusUpdateAsync(IRobotStatus status)

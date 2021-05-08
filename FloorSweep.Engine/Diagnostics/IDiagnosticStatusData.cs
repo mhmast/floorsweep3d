@@ -3,5 +3,6 @@
     public interface IDiagnosticStatusData
     {
         DiagnosticStatus Status { get; }
+        string Error { get; }
     }
 }

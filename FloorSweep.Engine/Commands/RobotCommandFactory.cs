@@ -6,12 +6,16 @@
         {
             public RobotCommandType Type { get; set; }
 
-            public double Data {get;set;}
+            public double Data { get; set; }
         }
         public IRobotCommand CreateDriveCommand()
         => new RobotCommand { Type = RobotCommandType.Drive };
 
         public IRobotCommand CreateTurnCommand(int degrees)
         => new RobotCommand { Type = RobotCommandType.Turn, Data = degrees };
+
+        public IRobotCommand CreateStopCommand()
+        => new RobotCommand { Type = RobotCommandType.Stop };
+
     }
 }

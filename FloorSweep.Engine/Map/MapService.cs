@@ -82,12 +82,13 @@ namespace FloorSweep.Engine.Map
             return new LocationStatus(locationStatus) { LocationDeterminationStatus = LocationDeterminationStatus.SpeedTesting ,LastUpdateReceived = _dateTimeProvider.UtcNow};
         }
 
-        private async Task<MapData> EnsureMapData(ISession session)
+        private async Task<MapData> EnsureMapData()
         {
-            var pathFindingSession = session.GetObject<IPathFindingSession>();
+            var pathFindingSession = await _sessionRepository.GetObjectAsync<IPathFindingSession>();
             if (pathFindingSession == null)
             {
                 pathFindingSession = await StartNewPathfindingSessionAsync();
+                await _sessionRepository.SaveObjectAsync(pathFindingSession);
             }
             return pathFindingSession.MapData;
         }
@@ -100,21 +101,21 @@ namespace FloorSweep.Engine.Map
 
         public async Task<bool> OnStatusUpdatedAsync(IRobotStatus status)
         {
-            var session = await _sessionRepository.GetSessionAsync();
-            var mapData = await EnsureMapData(session);
-            var locationStatus = await EnsureLocationStatusAsync(session);
+            var mapData = await EnsureMapData();
+            var locationStatus = await EnsureLocationStatusAsync();
             var nextStatus = await DetermineNextLocationStatusAsync(status,locationStatus);
+            await _sessionRepository.SaveObjectAsync(nextStatus);
             await _eventService.SendLocationStatusUpdatedAsync(nextStatus);
             return nextStatus.LocationDeterminationStatus != LocationDeterminationStatus.LocationInSync;
         }
 
-        private async Task<LocationStatus> EnsureLocationStatusAsync(ISession session)
+        private async Task<LocationStatus> EnsureLocationStatusAsync()
         {
-            var sessionStatus = session.GetObject<ILocationStatus>();
+            var sessionStatus = await  _sessionRepository.GetObjectAsync<ILocationStatus>();
             if (sessionStatus == null)
             {
                 var locationStatus = new LocationStatus();
-                await _eventService.SendLocationStatusUpdatedAsync(locationStatus);
+                await _sessionRepository.SaveObjectAsync<ILocationStatus>(locationStatus);
                 return locationStatus;
             }
             else

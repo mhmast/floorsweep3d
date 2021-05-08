@@ -42,7 +42,7 @@ div {
   }
 }
 
-@for $i from 1 through 3 {
+@for $i from 1 through 4 {
   $perc: 100 / $i;
   @include gridColumns($i, "#{$perc}%");
   @include gridRows($i, "#{$perc}%");

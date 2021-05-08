@@ -203,13 +203,15 @@ async function robotLoopAsync() {
           break;
       }
       const distance = getDistanceToObject(true);
+      let data = getRobotStatusData(distance);
+      redrawScene();
+      await sendRobotStatusUpdateAsync(data);
       if (distance < 5) {
         currentAction.type = RobotStatusType.Stopped;
         action.set(currentAction);
+        data = getRobotStatusData(distance);
+        await sendRobotStatusUpdateAsync(data);
       }
-      const data = getRobotStatusData(distance);
-      redrawScene();
-      await sendRobotStatusUpdateAsync(data);
     }
     await timeOut(loopSpeed);
   }

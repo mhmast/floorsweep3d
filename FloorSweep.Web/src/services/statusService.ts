@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import type { DiagnosticStatusMessage } from "../models/messages/DiagnosticStatusMessage";
 import type { LocationStatusMessage } from "../models/messages/LocationStatusMessage";
 import type {
   RobotCommandMessage,
@@ -23,6 +24,13 @@ export async function subscribeLocationStatusAsync(
   handler: (message: LocationStatusMessage) => void
 ): Promise<void> {
   await subscribe<LocationStatusMessage>("OnLocationStatusUpdated", (m) => {
+    handler(m);
+  });
+}
+export async function subscribeDiagnosticStatusAsync(
+  handler: (message: DiagnosticStatusMessage) => void
+): Promise<void> {
+  await subscribe<DiagnosticStatusMessage>("OnDiagnosticStatusUpdated", (m) => {
     handler(m);
   });
 }

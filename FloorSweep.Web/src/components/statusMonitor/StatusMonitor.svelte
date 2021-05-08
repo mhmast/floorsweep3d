@@ -2,8 +2,10 @@
   import RobotStatus from "./RobotStatus.svelte";
   import RobotCommand from "./RobotCommand.svelte";
   import LocationStatus from "./LocationStatus.svelte";
+  import DiagnosticStatus from "./DiagnosticStatus.svelte";
   import {
     locationStatusStore,
+    diagnosticStatusStore,
     robotCommandStore,
     init,
   } from "./statusMonitor";
@@ -15,7 +17,7 @@
   {#await initialize}
     <p>Loading...</p>
   {:then}
-    <div class="grid grid-columns-3">
+    <div class="grid grid-columns-4">
       <div>
         <h2>Robot Status(Local => Server)</h2>
         <RobotStatus status={$robotStatusStore} />
@@ -27,6 +29,10 @@
       <div>
         <h2>Location Status(Server)</h2>
         <LocationStatus status={$locationStatusStore} />
+      </div>
+      <div>
+        <h2>Diagnostic Status(Server)</h2>
+        <DiagnosticStatus status={$diagnosticStatusStore} />
       </div>
     </div>
   {/await}

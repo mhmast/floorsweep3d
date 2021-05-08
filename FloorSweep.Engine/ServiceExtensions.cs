@@ -6,8 +6,6 @@ using FloorSweep.Engine.Map;
 using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
 
 namespace FloorSweep.Engine
 {
@@ -16,26 +14,25 @@ namespace FloorSweep.Engine
         public static IServiceCollection UseFloorSweepEngine(this IServiceCollection collection)
         =>
             collection.AddTransient<IFloorSweepService, FloorSweepService>()
-            .AddScoped<IMapService,MapService>()
-            .AddScoped<IRobotCommandFactory,RobotCommandFactory>()
-            .AddTransient<IDateTimeProvider,DateTimeProvider>()
-            .AddTransient(s=>EventHandlerFactory<IRobotStatus>.Builder
+            .AddScoped<IMapService, MapService>()
+            .AddScoped<IDiagnosticService, DiagnosticService>()
+            .AddScoped<IRobotCommandFactory, RobotCommandFactory>()
+            .AddTransient<IDateTimeProvider, DateTimeProvider>()
+            .AddTransient(s => EventHandlerFactory<IRobotStatus>.Builder
                 .WithInterceptors(s.GetRequiredService<ISessionRepository>().SaveObjectAsync)
                 .WithDecorators(
-                    s.GetRequiredService<IDiagnosticService>().OnStatusUpdatedAsync,
-                    s.GetRequiredService<IMapService>().OnStatusUpdatedAsync
+                    status => s.GetRequiredService<IDiagnosticService>().OnStatusUpdatedAsync(status),
+                    status => s.GetRequiredService<IMapService>().OnStatusUpdatedAsync(status)
                 )
                 .Build()
             )
-            .AddTransient(s=>EventHandlerFactory<ILocationStatus>.Builder
-                .WithInterceptors(s.GetRequiredService<ISessionRepository>().SaveObjectAsync)
+            .AddTransient(s => EventHandlerFactory<ILocationStatus>.Builder
                 .Build())
-            .AddTransient(s=>EventHandlerFactory<IRobotCommand>.Builder.Build())
-            .AddTransient(s=>EventHandlerFactory<IDiagnosticStatusData>.Builder
-                .WithInterceptors(s.GetRequiredService<ISessionRepository>().SaveObjectAsync)
+            .AddTransient(s => EventHandlerFactory<IRobotCommand>.Builder.Build())
+            .AddTransient(s => EventHandlerFactory<IDiagnosticStatusData>.Builder
                 .Build()
             );
 
-        
+
     }
 }
