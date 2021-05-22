@@ -8,7 +8,7 @@ namespace FloorSweep.Api.Hubs.Dtos
     {
         public LocationStatusUpdateDto(ILocationStatus status)
         {
-            AvgSpeedPixelsPerSecond = status.AvgSpeedPixelsPerSecond;
+            AvgSpeedPixelsPerSecond = status.AvgSpeedMmPerSecond;
             LastUpdateReceived = status.LastUpdateReceived;
             LocationDeterminationStatus = ConvertToDtoStatus(status.LocationDeterminationStatus);
         }

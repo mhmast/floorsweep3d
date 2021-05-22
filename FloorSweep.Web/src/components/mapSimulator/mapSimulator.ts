@@ -19,9 +19,11 @@ import {
 } from "../../models/messages/RobotStatusMessage";
 import {
   updateStatusAsync,
+  resetStatusAsync,
   subscribeRobotActionUpdatedAsync as subscribeRobotCommandUpdatedAsync,
 } from "../../services/statusService";
 import { Writable, writable } from "svelte/store";
+import { now } from "svelte/internal";
 
 let backgroundImage: ImageData;
 let robotImage: HTMLImageElement;
@@ -156,11 +158,17 @@ function getRobotStatusData(distanceToObject: number): RobotStatusMessage {
   return {
     currentAction,
     distanceToObject,
+    statusDate: new Date(Date.now()),
   };
 }
 
 async function sendRobotStatusUpdateAsync(data: RobotStatusMessage) {
   var result = await updateStatusAsync(data);
+  error.set(result.error);
+}
+
+async function resetRobotStatusUpdateAsync(data: RobotStatusMessage) {
+  var result = await resetStatusAsync(data);
   error.set(result.error);
 }
 
@@ -221,7 +229,7 @@ export async function startRobotAsync() {
   if (started) {
     return;
   }
-  await sendRobotStatusUpdateAsync(
+  await resetRobotStatusUpdateAsync(
     getRobotStatusData(getDistanceToObject(true))
   );
   started = true;

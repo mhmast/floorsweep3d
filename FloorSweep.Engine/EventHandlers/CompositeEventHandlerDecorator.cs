@@ -13,6 +13,11 @@ namespace FloorSweep.Engine.EventHandlers
             _next = next;
         }
 
+        public async Task ResetStatusAsync()
+        {
+            await _thisHandler.ResetStatusAsync();
+            await _next?.ResetStatusAsync();
+        }
 
         async Task<bool> IEventHandlerDecorator<TArg>.OnStatusUpdatedAsync(TArg status)
         {

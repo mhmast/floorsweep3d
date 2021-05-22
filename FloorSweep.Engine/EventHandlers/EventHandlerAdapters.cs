@@ -3,31 +3,22 @@ using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.EventHandlers
 {
-    internal class EventHandlerDecoratorAdapter<T> : IEventHandlerDecorator<T>
-    {
-        private readonly Func<T, Task<bool>> _wrapped;
 
-        public EventHandlerDecoratorAdapter(Func<T, Task<bool>> wrapped) => _wrapped = wrapped;
-
-        public Task<bool> OnStatusUpdatedAsync(T status)
-        => _wrapped(status);
-    }
     internal class EventHandlerAdapter<T> : IEventHandler<T>
     {
-        private readonly Func<T, Task> _wrapped;
+        private readonly Func<T, Task> _updateFunc;
+        private readonly Func<Task> _resetFunc;
 
-        public EventHandlerAdapter(Func<T, Task> wrapped) => _wrapped = wrapped;
-
+        public EventHandlerAdapter(Func<T, Task> updateFunc, Func<Task> resetFunc)
+        {
+            _updateFunc = updateFunc;
+            _resetFunc = resetFunc;
+        }
         public Task OnStatusUpdatedAsync(T status)
-        => _wrapped(status);
+        => _updateFunc(status);
+
+        public Task ResetStatusAsync()
+        => _resetFunc();
     }
 
-    public static class EventHandlerAdapterExtensions
-    {
-        public static IEventHandlerDecorator<T> AsEventDecorator<T>(this Func<T, Task<bool>> wrapped)
-        => new EventHandlerDecoratorAdapter<T>(wrapped);
-        
-        public static IEventHandler<T> AsEventHandler<T>(this Func<T, Task> wrapped)
-        => new EventHandlerAdapter<T>(wrapped);
-    }
 }

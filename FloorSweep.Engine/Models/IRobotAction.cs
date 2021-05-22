@@ -3,6 +3,6 @@
     public interface IRobotAction
     {
         RobotActionType Type { get; }
-        int Data { get; }
+        long Data { get; }
     }
 }

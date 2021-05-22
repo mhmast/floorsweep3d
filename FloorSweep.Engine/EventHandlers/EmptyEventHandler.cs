@@ -7,5 +7,9 @@ namespace FloorSweep.Engine.EventHandlers
 
         public Task OnStatusUpdatedAsync(TArg status)
         => Task.CompletedTask;
+
+        public Task ResetStatusAsync()
+          => Task.CompletedTask;
+
     }
 }

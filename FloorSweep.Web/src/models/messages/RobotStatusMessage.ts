@@ -21,4 +21,5 @@ export interface RobotAction {
 export interface RobotStatusMessage {
   distanceToObject: number;
   currentAction: RobotAction;
+  statusDate: Date;
 }

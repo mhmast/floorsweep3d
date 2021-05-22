@@ -8,7 +8,7 @@ namespace FloorSweep.Api.Controllers.Models
     {
         public RobotActionType Type { get; set; }
 
-        public int Data { get; set; }
+        public long Data { get; set; }
 
         RobotActionType2 IRobotAction.Type => ConvertToDomainType(Type);
 
@@ -21,6 +21,6 @@ namespace FloorSweep.Api.Controllers.Models
             _ => throw new NotImplementedException()
         };
 
-        int IRobotAction.Data => Data;
+        long IRobotAction.Data => Data;
     }
 }

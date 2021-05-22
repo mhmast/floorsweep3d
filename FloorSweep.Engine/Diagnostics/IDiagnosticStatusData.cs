@@ -2,7 +2,8 @@
 
 namespace FloorSweep.Engine.Diagnostics
 {
-    public interface IDiagnosticStatusData : IKeyable
+    
+    public interface IDiagnosticStatusData
     {
         DiagnosticStatus Status { get; }
         string Error { get; }

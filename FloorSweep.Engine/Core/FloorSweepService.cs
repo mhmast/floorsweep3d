@@ -1,6 +1,10 @@
-﻿using FloorSweep.Engine.Events;
+﻿using FloorSweep.Engine.EventHandlers;
+using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Map;
 using FloorSweep.Engine.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.Core
@@ -10,22 +14,22 @@ namespace FloorSweep.Engine.Core
         private readonly IEventService _eventService;
 
 
-        private readonly IMapService _mapService;
+        private readonly IEventHandlerFactory<IRobotStatus> _factory;
 
         public FloorSweepService(IEventService eventService,
-            IMapService mapService)
+           IEventHandlerFactory<IRobotStatus> factory)
         {
             _eventService = eventService;
-            _mapService = mapService;
+            _factory = factory;
         }
 
         public async Task OnRobotStatusResetAsync(IRobotStatus status)
         {
-            await _mapService.ResetStatusAsync();
+            await _factory.GetEventHandler().ResetStatusAsync();
             await _eventService.SendRobotStatusUpdateAsync(status);
         }
         public Task OnRobotStatusUpdatedAsync(IRobotStatus status)
         => _eventService.SendRobotStatusUpdateAsync(status);
-     
+
     }
 }

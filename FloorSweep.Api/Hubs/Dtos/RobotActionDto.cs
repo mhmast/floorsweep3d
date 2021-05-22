@@ -24,6 +24,6 @@ namespace FloorSweep.Api.Hubs.Dtos
 
         public RobotActionType Type { get; set; }
 
-        public int Data { get; set; }
+        public long Data { get; set; }
 }
 }

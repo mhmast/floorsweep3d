@@ -1,5 +1,8 @@
-﻿namespace FloorSweep.Engine.Diagnostics
+﻿using FloorSweep.Engine.Session;
+
+namespace FloorSweep.Engine.Diagnostics
 {
+    [SessionSaveable]
     internal class DiagnosticStatusData : IDiagnosticStatusData
     {
 
@@ -15,7 +18,5 @@
         public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
 
-        public static string KEY = "DiagnosticStatusData";
-        public string Key => KEY;
     }
 }

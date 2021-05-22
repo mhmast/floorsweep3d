@@ -27,10 +27,10 @@ namespace FloorSweep.Engine.EventHandlers
 
         public class Builder
         {
-            public static EventHandlerFactoryBuilder<T> WithInterceptors(params Func<T,Task>[] interceptors)
+            public static EventHandlerFactoryBuilder<T> WithInterceptors(params Func<IEventHandler<T>>[] interceptors)
             => new (interceptors);
             
-            public static EventHandlerFactoryBuilder<T> WithDecorators(params Func<T, Task<bool>>[] decorators)
+            public static EventHandlerFactoryBuilder<T> WithDecorators(params Func<IEventHandlerDecorator<T>>[] decorators)
             => new (decorators);
 
             public static IEventHandlerFactory<T> Build() => new EventHandlerFactoryBuilder<T>().Build();
@@ -46,25 +46,25 @@ namespace FloorSweep.Engine.EventHandlers
         {
 
         }
-        public EventHandlerFactoryBuilder(IEnumerable<Func<T, Task<bool>>> decorators)
+        public EventHandlerFactoryBuilder(IEnumerable<Func<IEventHandlerDecorator<T>>> decorators)
         {
             WithDecorators(decorators.ToArray());
         }
 
-        public EventHandlerFactoryBuilder(IEnumerable<Func<T, Task>> interceptors)
+        public EventHandlerFactoryBuilder(IEnumerable<Func<IEventHandler<T>>> interceptors)
         {
             WithInterceptors(interceptors.ToArray());
         }
 
-        public EventHandlerFactoryBuilder<T> WithDecorators(params Func<T, Task<bool>>[] decorators)
+        public EventHandlerFactoryBuilder<T> WithDecorators(params Func<IEventHandlerDecorator<T>>[] decorators)
         {
-            _decorators.AddRange(decorators.Select(d => new Func<IEventHandlerDecorator<T>>(d.AsEventDecorator)));
+            _decorators.AddRange(decorators);
             return this;
         }
 
-        public EventHandlerFactoryBuilder<T> WithInterceptors(params Func<T, Task>[] interceptors)
+        public EventHandlerFactoryBuilder<T> WithInterceptors(params Func<IEventHandler<T>>[] interceptors)
         {
-            _interceptors.AddRange(interceptors.Select(d => new Func<IEventHandler<T>>(d.AsEventHandler)));
+            _interceptors.AddRange(interceptors.Select(d => new Func<IEventHandler<T>>(d)));
             return this;
         }
         public IEventHandlerFactory<T> Build() => new EventHandlerFactory<T>(_interceptors, _decorators);

@@ -7,27 +7,26 @@ namespace FloorSweep.Engine.Map
         public LocationStatus()
         {
             LocationDeterminationStatus = LocationDeterminationStatus.Unknown;
-            AvgSpeedPixelsPerSecond = double.NegativeInfinity;
+            AvgSpeedMmPerSecond = double.NegativeInfinity;
             LastUpdateReceived = DateTime.MinValue;
         }
         
         public LocationStatus(ILocationStatus status)
         {
             LocationDeterminationStatus = status.LocationDeterminationStatus;
-            AvgSpeedPixelsPerSecond = status.AvgSpeedPixelsPerSecond;
+            AvgSpeedMmPerSecond = status.AvgSpeedMmPerSecond;
             LastUpdateReceived = status.LastUpdateReceived;
             Data = status.Data;
         }
 
-        public static string KEY = "LocationStatus";
         public LocationDeterminationStatus LocationDeterminationStatus { get; set; }
 
-        public double AvgSpeedPixelsPerSecond { get; set; }
+        public double AvgSpeedMmPerSecond { get; set; }
 
         public DateTime LastUpdateReceived { get; set; }
 
         public object Data { get; set; }
 
-        public string Key => KEY;
+        public double AvgSpeedPixelsPerSecond { get; set; }
     }
 }

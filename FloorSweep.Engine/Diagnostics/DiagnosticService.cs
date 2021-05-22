@@ -83,7 +83,7 @@ namespace FloorSweep.Engine.Diagnostics
 
         private async Task<DiagnosticStatusData> EnsureDiagnosticStatusData()
         {
-            var sessionStatus = await _sessionRepository.GetObjectAsync<IDiagnosticStatusData>(DiagnosticStatusData.KEY);
+            var sessionStatus = await _sessionRepository.GetObjectAsync<DiagnosticStatusData>();
             if (sessionStatus == null)
             {
                 var status = new DiagnosticStatusData();
@@ -93,5 +93,7 @@ namespace FloorSweep.Engine.Diagnostics
             }
             return new DiagnosticStatusData(sessionStatus);
         }
+
+        public Task ResetStatusAsync() => _sessionRepository.SaveObjectAsync(new DiagnosticStatusData());
     }
 }

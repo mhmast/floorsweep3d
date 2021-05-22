@@ -7,6 +7,7 @@ using FloorSweep.Engine.Session;
 using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Commands;
 using FloorSweep.Engine.Models;
+using System;
 
 namespace FloorSweep.Engine.Map
 {
@@ -17,7 +18,7 @@ namespace FloorSweep.Engine.Map
         private readonly IPathFindingAlgorithm _pathFindingAlgorithm;
         private readonly IRobotCommandFactory _robotCommandFactory;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string PathfindingSessionKey = "PathfindingSession";
+        private const double PixelsPerMM = 0.1;
         public MapService(
             ISessionRepository sessionRepository,
             IEventService eventService,
@@ -43,36 +44,27 @@ namespace FloorSweep.Engine.Map
             };
         }
 
-        const int MaxSamplesForSpeedTest = 4;
         private async Task<ILocationStatus> DoSpeedTestAsync(IRobotStatus status, ILocationStatus locationStatus)
         {
             var newStatus = new LocationStatus(locationStatus);
-            if (status.CurrentAction.Type == RobotActionType.Turned)
+            if(newStatus.Data == null)
             {
-                await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateDriveCommand());
-                return newStatus;
+                newStatus.Data = status;
             }
             if (status.CurrentAction.Type == RobotActionType.Stopped)
             {
-                if (newStatus.Data is not List<int> speedAvgs)
-                {
-                    speedAvgs = new List<int>();
-                    newStatus.Data = speedAvgs;
-                }
-                if (speedAvgs.Count == MaxSamplesForSpeedTest)
-                {
-                    newStatus.AvgSpeedPixelsPerSecond = speedAvgs.Average();
-                    newStatus.Data = null;
-                    newStatus.LocationDeterminationStatus = LocationDeterminationStatus.Orienting;
-                    return newStatus;
-                }
-                var utcNow = _dateTimeProvider.UtcNow;
-                var time = (utcNow - newStatus.LastUpdateReceived).Seconds;
-                speedAvgs.Add(time);
-                newStatus.LastUpdateReceived = utcNow;
+                var lastMessage = newStatus.Data as IRobotStatus;
+                var traveledDistanceInMm = lastMessage.DistanceToObject - status.DistanceToObject;
+                var elapsedTimeSeconds = (status.StatusDate - lastMessage.StatusDate).TotalSeconds;
+                newStatus.AvgSpeedMmPerSecond = traveledDistanceInMm / elapsedTimeSeconds;
+                newStatus.AvgSpeedPixelsPerSecond = newStatus.AvgSpeedMmPerSecond * PixelsPerMM;
+                newStatus.Data = null;
+                newStatus.LocationDeterminationStatus = LocationDeterminationStatus.Orienting;
+
                 await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateTurnCommand(180));
                 return newStatus;
             }
+            newStatus.Data = status;
             return locationStatus;
         }
 
@@ -84,11 +76,11 @@ namespace FloorSweep.Engine.Map
 
         private async Task<MapData> EnsureMapData()
         {
-            var pathFindingSession = await _sessionRepository.GetObjectAsync<IPathFindingSession>(PathfindingSessionKey);
+            var pathFindingSession = await _sessionRepository.GetObjectAsync<IPathFindingSession>();
             if (pathFindingSession == null)
             {
                 pathFindingSession = await StartNewPathfindingSessionAsync();
-                await _sessionRepository.SaveObjectAsync(PathfindingSessionKey, pathFindingSession);
+                await _sessionRepository.SaveObjectAsync(pathFindingSession);
             }
             return pathFindingSession.MapData;
         }
@@ -111,7 +103,7 @@ namespace FloorSweep.Engine.Map
 
         private async Task<LocationStatus> EnsureLocationStatusAsync()
         {
-            var sessionStatus = await _sessionRepository.GetObjectAsync<ILocationStatus>(LocationStatus.KEY);
+            var sessionStatus = await _sessionRepository.GetObjectAsync<ILocationStatus>();
             if (sessionStatus == null)
             {
                 var locationStatus = new LocationStatus();
