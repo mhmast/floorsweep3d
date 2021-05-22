@@ -12,7 +12,7 @@
     >
   </p>
   <p>
-    <span>LastUpdate Received: </span><span>{status.lastUpdateReceived}</span>
+    <span>Avg Speed mm/Second: </span><span>{status.avgSpeedMmPerSecond}</span>
   </p>
   <p>
     <span>Status: </span><span

@@ -1,4 +1,5 @@
-﻿using FloorSweep.Engine.Session;
+﻿using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Session;
 
 namespace FloorSweep.Engine.Diagnostics
 {
@@ -18,5 +19,8 @@ namespace FloorSweep.Engine.Diagnostics
         public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
 
+        public IRobotStatus LastReceivedStatus { get; set; }
+        public double AvgSpeedMmPerSecond { get; internal set; }
+        public int AvgSpeedPixelsPerSecond { get; internal set; }
     }
 }

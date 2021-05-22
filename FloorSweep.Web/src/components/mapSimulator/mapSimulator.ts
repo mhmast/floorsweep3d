@@ -172,29 +172,33 @@ async function resetRobotStatusUpdateAsync(data: RobotStatusMessage) {
   error.set(result.error);
 }
 
-function updateStatus() {
-  if (robotUpdateMessage) {
-    switch (robotUpdateMessage.type) {
-      case RobotCommandType.Drive:
-        currentAction.type = RobotStatusType.Driving;
+function updateStatus(distance: number) {
+  if (distance < 5) {
+    currentAction.type = RobotStatusType.Stopped;
+  } else {
+    if (robotUpdateMessage) {
+      switch (robotUpdateMessage.type) {
+        case RobotCommandType.Drive:
+          currentAction.type = RobotStatusType.Driving;
+          break;
+        case RobotCommandType.Stop:
+          currentAction.type = RobotStatusType.Stopped;
+          break;
+        case RobotCommandType.Turn:
+          currentAction.type = RobotStatusType.Turned;
+          robotRotation += robotUpdateMessage.data;
+          if (robotRotation > 360) {
+            robotRotation -= 360;
+          }
+          rotation.set(robotRotation);
+          break;
+      }
+      currentAction.data = robotUpdateMessage.data;
 
-        break;
-      case RobotCommandType.Stop:
-        currentAction.type = RobotStatusType.Stopped;
-        break;
-      case RobotCommandType.Turn:
-        currentAction.type = RobotStatusType.Turned;
-        robotRotation += robotUpdateMessage.data;
-        if (robotRotation > 360) {
-          robotRotation -= 360;
-        }
-        rotation.set(robotRotation);
-        break;
+      robotUpdateMessage = undefined;
     }
-    currentAction.data = robotUpdateMessage.data;
-    action.set(currentAction);
-    robotUpdateMessage = undefined;
   }
+  action.set(currentAction);
 }
 
 async function robotLoopAsync() {
@@ -203,23 +207,19 @@ async function robotLoopAsync() {
       if (!autoNextStep) {
         nextLoopStep = false;
       }
-      updateStatus();
+      const distance = getDistanceToObject(true);
+
+      updateStatus(distance);
       switch (currentAction.type) {
         case RobotStatusType.Driving:
           robotLocation = addPoint(robotLocation, direction(2));
           location.set(robotLocation);
           break;
       }
-      const distance = getDistanceToObject(true);
+
       let data = getRobotStatusData(distance);
       redrawScene();
       await sendRobotStatusUpdateAsync(data);
-      if (distance < 5) {
-        currentAction.type = RobotStatusType.Stopped;
-        action.set(currentAction);
-        data = getRobotStatusData(distance);
-        await sendRobotStatusUpdateAsync(data);
-      }
     }
     await timeOut(loopSpeed);
   }

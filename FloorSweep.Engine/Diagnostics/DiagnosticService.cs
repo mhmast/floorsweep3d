@@ -1,4 +1,5 @@
 ﻿using FloorSweep.Engine.Commands;
+using FloorSweep.Engine.Config;
 using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
@@ -12,12 +13,18 @@ namespace FloorSweep.Engine.Diagnostics
         private readonly ISessionRepository _sessionRepository;
         private readonly IRobotCommandFactory _robotCommandFactory;
         private readonly IEventService _eventService;
+        private readonly IMapConfiguration _mapConfig;
 
-        public DiagnosticService(ISessionRepository sessionRepository, IRobotCommandFactory robotCommandFactory, IEventService eventService)
+        public DiagnosticService(
+            ISessionRepository sessionRepository,
+            IRobotCommandFactory robotCommandFactory,
+            IEventService eventService,
+            IMapConfiguration mapConfig)
         {
             _sessionRepository = sessionRepository;
             _robotCommandFactory = robotCommandFactory;
             _eventService = eventService;
+            _mapConfig = mapConfig;
         }
 
         public async Task<bool> OnStatusUpdatedAsync(IRobotStatus status)
@@ -35,16 +42,31 @@ namespace FloorSweep.Engine.Diagnostics
             DiagnosticStatus.Unknown => TestTurnAsync(diagnosticStatus),
             DiagnosticStatus.TestingTurn => VerifyResultAndTestDriveAsync(diagnosticStatus, status),
             DiagnosticStatus.TestingDrive => VerifyResultAndTestStopAsync(diagnosticStatus, status),
-            DiagnosticStatus.TestingStop => VerifyResultAndTestDoneAsync(diagnosticStatus, status),
+            DiagnosticStatus.TestingStop => VerifyResultAndTestSpeedAsync(diagnosticStatus, status),
+            DiagnosticStatus.DeterminingSpeed => VerifyResultAndDoneAsync(diagnosticStatus, status),
             DiagnosticStatus.Done => Task.CompletedTask,
             _ => throw new NotImplementedException()
         };
 
-        private static Task VerifyResultAndTestDoneAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
+        private Task VerifyResultAndDoneAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
+        {
+
+            var lastMessage = diagnosticStatus.LastReceivedStatus;
+            var traveledDistanceInMm = lastMessage.DistanceToObject - status.DistanceToObject;
+            var elapsedTimeSeconds = (status.StatusDate - lastMessage.StatusDate).TotalSeconds;
+            diagnosticStatus.AvgSpeedMmPerSecond = traveledDistanceInMm / elapsedTimeSeconds;
+            diagnosticStatus.AvgSpeedPixelsPerSecond = (int)(diagnosticStatus.AvgSpeedMmPerSecond * _mapConfig.PixelsPerMM);
+            diagnosticStatus.Status = DiagnosticStatus.Done;
+
+            return Task.CompletedTask;
+        }
+
+        private static Task VerifyResultAndTestSpeedAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
         {
             if (status.CurrentAction.Type == RobotActionType.Stopped)
             {
-                diagnosticStatus.Status = DiagnosticStatus.Done;
+                diagnosticStatus.LastReceivedStatus = status;
+                diagnosticStatus.Status = DiagnosticStatus.DeterminingSpeed;
             }
             else
             {
@@ -52,6 +74,8 @@ namespace FloorSweep.Engine.Diagnostics
             }
             return Task.CompletedTask;
         }
+
+
 
         private async Task VerifyResultAndTestStopAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
         {
@@ -82,18 +106,13 @@ namespace FloorSweep.Engine.Diagnostics
         }
 
         private async Task<DiagnosticStatusData> EnsureDiagnosticStatusData()
-        {
-            var sessionStatus = await _sessionRepository.GetObjectAsync<DiagnosticStatusData>();
-            if (sessionStatus == null)
-            {
-                var status = new DiagnosticStatusData();
-                await _sessionRepository.SaveObjectAsync(status);
-                await _eventService.SendDiagnosticStatusUpdatedAsync(status);
-                return status;
-            }
-            return new DiagnosticStatusData(sessionStatus);
-        }
+        => await _sessionRepository.GetObjectAsync<DiagnosticStatusData>()?? new DiagnosticStatusData();
 
-        public Task ResetStatusAsync() => _sessionRepository.SaveObjectAsync(new DiagnosticStatusData());
+        public async Task ResetStatusAsync()
+        {
+            var status = new DiagnosticStatusData();
+            await _sessionRepository.SaveObjectAsync(status);
+            await _eventService.SendDiagnosticStatusUpdatedAsync(status);
+        }
     }
 }

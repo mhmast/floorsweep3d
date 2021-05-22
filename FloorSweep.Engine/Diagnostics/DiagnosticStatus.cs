@@ -6,6 +6,7 @@
         TestingTurn = 1,
         TestingDrive = 2,
         TestingStop = 3,
-        Done = 4
+        DeterminingSpeed = 4,
+        Done = 5
     }
 }

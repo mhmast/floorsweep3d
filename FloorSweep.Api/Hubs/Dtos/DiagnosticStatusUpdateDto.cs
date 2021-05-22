@@ -20,6 +20,7 @@ namespace FloorSweep.Api.Hubs.Dtos
             DiagnosticStatus2.TestingDrive => DiagnosticStatus.TestingDrive,
             DiagnosticStatus2.TestingStop => DiagnosticStatus.TestingStop,
             DiagnosticStatus2.TestingTurn => DiagnosticStatus.TestingTurn,
+            DiagnosticStatus2.DeterminingSpeed => DiagnosticStatus.DeterminingSpeed,
             DiagnosticStatus2.Done => DiagnosticStatus.Done,
             _ => throw new NotImplementedException(),
         };

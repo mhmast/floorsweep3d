@@ -30,7 +30,8 @@ namespace FloorSweep.Api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        { 
+        
             var authSection = Configuration.GetSection("Authentication");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
@@ -81,7 +82,7 @@ namespace FloorSweep.Api
                 c.Version = "v1";
             });
 
-            services.UseFloorSweepEngine();
+            services.UseFloorSweepEngine(Configuration);
             //services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
             services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);

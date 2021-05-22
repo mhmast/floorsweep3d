@@ -7,6 +7,6 @@ export enum LocationDeterminationStatus {
 
 export interface LocationStatusMessage {
   avgSpeedPixelsPerSecond: number;
-  lastUpdateReceived: Date;
+  avgSpeedMmPerSecond: number;
   locationDeterminationStatus: LocationDeterminationStatus;
 }

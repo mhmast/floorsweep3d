@@ -8,8 +8,8 @@ namespace FloorSweep.Api.Hubs.Dtos
     {
         public LocationStatusUpdateDto(ILocationStatus status)
         {
-            AvgSpeedPixelsPerSecond = status.AvgSpeedMmPerSecond;
-            LastUpdateReceived = status.LastUpdateReceived;
+            AvgSpeedMmPerSecond = status.AvgSpeedMmPerSecond;
+            AvgSpeedPixelsPerSecond = status.AvgSpeedPixelsPerSecond;
             LocationDeterminationStatus = ConvertToDtoStatus(status.LocationDeterminationStatus);
         }
 
@@ -23,8 +23,8 @@ namespace FloorSweep.Api.Hubs.Dtos
             _ => throw new NotImplementedException(),
         };
 
+        public double AvgSpeedMmPerSecond { get; }
         public double AvgSpeedPixelsPerSecond { get; }
-        public DateTime LastUpdateReceived { get; }
         public LocationDeterminationStatus LocationDeterminationStatus { get; }
     }
 }

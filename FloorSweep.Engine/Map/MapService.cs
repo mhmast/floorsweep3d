@@ -34,44 +34,44 @@ namespace FloorSweep.Engine.Map
         }
 
 
-        private Task<ILocationStatus> DetermineNextLocationStatusAsync(IRobotStatus status, ILocationStatus locationStatus)
+        private Task DetermineNextLocationStatusAsync(IRobotStatus status, LocationStatus locationStatus)
         {
             return locationStatus.LocationDeterminationStatus switch
             {
                 LocationDeterminationStatus.Unknown => InitSpeedTestAsync(locationStatus),
                 LocationDeterminationStatus.SpeedTesting => DoSpeedTestAsync(status, locationStatus),
-                _ => Task.FromResult(locationStatus)
+                LocationDeterminationStatus.Orienting => DoSpeedTestAsync(status, locationStatus),
+                _ => Task.CompletedTask
             };
         }
 
-        private async Task<ILocationStatus> DoSpeedTestAsync(IRobotStatus status, ILocationStatus locationStatus)
+        private Task DoSpeedTestAsync(IRobotStatus status, LocationStatus locationStatus)
         {
-            var newStatus = new LocationStatus(locationStatus);
-            if(newStatus.Data == null)
+            if (status.DistanceToObject == -1)
             {
-                newStatus.Data = status;
+                return Task.CompletedTask;
             }
-            if (status.CurrentAction.Type == RobotActionType.Stopped)
+            if (locationStatus.LastReceivedStatus == null)
             {
-                var lastMessage = newStatus.Data as IRobotStatus;
+                locationStatus.LastReceivedStatus = status;
+            }
+            else
+            {
+                var lastMessage = locationStatus.LastReceivedStatus;
                 var traveledDistanceInMm = lastMessage.DistanceToObject - status.DistanceToObject;
                 var elapsedTimeSeconds = (status.StatusDate - lastMessage.StatusDate).TotalSeconds;
-                newStatus.AvgSpeedMmPerSecond = traveledDistanceInMm / elapsedTimeSeconds;
-                newStatus.AvgSpeedPixelsPerSecond = newStatus.AvgSpeedMmPerSecond * PixelsPerMM;
-                newStatus.Data = null;
-                newStatus.LocationDeterminationStatus = LocationDeterminationStatus.Orienting;
-
-                await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateTurnCommand(180));
-                return newStatus;
+                locationStatus.AvgSpeedMmPerSecond = traveledDistanceInMm / elapsedTimeSeconds;
+                locationStatus.AvgSpeedPixelsPerSecond = locationStatus.AvgSpeedMmPerSecond * PixelsPerMM;
+                locationStatus.LastReceivedStatus = null;
+                locationStatus.LocationDeterminationStatus = LocationDeterminationStatus.Orienting;
             }
-            newStatus.Data = status;
-            return locationStatus;
+            return Task.CompletedTask;
         }
 
-        private async Task<ILocationStatus> InitSpeedTestAsync(ILocationStatus locationStatus)
+        private async Task InitSpeedTestAsync(LocationStatus locationStatus)
         {
             await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateDriveCommand());
-            return new LocationStatus(locationStatus) { LocationDeterminationStatus = LocationDeterminationStatus.SpeedTesting, LastUpdateReceived = _dateTimeProvider.UtcNow };
+            locationStatus.LocationDeterminationStatus = LocationDeterminationStatus.SpeedTesting;
         }
 
         private async Task<MapData> EnsureMapData()
@@ -95,27 +95,19 @@ namespace FloorSweep.Engine.Map
         {
             var mapData = await EnsureMapData();
             var locationStatus = await EnsureLocationStatusAsync();
-            var nextStatus = await DetermineNextLocationStatusAsync(status, locationStatus);
-            await _sessionRepository.SaveObjectAsync(nextStatus);
-            await _eventService.SendLocationStatusUpdatedAsync(nextStatus);
-            return nextStatus.LocationDeterminationStatus != LocationDeterminationStatus.LocationInSync;
+            await DetermineNextLocationStatusAsync(status, locationStatus);
+            await _sessionRepository.SaveObjectAsync(locationStatus);
+            await _eventService.SendLocationStatusUpdatedAsync(locationStatus);
+            return locationStatus.LocationDeterminationStatus != LocationDeterminationStatus.LocationInSync;
         }
 
         private async Task<LocationStatus> EnsureLocationStatusAsync()
+        => await _sessionRepository.GetObjectAsync<LocationStatus>() ?? new LocationStatus();
+        public async Task ResetStatusAsync()
         {
-            var sessionStatus = await _sessionRepository.GetObjectAsync<ILocationStatus>();
-            if (sessionStatus == null)
-            {
-                var locationStatus = new LocationStatus();
-                await _sessionRepository.SaveObjectAsync(locationStatus);
-                return locationStatus;
-            }
-            else
-            {
-                return new LocationStatus(sessionStatus);
-            }
+            var status = new LocationStatus();
+            await _sessionRepository.SaveObjectAsync(status);
+            await _eventService.SendLocationStatusUpdatedAsync(status);
         }
-
-        public async Task ResetStatusAsync() => await _eventService.SendLocationStatusUpdatedAsync(new LocationStatus());
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using FloorSweep.Engine.Events;
 using FloorSweep.Engine.Session;
 using Microsoft.AspNetCore.Http;
 
@@ -8,10 +9,12 @@ namespace FloorSweep.Api.Repositories
     public class SessionRepository : ISessionRepository
     {
         private readonly IHttpContextAccessor _accessor;
+        private readonly IEventService _eventService;
         private readonly Dictionary<string, Session> _sessions = new();
-        public SessionRepository(IHttpContextAccessor accessor)
+        public SessionRepository(IHttpContextAccessor accessor, IEventService eventService)
         {
             _accessor = accessor;
+            _eventService = eventService;
         }
 
         public Task<Engine.Session.ISession> GetSessionAsync()
@@ -32,10 +35,11 @@ namespace FloorSweep.Api.Repositories
             return session;
         }
 
-        public Task SaveObjectAsync<T>(T @object)
+        public async Task SaveObjectAsync<T>(T @object)
         {
             var session = GetSessionInternal();
             session.SetObject(@object);
+            await _eventService.SendSessionUpdatedAsync(this);
             return Task.CompletedTask;
         }
 
