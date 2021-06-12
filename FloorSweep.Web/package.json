@@ -30,7 +30,8 @@
     "sass": "^1.32.8",
     "sirv": "^1.0.0",
     "sjcl": "^1.0.8",
-    "tslint": "^6.1.3"
+    "tslint": "^6.1.3",
+    "json-tree-view": "^0.4.12"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -56,6 +57,7 @@
     "sapper": "^0.28.0",
     "svelte": "^3.17.3",
     "svelte-check": "^1.0.46",
+    "svelte-json-tree-view": "^1.0.0",
     "svelte-preprocess": "^4.6.9",
     "tslib": "^2.0.1",
     "typescript": "^4.0.3"

@@ -1,14 +1,9 @@
 <script lang="ts">
   import RobotStatus from "./RobotStatus.svelte";
   import RobotCommand from "./RobotCommand.svelte";
-  import LocationStatus from "./LocationStatus.svelte";
-  import DiagnosticStatus from "./DiagnosticStatus.svelte";
-  import {
-    locationStatusStore,
-    diagnosticStatusStore,
-    robotCommandStore,
-    init,
-  } from "./statusMonitor";
+  import SessionStatus from "./SessionStatus.svelte";
+
+  import { sessionStatusStore, robotCommandStore, init } from "./statusMonitor";
   import { robotStatusStore } from "../../services/statusService";
   const initialize = (() => init())();
 </script>
@@ -17,7 +12,7 @@
   {#await initialize}
     <p>Loading...</p>
   {:then}
-    <div class="grid grid-columns-4">
+    <div class="grid grid-columns-3">
       <div>
         <h2>Robot Status(Local => Server)</h2>
         <RobotStatus status={$robotStatusStore} />
@@ -27,12 +22,8 @@
         <RobotCommand action={$robotCommandStore} />
       </div>
       <div>
-        <h2>Location Status(Server)</h2>
-        <LocationStatus status={$locationStatusStore} />
-      </div>
-      <div>
-        <h2>Diagnostic Status(Server)</h2>
-        <DiagnosticStatus status={$diagnosticStatusStore} />
+        <h2>Session Status(Server)</h2>
+        <SessionStatus status={$sessionStatusStore} />
       </div>
     </div>
   {/await}

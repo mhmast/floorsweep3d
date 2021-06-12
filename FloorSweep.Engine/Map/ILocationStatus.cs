@@ -1,10 +1,11 @@
-﻿namespace FloorSweep.Engine.Map
+﻿using FloorSweep.Math;
+
+namespace FloorSweep.Engine.Map
 {
 
     public interface ILocationStatus
     {
-        LocationDeterminationStatus LocationDeterminationStatus { get; }
-        double AvgSpeedMmPerSecond { get; }
-        double AvgSpeedPixelsPerSecond { get; }
+        public Point Location { get;  }
+        public PointD Direction { get;  }
     }
 }

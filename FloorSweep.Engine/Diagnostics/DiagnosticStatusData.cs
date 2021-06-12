@@ -1,21 +1,17 @@
-﻿using FloorSweep.Engine.Models;
+﻿using FloorSweep.Engine.Core;
 using FloorSweep.Engine.Session;
 
 namespace FloorSweep.Engine.Diagnostics
 {
     [SessionSaveable]
-    internal class DiagnosticStatusData : IDiagnosticStatusData
+    internal class DiagnosticStatusData : IRobotMeta
     {
 
         public DiagnosticStatusData()
         {
 
         }
-        public DiagnosticStatusData(IDiagnosticStatusData sessionStatus)
-        {
-            Status = sessionStatus.Status;
-            Error = sessionStatus.Error;
-        }
+    
         public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
 

@@ -1,4 +1,4 @@
-﻿
+﻿using static System.Math;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,9 +15,29 @@ namespace FloorSweep.Math
         public Mat(int rows, int cols, double value)
         : this(rows, cols, GenerateData(rows, cols, value)) { }
 
-        //public OpenCvSharp.Mat ToCvMat()
-        // => new OpenCvSharp.Mat(rows: Rows, Cols, OpenCvSharp.MatType.CV_64FC1, _data);
+        public static Mat Rotate(int degrees)
+        {
+            var radian = degrees * 0.0174532925;
+            return new Mat(2, 2, new[] { new[] { Cos(radian), -Sin(radian) }, new[] { Sin(radian), Cos(radian) } });
+        }
 
+        public PointD Mul(PointD left)
+        {
+            if (Cols != 2 || Rows != 2)
+            {
+                throw new ArgumentException("Cannot multiply a non 2x2 Mat with a Point");
+            }
+            return new PointD(this[1, 1] * left.X + this[1, 2] * left.Y, (this[2, 1] * left.X) + (this[2, 2] * left.Y));
+        }
+
+        public Point Mul(Point left)
+        {
+            if (Cols != 2 || Rows != 2)
+            {
+                throw new ArgumentException("Cannot multiply a non 2x2 Mat with a Point");
+            }
+            return new Point((int)(this[1, 1] * left.X + this[1, 2] * left.Y), (int)((this[2, 1] * left.X) + (this[2, 2] * left.Y)));
+        }
 
         private static double[][] GenerateData(int rows, int cols, double value)
         {
@@ -44,11 +64,11 @@ namespace FloorSweep.Math
 
         private static unsafe Mat ImageTo(Bitmap b, Func<byte, byte, byte, double> valueSelector)
         {
-            
+
             var newData = new double[b.Height][];
             var bits = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             var pixelSize = bits.Stride / b.Width;
-            if(pixelSize != 3)
+            if (pixelSize != 3)
             {
                 throw new ArgumentException();
             }
@@ -208,7 +228,7 @@ namespace FloorSweep.Math
             get => _data[row - 1][col - 1];
             set
             {
-                
+
                 _data[row - 1][col - 1] = value;
 #if DEBUG
                 MatChanged?.Invoke(row, col, value);
@@ -304,7 +324,7 @@ namespace FloorSweep.Math
                 return Copy();
             }
 
-            if (other.Size() == Size())
+            if (other.Size == Size)
             {
                 return ProductTemplate(this, (row, col) => other[row, col], @operator);
             }
@@ -438,8 +458,8 @@ namespace FloorSweep.Math
         //    }
         //}
 
-        public Size Size()
-        => new Size(Cols, Rows);
+        public Point Size
+        => new Point(Cols, Rows);
 
 
         public Mat Pow(double power) => ProductTemplate(this, (r, c) => power, System.Math.Pow);

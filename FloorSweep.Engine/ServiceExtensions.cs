@@ -30,12 +30,7 @@ namespace FloorSweep.Engine
             )
             .Build()
             )
-            .AddTransient(s => EventHandlerFactory<ILocationStatus>.Builder
-            .Build())
             .AddTransient(s => EventHandlerFactory<IRobotCommand>.Builder.Build())
-            .AddTransient(s => EventHandlerFactory<IDiagnosticStatusData>.Builder
-            .Build()
-            )
             .AddTransient<IMapConfiguration>(_=>mapConfig);
         }
     }

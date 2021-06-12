@@ -2,6 +2,7 @@
 using FloorSweep.Engine.Diagnostics;
 using FloorSweep.Engine.Map;
 using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Session;
 using FloorSweep.Math;
 using System.Threading.Tasks;
 
@@ -13,8 +14,6 @@ namespace FloorSweep.Engine.Events
         Task SendMatrixUpdateAsync(string key, int row, int col, double value);
         Task SendRobotCommandAsync(IRobotCommand command);
         Task SendRobotStatusUpdateAsync(IRobotStatus status);
-
-        Task SendLocationStatusUpdatedAsync(ILocationStatus locationStatus);
-        Task SendDiagnosticStatusUpdatedAsync(IDiagnosticStatusData status);
+        Task SendSessionUpdatedAsync(ISession session);
     }
 }

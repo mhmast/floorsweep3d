@@ -1,4 +1,4 @@
-﻿namespace FloorSweep.Engine.Models
+﻿namespace FloorSweep.Engine.Core
 {
     public interface IRobotAction
     {

@@ -1,5 +1,5 @@
 ﻿using FloorSweep.Engine.Models;
-using RobotActionType2 = FloorSweep.Engine.Models.RobotActionType;
+using RobotActionType2 = FloorSweep.Engine.Core.RobotActionType;
 using System;
 
 namespace FloorSweep.Api.Controllers.Models

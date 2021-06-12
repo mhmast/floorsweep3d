@@ -39,8 +39,7 @@ namespace FloorSweep.Api.Repositories
         {
             var session = GetSessionInternal();
             session.SetObject(@object);
-            await _eventService.SendSessionUpdatedAsync(this);
-            return Task.CompletedTask;
+            await _eventService.SendSessionUpdatedAsync(GetSessionInternal());
         }
 
         public Task<T> GetObjectAsync<T>() 

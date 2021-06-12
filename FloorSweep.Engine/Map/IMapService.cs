@@ -1,9 +1,10 @@
-﻿using FloorSweep.Engine.EventHandlers;
-using FloorSweep.Engine.Models;
+﻿using FloorSweep.Engine.Core;
+using FloorSweep.Engine.EventHandlers;
+
 
 namespace FloorSweep.Engine.Map
 {
-    public interface IMapService : IEventHandlerDecorator<IRobotStatus>
+    public interface IMapService : IEventHandler<IRobotStatus>
     {
        
     }

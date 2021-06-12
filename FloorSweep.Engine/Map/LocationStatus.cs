@@ -1,22 +1,16 @@
-﻿using FloorSweep.Engine.Models;
-using System;
+﻿using FloorSweep.Engine.Core;
+using FloorSweep.Math;
 
 namespace FloorSweep.Engine.Map
 {
     internal class LocationStatus : ILocationStatus
     {
-        public LocationStatus()
-        {
-            LocationDeterminationStatus = LocationDeterminationStatus.Unknown;
-            AvgSpeedMmPerSecond = double.NegativeInfinity;
-        }
         
+        public Point Location { get; internal set; }
+        public PointD Direction => PointD.Up * Rotation;
 
-        public LocationDeterminationStatus LocationDeterminationStatus { get; set; }
-
-        public double AvgSpeedMmPerSecond { get; set; }
         public IRobotStatus LastReceivedStatus { get; set; }
-
-        public double AvgSpeedPixelsPerSecond { get; set; }
+        public Mat Rotation => Mat.Rotate(RotationDegrees);
+        public int RotationDegrees { get; internal set; }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using FloorSweep.Engine.Commands;
 using FloorSweep.Engine.Config;
+using FloorSweep.Engine.Core;
 using FloorSweep.Engine.Events;
-using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
 using System;
 using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.Diagnostics
 {
-    internal class DiagnosticService : IDiagnosticService
+    internal class DiagnosticService : IDiagnosticService, IDataProvider<IRobotMeta>
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IRobotCommandFactory _robotCommandFactory;
@@ -32,7 +32,6 @@ namespace FloorSweep.Engine.Diagnostics
             var diagnosticStatus = await EnsureDiagnosticStatusData();
             await DetermineNextStatusAsync(diagnosticStatus, status);
             await _sessionRepository.SaveObjectAsync(diagnosticStatus);
-            await _eventService.SendDiagnosticStatusUpdatedAsync(diagnosticStatus);
             return diagnosticStatus.Status != DiagnosticStatus.Done;
         }
 
@@ -112,7 +111,10 @@ namespace FloorSweep.Engine.Diagnostics
         {
             var status = new DiagnosticStatusData();
             await _sessionRepository.SaveObjectAsync(status);
-            await _eventService.SendDiagnosticStatusUpdatedAsync(status);
         }
+
+        public async Task<IRobotMeta> GetDataAsync()
+        => await EnsureDiagnosticStatusData();
+        
     }
 }

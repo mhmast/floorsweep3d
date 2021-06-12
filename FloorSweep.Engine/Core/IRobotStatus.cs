@@ -1,7 +1,7 @@
 ﻿using FloorSweep.Engine.Session;
 using System;
 
-namespace FloorSweep.Engine.Models
+namespace FloorSweep.Engine.Core
 {
     [SessionSaveable]
     public interface IRobotStatus
