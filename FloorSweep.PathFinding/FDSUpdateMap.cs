@@ -32,7 +32,7 @@ namespace FloorSweep.PathFinding
             }
 
 
-            var added = Ind.Distinct(Point.Comparer);
+            var added = Ind.Distinct();
 
             indices = difference.Find(d => d == 1);
 
@@ -47,14 +47,14 @@ namespace FloorSweep.PathFinding
             }
 
 
-            var removed = Ind.Distinct(Point.Comparer);
+            var removed = Ind.Distinct();
 
             foreach (var u in removed)
             {
                 foreach (var n in ucc)
                 {
                     var s = u + n;
-                    insert(s, h(s, graph), graph, kM, startPos, stack, endPos);
+                    Insert(s, H(s, graph), graph, kM, startPos, stack, endPos);
                 }
             }
             foreach (var u in added)
@@ -62,11 +62,11 @@ namespace FloorSweep.PathFinding
                 foreach (var n in ucc)
                 {
                     var s = u + n;
-                    if (t(s, graph) == (double)OutcomeState.CLOSED && h(s, graph) != double.PositiveInfinity)
+                    if (T(s, graph) == (double)OutcomeState.CLOSED && H(s, graph) != double.PositiveInfinity)
                     {
-                        seth(s, double.PositiveInfinity, graph);
-                        stack.Queue(new Node(s, new PointD(-k(s, graph) + kM, k(s, graph) + g(s, startPos)), endPos));
-                        sett(s, (double)OutcomeState.OPEN, graph);
+                        SetH(s, double.PositiveInfinity, graph);
+                        stack.Queue(new Node(s, new PointD(-K(s, graph) + kM, K(s, graph) + G(s, startPos)), endPos));
+                        SetT(s, (double)OutcomeState.OPEN, graph);
                     }
                 }
             }
@@ -78,58 +78,58 @@ namespace FloorSweep.PathFinding
             return outState;
         }
 
-        private static double t(Point s, Mat[] graph) => graph[2][s];
-        private static double h(Point s, Mat[] graph) => graph[0][s];
+        private static double T(Point s, Mat[] graph) => graph[2][s];
+        private static double H(Point s, Mat[] graph) => graph[0][s];
 
-        private static double k(Point s, Mat[] graph)
+        private static double K(Point s, Mat[] graph)
         {
             return graph[1][s];
         }
 
-        private static double g(Point s, Point startPos)
+        private static double G(Point s, Point startPos)
         {
             var ss = (startPos - s).Abs();
             return System.Math.Sqrt(System.Math.Pow(ss.X, 2) + System.Math.Pow(ss.Y, 2));
         }
 
-        private static void sett(Point s, double val, Mat[] graph)
+        private static void SetT(Point s, double val, Mat[] graph)
         {
             graph[2][s.X,s.Y] = val;
         }
 
-        private static void seth(Point s, double val, Mat[] graph)
+        private static void SetH(Point s, double val, Mat[] graph)
         {
             graph[0][s.X,s.Y] = val;
         }
 
-        private static void insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, PriorityQueue<Node> stack, Point endPos)
+        private static void Insert(Point s, double h_new, Mat[] graph, double kM, Point startPos, PriorityQueue<Node> stack, Point endPos)
         {
-            var t = inQ(s, graph);
+            var t = InQ(s, graph);
             if (t == (double)OutcomeState.NEW)
             {
-                setk(s, h_new, graph);
-                seth(s, h_new, graph);
+                SetK(s, h_new, graph);
+                SetH(s, h_new, graph);
             }
             else
             {
                 if (t == (double)OutcomeState.OPEN)
                 {
-                    setk(s, System.Math.Min(k(s, graph), h_new), graph);
+                    SetK(s, System.Math.Min(K(s, graph), h_new), graph);
                 }
                 else
                 {
-                    setk(s, System.Math.Min(h(s, graph), h_new), graph);
-                    seth(s, h_new, graph);
+                    SetK(s, System.Math.Min(H(s, graph), h_new), graph);
+                    SetH(s, h_new, graph);
                 }
 
-                stack.Queue(new Node(s, new PointD(k(s, graph) + kM + g(s, startPos), k(s, graph) + g(s, startPos)), endPos));
-                sett(s, (double)OutcomeState.OPEN, graph);
+                stack.Queue(new Node(s, new PointD(K(s, graph) + kM + G(s, startPos), K(s, graph) + G(s, startPos)), endPos));
+                SetT(s, (double)OutcomeState.OPEN, graph);
             }
         }
 
-        private static double inQ(Point s, Mat[] graph) => graph[2][s];
+        private static double InQ(Point s, Mat[] graph) => graph[2][s];
 
-        private static void setk(Point s, double val, Mat[] graph)
+        private static void SetK(Point s, double val, Mat[] graph)
         {
             graph[1][s.X,s.Y] = val;
         }

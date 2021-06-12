@@ -1,7 +1,5 @@
 ﻿using FloorSweep.Engine.Commands;
-using FloorSweep.Engine.Diagnostics;
-using FloorSweep.Engine.Map;
-using FloorSweep.Engine.Models;
+using FloorSweep.Engine.Core;
 using FloorSweep.Engine.Session;
 using FloorSweep.Math;
 using System.Threading.Tasks;

@@ -9,10 +9,10 @@ namespace FloorSweep.Engine.EventHandlers
         private readonly Func<T, Task> _updateFunc;
         private readonly Func<Task> _resetFunc;
 
-        public EventHandlerAdapter(Func<T, Task> updateFunc, Func<Task> resetFunc)
+        public EventHandlerAdapter(Func<T, Task> updateFunc, Func<Task> resetFunc = null)
         {
             _updateFunc = updateFunc;
-            _resetFunc = resetFunc;
+            _resetFunc = resetFunc?? new Func<Task>(()=>Task.CompletedTask);
         }
         public Task OnStatusUpdatedAsync(T status)
         => _updateFunc(status);

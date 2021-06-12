@@ -351,9 +351,9 @@ namespace FloorSweep.Math.Tests
         public void Mat_Size_Should_Return_Size()
         {
             const int cols = 2, rows = 3;
-            var size = new Mat(rows, cols).Size();
-            size.Height.Should().Be(rows);
-            size.Width.Should().Be(cols);
+            var size = new Mat(rows, cols).Size;
+            size.Y.Should().Be(rows);
+            size.X.Should().Be(cols);
         }
 
         [Test]

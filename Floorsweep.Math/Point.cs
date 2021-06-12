@@ -1,29 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 
 namespace FloorSweep.Math
 {
     public struct Point
     {
-        private static IEqualityComparer<Point> _comparer = new PointComparer();
-
-        class PointComparer : IEqualityComparer<Point>
-        {
-            public bool Equals(Point x, Point y)
-            => x == y;
-
-            public int GetHashCode(Point obj)
-            {
-                return obj.GetHashCode();
-            }
-        }
-
-
-        public static IEqualityComparer<Point> Comparer
-        {
-            get => _comparer;
-        }
-
         public Point(int x, int y)
         {
             X = x;
@@ -43,6 +24,7 @@ namespace FloorSweep.Math
         public static bool operator ==(Point left, Point right) => left.Key == right.Key;
         public static bool operator !=(Point left, Point right) => !(left == right);
         public static Point operator +(Point left, Point right) => new Point(left.X + right.X, left.Y + right.Y);
+        public static Point operator +(Point left, PointD right) => new Point((int)(left.X + right.X), (int)(left.Y + right.Y));
         public static Point operator +(Point left, int right) => new Point(left.X + right, left.Y + right);
         public static Point operator -(Point left, Point right) => new Point(left.X - right.X, left.Y - right.Y);
         public static Point operator -(Point left, int right) => new Point(left.X - right, left.Y - right);
@@ -57,5 +39,17 @@ namespace FloorSweep.Math
 
         public long Sum()
         => X + Y;
+
+        public override bool Equals(object obj)
+        {
+            return obj is Point point &&
+                   X == point.X &&
+                   Y == point.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
+        }
     }
 }

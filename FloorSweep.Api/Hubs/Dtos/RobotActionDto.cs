@@ -1,5 +1,4 @@
-﻿
-using RobotActionType2 = FloorSweep.Engine.Core.RobotActionType;
+﻿using RobotActionType2 = FloorSweep.Engine.Core.RobotActionType;
 using System;
 using FloorSweep.Engine.Core;
 

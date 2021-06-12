@@ -1,6 +1,5 @@
 ﻿using FloorSweep.Engine.Map;
-using LocationDeterminationStatus2 = FloorSweep.Engine.Map.LocationDeterminationStatus;
-using System;
+using FloorSweep.Math;
 
 namespace FloorSweep.Api.Hubs.Dtos
 {
@@ -8,23 +7,15 @@ namespace FloorSweep.Api.Hubs.Dtos
     {
         public LocationStatusUpdateDto(ILocationStatus status)
         {
-            AvgSpeedMmPerSecond = status.AvgSpeedMmPerSecond;
-            AvgSpeedPixelsPerSecond = status.AvgSpeedPixelsPerSecond;
-            LocationDeterminationStatus = ConvertToDtoStatus(status.LocationDeterminationStatus);
+            Direction = status.Direction;
+            LastReceivedStatus = new RobotStatusDto(status.LastReceivedStatus);
+            Location = status.Location;
+            RotationDegrees = status.RotationDegrees;
         }
 
-        private static LocationDeterminationStatus ConvertToDtoStatus(LocationDeterminationStatus2 locationDeterminationStatus)
-        => locationDeterminationStatus switch
-        {
-            LocationDeterminationStatus2.LocationInSync => LocationDeterminationStatus.LocationInSync,
-            LocationDeterminationStatus2.Unknown => LocationDeterminationStatus.Unknown,
-            LocationDeterminationStatus2.SpeedTesting => LocationDeterminationStatus.SpeedTesting,
-            LocationDeterminationStatus2.Orienting => LocationDeterminationStatus.Orienting,
-            _ => throw new NotImplementedException(),
-        };
-
-        public double AvgSpeedMmPerSecond { get; }
-        public double AvgSpeedPixelsPerSecond { get; }
-        public LocationDeterminationStatus LocationDeterminationStatus { get; }
+        public PointD Direction { get; }
+        public RobotStatusDto LastReceivedStatus { get; }
+        public Point Location { get; }
+        public int RotationDegrees { get; }
     }
 }

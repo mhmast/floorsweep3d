@@ -4,14 +4,14 @@ using FloorSweep.Engine.Session;
 namespace FloorSweep.Engine.Diagnostics
 {
     [SessionSaveable]
-    internal class DiagnosticStatusData : IRobotMeta
+    internal class DiagnosticStatusData : IRobotMeta, IDiagnosticStatusData
     {
 
         public DiagnosticStatusData()
         {
 
         }
-    
+
         public string Error { get; set; }
         public DiagnosticStatus Status { get; set; }
 

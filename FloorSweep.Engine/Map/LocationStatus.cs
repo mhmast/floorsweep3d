@@ -3,9 +3,10 @@ using FloorSweep.Math;
 
 namespace FloorSweep.Engine.Map
 {
+
     internal class LocationStatus : ILocationStatus
     {
-        
+
         public Point Location { get; internal set; }
         public PointD Direction => PointD.Up * Rotation;
 

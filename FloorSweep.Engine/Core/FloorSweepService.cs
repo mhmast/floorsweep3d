@@ -1,10 +1,5 @@
 ﻿using FloorSweep.Engine.EventHandlers;
 using FloorSweep.Engine.Events;
-using FloorSweep.Engine.Map;
-using FloorSweep.Engine.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.Core

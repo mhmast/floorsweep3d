@@ -1,4 +1,4 @@
-﻿using FloorSweep.Engine.Models;
+﻿using FloorSweep.Engine.Core;
 using System;
 
 namespace FloorSweep.Api.Controllers.Models

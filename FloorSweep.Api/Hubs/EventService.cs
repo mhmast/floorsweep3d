@@ -1,10 +1,8 @@
 ﻿using FloorSweep.Api.Hubs.Dtos;
 using FloorSweep.Engine.Commands;
-using FloorSweep.Engine.Diagnostics;
+using FloorSweep.Engine.Core;
 using FloorSweep.Engine.EventHandlers;
 using FloorSweep.Engine.Events;
-using FloorSweep.Engine.Map;
-using FloorSweep.Engine.Models;
 using FloorSweep.Engine.Session;
 using FloorSweep.Math;
 using Microsoft.AspNetCore.Authorization;
@@ -70,7 +68,7 @@ namespace FloorSweep.Api.Hubs
         public Task SendRobotStatusUpdateAsync(IRobotStatus status)
         => Task.WhenAll(
             _robotStatusUpdateHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(status),
-            NotifyRegisteredSignalRUsersAsync("OnRobotStatusUpdated", new[] { new RobotStatusUpdateDto(status) })
+            NotifyRegisteredSignalRUsersAsync("OnRobotStatusUpdated", new[] { new RobotStatusDto(status) })
             );
 
         public Task SendSessionUpdatedAsync(ISession session)

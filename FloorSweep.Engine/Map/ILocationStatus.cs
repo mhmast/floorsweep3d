@@ -1,11 +1,14 @@
-﻿using FloorSweep.Math;
+﻿using FloorSweep.Engine.Core;
+using FloorSweep.Math;
 
 namespace FloorSweep.Engine.Map
 {
 
     public interface ILocationStatus
     {
-        public Point Location { get;  }
-        public PointD Direction { get;  }
+        PointD Direction { get; }
+        IRobotStatus LastReceivedStatus { get;  }
+        Point Location { get; }
+        int RotationDegrees { get; }
     }
 }
