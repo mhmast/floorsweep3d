@@ -7,6 +7,10 @@ namespace FloorSweep.Engine.EventHandlers
         private readonly IEventHandlerDecorator<TArg> _thisHandler;
         private readonly IEventHandlerDecorator<TArg> _next;
 
+        public CompositeEventHandlerDecorator() : this(new EmptyEventHandlerDecorator<TArg>())
+        {
+            
+        }
         public CompositeEventHandlerDecorator(IEventHandlerDecorator<TArg> thisHandler, IEventHandlerDecorator<TArg> next = null)
         {
             _thisHandler = thisHandler;
@@ -16,7 +20,7 @@ namespace FloorSweep.Engine.EventHandlers
         public async Task ResetStatusAsync()
         {
             await _thisHandler.ResetStatusAsync();
-            await _next?.ResetStatusAsync();
+            await (_next?.ResetStatusAsync() ?? Task.CompletedTask);
         }
 
         async Task<bool> IEventHandlerDecorator<TArg>.OnStatusUpdatedAsync(TArg status)

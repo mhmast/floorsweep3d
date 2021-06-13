@@ -23,11 +23,13 @@ namespace FloorSweep.Engine
             .AddScoped<IRobotCommandFactory, RobotCommandFactory>()
             .AddTransient<IDateTimeProvider, DateTimeProvider>()
             .AddTransient(s => EventHandlerFactory<IRobotStatus>.Builder
-            .WithInterceptors(s.GetRequiredService<IMapService>, () => new EventHandlerAdapter<IRobotStatus>(s.GetRequiredService<ISessionRepository>().SaveObjectAsync))
-            .WithDecorators(s.GetRequiredService<IDiagnosticService>)
-            .Build()
-            )
+                .WithInterceptors(s.GetRequiredService<IMapService>, () => new EventHandlerAdapter<IRobotStatus>(s.GetRequiredService<ISessionRepository>().SaveObjectAsync))
+                .WithDecorators(s.GetRequiredService<IDiagnosticService>)
+                .Build()
+                )
+            .AddTransient<IDataProvider<IRobotMeta>,DiagnosticService>()
             .AddTransient(s => EventHandlerFactory<IRobotCommand>.Builder.Build())
+            .AddTransient(s => EventHandlerFactory<ISession>.Builder.Build())
             .AddTransient<IMapConfiguration>(_ => mapConfig);
         }
     }

@@ -19,9 +19,9 @@ export async function subscribeRobotActionUpdatedAsync(
   });
 }
 export async function subscribeSessionStatusAsync(
-  handler: (message: Object) => void
+  handler: (message: string) => void
 ): Promise<void> {
-  await subscribe<Object>("OnSessionStatusUpdated", (m) => {
+  await subscribe<string>("OnSessionStatusUpdated", (m) => {
     handler(m);
   });
 }

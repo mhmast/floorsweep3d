@@ -13,16 +13,20 @@ namespace FloorSweep.Engine.EventHandlers
             _next = next;
         }
 
+        public CompositeEventHandler() : this(new EmptyEventHandler<TArg>())
+        {
+        }
+
         async Task IEventHandler<TArg>.ResetStatusAsync()
         {
             await _thisHandler.ResetStatusAsync();
-            await _next?.ResetStatusAsync();
+            await (_next?.ResetStatusAsync()??Task.CompletedTask);
         }
 
         async Task IEventHandler<TArg>.OnStatusUpdatedAsync(TArg status)
         {
             await _thisHandler.OnStatusUpdatedAsync(status);
-            await _next?.OnStatusUpdatedAsync(status);
+            await (_next?.OnStatusUpdatedAsync(status)??Task.CompletedTask);
         }
 
     }

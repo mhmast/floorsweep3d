@@ -87,6 +87,7 @@ namespace FloorSweep.Api
             services.UseFocussedDStar();
             services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddTransient<IUserIdProvider, UserIdProvider>();
+            services.AddTransient<UserIdProvider>();
             services.AddTransient<IEventService, EventService>();
         }
 

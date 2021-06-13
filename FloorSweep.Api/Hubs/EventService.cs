@@ -17,36 +17,31 @@ namespace FloorSweep.Api.Hubs
     public class EventService : Hub, IEventService
     {
         private readonly IHubContext<EventService> _context;
-        private readonly ISessionRepository _sessionRepository;
+        private readonly UserIdProvider _userIdProvider;
         private readonly IEventHandlerFactory<IRobotCommand> _robotCommandHandlerFactory;
         private readonly IEventHandlerFactory<ISession> _sessionStatusUpdateHandler;
         private readonly IEventHandlerFactory<IRobotStatus> _robotStatusUpdateHandlerFactory;
 
 
         public EventService(
-            IHubContext<EventService> context, 
-            ISessionRepository sessionRepository, 
+            IHubContext<EventService> context,
+            UserIdProvider userIdProvider,
             IEventHandlerFactory<IRobotCommand> robotCommandHandlerFactory,
             IEventHandlerFactory<ISession> sessionStatusUpdateHandler,
             IEventHandlerFactory<IRobotStatus> robotStatusUpdateHandlerFactory)
         {
             _context = context;
-            _sessionRepository = sessionRepository;
+            _userIdProvider = userIdProvider;
             _robotCommandHandlerFactory = robotCommandHandlerFactory;
             _sessionStatusUpdateHandler = sessionStatusUpdateHandler;
             _robotStatusUpdateHandlerFactory = robotStatusUpdateHandlerFactory;
-
         }
 
-        private async Task<IClientProxy> GetUserAsync()
-        {
-            var sessionId = (await _sessionRepository.GetSessionAsync())?.Id;
-            return _context.Clients?.User(sessionId);
-        }
+        private IClientProxy GetUser() => _context.Clients?.User(_userIdProvider.GetUserId());
 
         private async Task NotifyRegisteredSignalRUsersAsync(string @event, params object[] args)
         {
-            var user = await GetUserAsync();
+            var user = GetUser();
             if (user != null)
             {
                 await user.SendCoreAsync(@event, args);
@@ -64,7 +59,7 @@ namespace FloorSweep.Api.Hubs
             NotifyRegisteredSignalRUsersAsync("OnRobotCommand", new[] { new RobotCommandDto(command) })
             );
 
-    
+
         public Task SendRobotStatusUpdateAsync(IRobotStatus status)
         => Task.WhenAll(
             _robotStatusUpdateHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(status),
@@ -74,7 +69,7 @@ namespace FloorSweep.Api.Hubs
         public Task SendSessionUpdatedAsync(ISession session)
          => Task.WhenAll(
             _sessionStatusUpdateHandler.GetEventHandler().OnStatusUpdatedAsync(session),
-            NotifyRegisteredSignalRUsersAsync("OnSessionUpdated", new[] { session})
+            NotifyRegisteredSignalRUsersAsync("OnSessionUpdated", new[] { session })
             );
     }
 }

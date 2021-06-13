@@ -17,11 +17,11 @@ namespace FloorSweep.Engine.EventHandlers
         }
 
         private static IEventHandler<T> Wrap(IEnumerable<Func<IEventHandlerDecorator<T>>> decorators)
-            => (IEventHandler<T>)(decorators.Any() ? decorators.Select(f => f()).Aggregate((a, f) => new CompositeEventHandlerDecorator<T>(a, f))
+            => (IEventHandler<T>)(decorators.Any() ? decorators.Select(f => f()).Aggregate(new CompositeEventHandlerDecorator<T>(),(a, f) => new CompositeEventHandlerDecorator<T>(a, f))
             : new EmptyEventHandlerDecorator<T>());
 
         private static IEventHandler<T> Wrap(IEnumerable<Func<IEventHandler<T>>> interceptors)
-            => interceptors.Any() ? interceptors.Select(f => f()).Aggregate((a, f) => new CompositeEventHandler<T>(a, f))
+            => interceptors.Any() ? interceptors.Select(f => f()).Aggregate(new CompositeEventHandler<T>(),(a, f) => new CompositeEventHandler<T>(a, f))
             : new EmptyEventHandler<T>();
         IEventHandler<T> IEventHandlerFactory<T>.GetEventHandler() => new CompositeEventHandler<T>(Wrap(_interceptors), Wrap(_decorators));
 
