@@ -6,6 +6,6 @@
 </script>
 
 <robotAction>
-  <p><span>Type: </span><span>{RobotCommandType[action.type]}</span></p>
+  <p><span>Type: </span><span>{action.type}</span></p>
   <p><span>Data: </span><span>{action.data}</span></p>
 </robotAction>

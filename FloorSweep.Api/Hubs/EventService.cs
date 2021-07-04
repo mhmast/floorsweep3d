@@ -7,6 +7,8 @@ using FloorSweep.Engine.Session;
 using FloorSweep.Math;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FloorSweep.Api.Hubs
@@ -48,28 +50,29 @@ namespace FloorSweep.Api.Hubs
             }
         }
         public Task SendMatrixInitAsync(string name, Mat m, bool isBinary)
-        => NotifyRegisteredSignalRUsersAsync("OnMatrixInit", new[] { new MatrixInitDto(name, m, isBinary) });
+        => NotifyRegisteredSignalRUsersAsync("OnMatrixInit", new MatrixInitDto(name, m, isBinary) );
 
         public Task SendMatrixUpdateAsync(string name, int row, int col, double value)
-        => NotifyRegisteredSignalRUsersAsync("OnMatrixUpdate", new[] { new MatrixUpdateDto(name, row, col, value) });
+        => NotifyRegisteredSignalRUsersAsync("OnMatrixUpdate", new MatrixUpdateDto(name, row, col, value) );
 
         public Task SendRobotCommandAsync(IRobotCommand command)
         => Task.WhenAll(
             _robotCommandHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(command),
-            NotifyRegisteredSignalRUsersAsync("OnRobotCommand", new[] { new RobotCommandDto(command) })
+            NotifyRegisteredSignalRUsersAsync("OnRobotCommand",  new RobotCommandDto(command) )
             );
 
 
         public Task SendRobotStatusUpdateAsync(IRobotStatus status)
         => Task.WhenAll(
             _robotStatusUpdateHandlerFactory.GetEventHandler().OnStatusUpdatedAsync(status),
-            NotifyRegisteredSignalRUsersAsync("OnRobotStatusUpdated", new[] { new RobotStatusDto(status) })
+            NotifyRegisteredSignalRUsersAsync("OnRobotStatusUpdated", new RobotStatusDto(status) )
             );
 
+        
         public Task SendSessionUpdatedAsync(ISession session)
          => Task.WhenAll(
             _sessionStatusUpdateHandler.GetEventHandler().OnStatusUpdatedAsync(session),
-            NotifyRegisteredSignalRUsersAsync("OnSessionUpdated", new[] { session })
+            NotifyRegisteredSignalRUsersAsync("OnSessionUpdated", session)
             );
     }
 }

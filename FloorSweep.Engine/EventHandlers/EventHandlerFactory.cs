@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FloorSweep.Engine.EventHandlers
 {
@@ -17,21 +16,21 @@ namespace FloorSweep.Engine.EventHandlers
         }
 
         private static IEventHandler<T> Wrap(IEnumerable<Func<IEventHandlerDecorator<T>>> decorators)
-            => (IEventHandler<T>)(decorators.Any() ? decorators.Select(f => f()).Aggregate(new CompositeEventHandlerDecorator<T>(),(a, f) => new CompositeEventHandlerDecorator<T>(a, f))
-            : new EmptyEventHandlerDecorator<T>());
+            => (IEventHandler<T>)(decorators.Any() ? decorators.Select(f => f()).Aggregate(new CompositeEventHandlerDecorator<T>(false), (a, f) => new CompositeEventHandlerDecorator<T>(a, f))
+            : new EmptyEventHandlerDecorator<T>(true));
 
         private static IEventHandler<T> Wrap(IEnumerable<Func<IEventHandler<T>>> interceptors)
-            => interceptors.Any() ? interceptors.Select(f => f()).Aggregate(new CompositeEventHandler<T>(),(a, f) => new CompositeEventHandler<T>(a, f))
+            => interceptors.Any() ? interceptors.Select(f => f()).Aggregate(new CompositeEventHandler<T>(), (a, f) => new CompositeEventHandler<T>(a, f))
             : new EmptyEventHandler<T>();
         IEventHandler<T> IEventHandlerFactory<T>.GetEventHandler() => new CompositeEventHandler<T>(Wrap(_interceptors), Wrap(_decorators));
 
         public class Builder
         {
             public static EventHandlerFactoryBuilder<T> WithInterceptors(params Func<IEventHandler<T>>[] interceptors)
-            => new (interceptors);
-            
+            => new(interceptors);
+
             public static EventHandlerFactoryBuilder<T> WithDecorators(params Func<IEventHandlerDecorator<T>>[] decorators)
-            => new (decorators);
+            => new(decorators);
 
             public static IEventHandlerFactory<T> Build() => new EventHandlerFactoryBuilder<T>().Build();
         }
@@ -68,6 +67,6 @@ namespace FloorSweep.Engine.EventHandlers
             return this;
         }
         public IEventHandlerFactory<T> Build() => new EventHandlerFactory<T>(_interceptors, _decorators);
-    
+
     }
 }

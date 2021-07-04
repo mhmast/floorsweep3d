@@ -21,6 +21,14 @@ div {
 .grid {
   display: grid;
 }
+div.arrow.expanded {
+  transform-origin: left !important;
+  transform: translateY(-5px) rotateZ(90deg) !important;
+}
+
+div.arrow {
+  transition: none !important;
+}
 
 @mixin gridColumns($number, $perc) {
   $cols: ();

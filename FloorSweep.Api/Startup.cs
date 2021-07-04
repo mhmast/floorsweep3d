@@ -30,8 +30,8 @@ namespace FloorSweep.Api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        { 
-        
+        {
+
             var authSection = Configuration.GetSection("Authentication");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
@@ -62,7 +62,7 @@ namespace FloorSweep.Api
             services.AddSingleton<ISessionRepository, SessionRepository>();
             services.AddAuthorization();
             services.AddControllers()
-                .AddJsonOptions(o=>o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
+                .AddJsonOptions(o => o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
             services.AddCors(o =>
             {
                 var policy = new CorsPolicy();
@@ -74,7 +74,7 @@ namespace FloorSweep.Api
                 var section = Configuration.GetSection("Swagger");
                 var flow = new NSwag.OpenApiOAuthFlow();
                 section.Bind(flow);
-                var scheme = new NSwag.OpenApiSecurityScheme {Flows = new NSwag.OpenApiOAuthFlows { AuthorizationCode=flow} ,Type = NSwag.OpenApiSecuritySchemeType.OAuth2};
+                var scheme = new NSwag.OpenApiSecurityScheme { Flows = new NSwag.OpenApiOAuthFlows { AuthorizationCode = flow }, Type = NSwag.OpenApiSecuritySchemeType.OAuth2 };
                 section.Bind(scheme);
                 c.AddSecurity("oauth2", scheme);
                 c.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
@@ -85,7 +85,11 @@ namespace FloorSweep.Api
             services.UseFloorSweepEngine(Configuration);
             //services.UseFloorSweepRepositories();
             services.UseFocussedDStar();
-            services.AddSignalR().AddJsonProtocol(o=>o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
+            services.AddSignalR().AddJsonProtocol(o =>
+            {
+                o.PayloadSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals;
+                o.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             services.AddTransient<IUserIdProvider, UserIdProvider>();
             services.AddTransient<UserIdProvider>();
             services.AddTransient<IEventService, EventService>();
@@ -95,16 +99,16 @@ namespace FloorSweep.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var swaggerSection = Configuration.GetSection("Swagger");
-            
+
             if (env.IsDevelopment())
             {
-                
+
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi();
                 app.UseSwaggerUi3(options =>
                 {
                     options.OAuth2Client = new NSwag.AspNetCore.OAuth2ClientSettings();
-                    swaggerSection.Bind(options.OAuth2Client); 
+                    swaggerSection.Bind(options.OAuth2Client);
                 });
             }
             if (!env.IsDevelopment())

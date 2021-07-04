@@ -23,7 +23,6 @@ import {
   subscribeRobotActionUpdatedAsync as subscribeRobotCommandUpdatedAsync,
 } from "../../services/statusService";
 import { Writable, writable } from "svelte/store";
-import { now } from "svelte/internal";
 
 let backgroundImage: ImageData;
 let robotImage: HTMLImageElement;

@@ -18,10 +18,10 @@ export async function subscribeRobotActionUpdatedAsync(
     handler(m);
   });
 }
-export async function subscribeSessionStatusAsync(
-  handler: (message: string) => void
+export async function subscribeSessionUpdatedAsync(
+  handler: (message: object) => void
 ): Promise<void> {
-  await subscribe<string>("OnSessionStatusUpdated", (m) => {
+  await subscribe<object>("OnSessionUpdated", (m) => {
     handler(m);
   });
 }

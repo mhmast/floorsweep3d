@@ -7,7 +7,7 @@ namespace FloorSweep.Engine.EventHandlers
         private readonly IEventHandlerDecorator<TArg> _thisHandler;
         private readonly IEventHandlerDecorator<TArg> _next;
 
-        public CompositeEventHandlerDecorator() : this(new EmptyEventHandlerDecorator<TArg>())
+        public CompositeEventHandlerDecorator(bool returnValue) : this(new EmptyEventHandlerDecorator<TArg>(returnValue))
         {
             
         }

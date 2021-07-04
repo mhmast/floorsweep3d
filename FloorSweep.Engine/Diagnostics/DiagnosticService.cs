@@ -49,7 +49,6 @@ namespace FloorSweep.Engine.Diagnostics
 
         private Task VerifyResultAndDoneAsync(DiagnosticStatusData diagnosticStatus, IRobotStatus status)
         {
-
             var lastMessage = diagnosticStatus.LastReceivedStatus;
             var traveledDistanceInMm = lastMessage.DistanceToObject - status.DistanceToObject;
             var elapsedTimeSeconds = (status.StatusDate - lastMessage.StatusDate).TotalSeconds;
