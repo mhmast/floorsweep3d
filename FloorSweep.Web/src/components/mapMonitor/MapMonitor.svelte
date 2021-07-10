@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   import Matrix from "../matrix/Matrix.svelte";
   import { mapStore, init } from "./mapMonitor";
   let mapOnly = true;

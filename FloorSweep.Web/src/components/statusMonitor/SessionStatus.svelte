@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   import TreeView from "svelte-json-tree-auto";
   export let status: object;
 </script>

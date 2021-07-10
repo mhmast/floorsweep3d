@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   import ImageUpload from "../imageUpload/ImageUpload.svelte";
   import { RobotStatusType } from "../../models/messages/RobotStatusMessage";
   import {
@@ -7,7 +7,6 @@
     startRobotAsync,
     stopRobot,
     doNextStep,
-    action,
     location,
     rotation,
     autoContinue,

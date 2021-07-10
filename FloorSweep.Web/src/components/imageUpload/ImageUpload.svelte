@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   export let clickHandler: (data: string | ArrayBuffer) => void;
   let avatar, fileinput, img;
 

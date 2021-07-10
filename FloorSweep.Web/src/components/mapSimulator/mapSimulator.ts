@@ -47,7 +47,6 @@ let autoNextStep = false;
 export const error: Writable<string> = writable(undefined);
 export const location: Writable<Point> = writable(robotLocation);
 export const rotation: Writable<number> = writable(robotRotation);
-export const action: Writable<RobotAction> = writable(currentAction);
 export const autoContinue: Writable<boolean> = writable(false);
 autoContinue.subscribe(
   (a) => {
@@ -197,7 +196,6 @@ function updateStatus(distance: number) {
       robotUpdateMessage = undefined;
     }
   }
-  action.set(currentAction);
 }
 
 async function robotLoopAsync() {

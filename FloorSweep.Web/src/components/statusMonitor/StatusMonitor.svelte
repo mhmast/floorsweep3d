@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   import RobotStatus from "./RobotStatus.svelte";
   import RobotCommand from "./RobotCommand.svelte";
   import SessionStatus from "./SessionStatus.svelte";

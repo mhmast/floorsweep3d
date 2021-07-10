@@ -1,15 +1,14 @@
-<script lang="ts">
-
+<script lang="typescript">
   import { init } from "./token";
-  const initialize = (async ()=>await init())();
+  const initialize = (async () => await init())();
 </script>
 
 <svelte:head>
   <title>Redirecting</title>
 </svelte:head>
 <div>
-  {#await initialize }
-  <p>redirecting...</p>  
+  {#await initialize}
+    <p>redirecting...</p>
   {:catch error}
     <p>{error}</p>
   {/await}

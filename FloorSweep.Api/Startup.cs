@@ -62,7 +62,11 @@ namespace FloorSweep.Api
             services.AddSingleton<ISessionRepository, SessionRepository>();
             services.AddAuthorization();
             services.AddControllers()
-                .AddJsonOptions(o => o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals);
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals;
+                });
             services.AddCors(o =>
             {
                 var policy = new CorsPolicy();

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   import type { RobotCommandMessage } from "../../models/messages/RobotStatusMessage";
   import { RobotCommandType } from "../../models/messages/RobotStatusMessage";
 

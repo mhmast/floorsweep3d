@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="typescript">
   export let segment: string;
 </script>
 

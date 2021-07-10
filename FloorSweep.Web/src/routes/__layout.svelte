@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="typescript">
+  import Layout from "../../.svelte-kit/dev/components/layout.svelte";
   import Nav from "../components/nav/Nav.svelte";
   import { init } from "./_layout";
   let initialize = (async () => await init())();
