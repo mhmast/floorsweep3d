@@ -1,4 +1,5 @@
-﻿using FloorSweep.Engine.Commands;
+﻿using FloorSweep.Engine.AI.Simple;
+using FloorSweep.Engine.Commands;
 using FloorSweep.Engine.Config;
 using FloorSweep.Engine.Core;
 using FloorSweep.Engine.Diagnostics;
@@ -18,13 +19,16 @@ namespace FloorSweep.Engine
             var mapConfig = new MapConfiguration();
             config.GetSection("Map").Bind(mapConfig);
             return collection.AddTransient<IFloorSweepService, FloorSweepService>()
-            .AddScoped<IMapService, MapService>()
+            //.AddScoped<IMapService, MapService>()
             .AddScoped<IDiagnosticService, DiagnosticService>()
+            .AddScoped<ISimpleRobotAI, SimpleRobotAI>()
             .AddScoped<IRobotCommandFactory, RobotCommandFactory>()
             .AddTransient<IDateTimeProvider, DateTimeProvider>()
             .AddTransient(s => EventHandlerFactory<IRobotStatus>.Builder
-                .WithInterceptors(s.GetRequiredService<IMapService>, () => new EventHandlerAdapter<IRobotStatus>(s.GetRequiredService<ISessionRepository>().SaveObjectAsync))
-                .WithDecorators(s.GetRequiredService<IDiagnosticService>)
+                .WithInterceptors(
+                //s.GetRequiredService<IMapService>,
+                () => new EventHandlerAdapter<IRobotStatus>(s.GetRequiredService<ISessionRepository>().SaveObjectAsync))
+                .WithDecorators(s.GetRequiredService<IDiagnosticService>,s.GetRequiredService<ISimpleRobotAI>)
                 .Build()
                 )
             .AddTransient<IDataProvider<IRobotMeta>,DiagnosticService>()

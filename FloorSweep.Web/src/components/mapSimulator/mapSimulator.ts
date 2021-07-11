@@ -38,7 +38,8 @@ let currentAction: RobotAction = {
 let distanceDebugLine: Line;
 let started: boolean = false;
 let nextLoopStep: boolean = true;
-const loopSpeed = 100;
+const loopSpeed = 1;
+const robotSpeed = 5;
 const maxDist = 200;
 const robotWidth = 20;
 const robotHeight = 20;
@@ -144,7 +145,17 @@ function getDistanceToObject(debug: boolean = false): number {
       break;
     }
     dist++;
+    const locOld = loc;
     loc = addPoint(loc, direction());
+    if (
+      loc.x < 0 ||
+      loc.y < 0 ||
+      loc.y > backgroundImage.height ||
+      loc.x > backgroundImage.width
+    ) {
+      loc = locOld;
+      break;
+    }
   }
   if (distanceDebugLine) {
     distanceDebugLine.end = loc;
@@ -170,31 +181,27 @@ async function resetRobotStatusUpdateAsync(data: RobotStatusMessage) {
   error.set(result.error);
 }
 
-function updateStatus(distance: number) {
-  if (distance < 5) {
-    currentAction.type = RobotStatusType.Stopped;
-  } else {
-    if (robotUpdateMessage) {
-      switch (robotUpdateMessage.type) {
-        case RobotCommandType.Drive:
-          currentAction.type = RobotStatusType.Driving;
-          break;
-        case RobotCommandType.Stop:
-          currentAction.type = RobotStatusType.Stopped;
-          break;
-        case RobotCommandType.Turn:
-          currentAction.type = RobotStatusType.Turned;
-          robotRotation += robotUpdateMessage.data;
-          if (robotRotation > 360) {
-            robotRotation -= 360;
-          }
-          rotation.set(robotRotation);
-          break;
-      }
-      currentAction.data = robotUpdateMessage.data;
-
-      robotUpdateMessage = undefined;
+function updateStatus() {
+  if (robotUpdateMessage) {
+    switch (robotUpdateMessage.type) {
+      case RobotCommandType.Drive:
+        currentAction.type = RobotStatusType.Driving;
+        break;
+      case RobotCommandType.Stop:
+        currentAction.type = RobotStatusType.Stopped;
+        break;
+      case RobotCommandType.Turn:
+        currentAction.type = RobotStatusType.Turned;
+        robotRotation += robotUpdateMessage.data;
+        if (robotRotation > 360) {
+          robotRotation -= 360;
+        }
+        rotation.set(robotRotation);
+        break;
     }
+    currentAction.data = robotUpdateMessage.data;
+
+    robotUpdateMessage = undefined;
   }
 }
 
@@ -204,12 +211,16 @@ async function robotLoopAsync() {
       if (!autoNextStep) {
         nextLoopStep = false;
       }
+
+      updateStatus();
       const distance = getDistanceToObject(true);
 
-      updateStatus(distance);
+      if (distance < 5) {
+        currentAction.type = RobotStatusType.Stopped;
+      }
       switch (currentAction.type) {
         case RobotStatusType.Driving:
-          robotLocation = addPoint(robotLocation, direction(2));
+          robotLocation = addPoint(robotLocation, direction(robotSpeed));
           location.set(robotLocation);
           break;
       }

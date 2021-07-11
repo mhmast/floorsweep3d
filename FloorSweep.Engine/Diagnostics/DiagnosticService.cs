@@ -68,6 +68,7 @@ namespace FloorSweep.Engine.Diagnostics
             }
             else
             {
+                diagnosticStatus.Status = DiagnosticStatus.TestingDrive;
                 diagnosticStatus.Error = $"Unexpected robot action type {status.CurrentAction.Type}";
             }
             return Task.CompletedTask;
@@ -83,6 +84,7 @@ namespace FloorSweep.Engine.Diagnostics
                 await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateStopCommand());
                 return;
             }
+            diagnosticStatus.Status = DiagnosticStatus.TestingTurn;
             diagnosticStatus.Error = $"Unexpected robot action type {status.CurrentAction.Type}";
         }
 
@@ -94,6 +96,7 @@ namespace FloorSweep.Engine.Diagnostics
                 await _eventService.SendRobotCommandAsync(_robotCommandFactory.CreateDriveCommand());
                 return;
             }
+            diagnosticStatus.Status = DiagnosticStatus.Unknown;
             diagnosticStatus.Error = $"Unexpected robot action type {status.CurrentAction.Type}";
         }
 
